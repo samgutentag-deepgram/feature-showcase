@@ -195,3 +195,65 @@ describe('one site, many demos', () => {
     err.mockRestore()
   })
 })
+
+describe('tts-callback webhook (demos/tts-callback/server.js)', async () => {
+  const callbackRoutes = (await import('../demos/tts-callback/server.js')).default
+  const BASE = '/demos/tts-callback/api/callback'
+  const wav = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(2000)])
+  const app = () => createApp({ demos: [...builtDemos(dist), 'tts-callback'], routes: { 'tts-callback': callbackRoutes } })
+  const slot = async (a: ReturnType<typeof createApp>, text = 'Hello there.') =>
+    (await request(a).post(BASE).send({ text })).body as { id: string; callback: string; textUrl: string }
+
+  it('mounts under /demos/tts-callback/api/ only, never for another demo or at /api/', async () => {
+    const a = app()
+    expect((await request(a).post('/api/callback').send({ text: 'hi' })).status).toBe(404)
+    expect((await request(a).post('/demos/keyterm/api/callback').send({ text: 'hi' })).status).toBe(404)
+    expect((await request(a).post('/demos/keyterm/api/callback/abc').set('content-type', 'audio/wav').send(wav)).status).toBe(404)
+    // Without its route module, the demo has no receiver.
+    const bare = createApp({ demos: [...builtDemos(dist), 'tts-callback'] })
+    expect((await request(bare).post(BASE).send({ text: 'hi' })).status).toBe(404)
+  })
+
+  it('takes one delivery for a slot it made and hands it to the page once', async () => {
+    const a = app()
+    const s = await slot(a)
+    expect(s.callback).toMatch(new RegExp(`/demos/tts-callback/api/callback/${s.id}$`))
+    expect(s.textUrl).toBe(`${s.callback}/text`)
+    expect((await request(a).get(`${BASE}/${s.id}`)).status).toBe(202)
+    expect((await request(a).put(`${BASE}/${s.id}`).set('content-type', 'audio/wav').send(wav)).status).toBe(200)
+    // A second delivery is acknowledged and ignored.
+    expect((await request(a).post(`${BASE}/${s.id}`).set('content-type', 'audio/wav').send(Buffer.from('RIFFxx'))).status).toBe(200)
+    const got = await request(a).get(`${BASE}/${s.id}`).buffer(true)
+    expect(got.status).toBe(200)
+    expect(got.headers['content-type']).toBe('audio/wav')
+    expect(got.headers['x-callback-method']).toBe('PUT')
+    expect(got.body.length).toBe(wav.length)
+    expect((await request(a).get(`${BASE}/${s.id}`)).status).toBe(404)
+  })
+
+  it('serves the text for priority=low, only for its own slots', async () => {
+    const a = app()
+    const s = await slot(a, 'Read me later.')
+    const t = await request(a).get(`${BASE}/${s.id}/text`)
+    expect(t.status).toBe(200)
+    expect(t.text).toBe('Read me later.')
+    expect((await request(a).get(`${BASE}/not-a-slot/text`)).status).toBe(404)
+  })
+
+  it('refuses unknown ids, non-audio, and oversized bodies', async () => {
+    const a = app()
+    expect((await request(a).post(`${BASE}/not-a-slot`).set('content-type', 'audio/wav').send(wav)).status).toBe(404)
+    const s = await slot(a)
+    expect((await request(a).post(`${BASE}/${s.id}`).set('content-type', 'text/html').send('<p>hi</p>')).status).toBe(415)
+    const big = Buffer.alloc(2 * 1024 * 1024 + 1)
+    expect((await request(a).post(`${BASE}/${s.id}`).set('content-type', 'audio/wav').send(big)).status).toBe(413)
+  })
+
+  it('makes slots for this page only, with a line to speak', async () => {
+    const a = app()
+    expect((await request(a).post(BASE).set('sec-fetch-site', 'cross-site').send({ text: 'hi' })).status).toBe(403)
+    expect((await request(a).post(BASE).send({ text: '  ' })).status).toBe(400)
+    const s = await slot(a)
+    expect((await request(a).get(`${BASE}/${s.id}`).set('sec-fetch-site', 'cross-site')).status).toBe(403)
+  })
+})

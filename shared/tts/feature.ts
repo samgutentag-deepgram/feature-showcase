@@ -81,6 +81,14 @@ export interface TtsFeature<S> {
     afterMs?: number
     graceful?(state: S): boolean
   }
+  // Callback mode (shared/tts/callback.ts): POST with `callback`, Deepgram answers a request_id at
+  // once and delivers the audio to the demo server's webhook, which the page polls. params() puts
+  // CALLBACK_SHOWN where the callback URL goes; each run swaps in its own slot. With priority=low
+  // the body is {"url"} (where Deepgram fetches the text) instead of {"text"}. fluxOnly(state):
+  // the setting works on Flux voices only, so the picker offers no Aura-2 voice while it is on.
+  callback?: {
+    fluxOnly?(state: S): boolean
+  }
   // Socket mode: the page speaks over wss://.../v2/speak (Flux) or /v1/speak (Aura-2) instead of
   // POST, and shows a Cut in button while the line plays, like a caller talking over the agent.
   // params() then gives encoding and sample_rate only: the socket streams raw audio, no container.

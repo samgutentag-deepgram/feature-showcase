@@ -11,8 +11,13 @@ import { LATE_MS, tokenize, tokenUrl } from './tokens'
 import { cutMessage, socketUrl } from './socket'
 import { CLOSE_MESSAGE, closeMidLine } from './close'
 import { isFlux, speakQuery, speakUrl, voiceName } from './speak'
+import { callbackBody, isLow } from './callback'
 
 const fence = (lang: string, body: string) => '```' + lang + '\n' + body + '\n```'
+
+// The webhook a callback prompt shows. The live check swaps in a real receiver before sending.
+export const PROMPT_CALLBACK = 'https://your-app.example.com/api/tts-callback/<job id>'
+export const PROMPT_TEXT_URL = 'https://your-app.example.com/api/tts-callback/<job id>/text'
 
 // The example playback_offset in the prompt. The live check sends it as shown.
 export const EXAMPLE_OFFSET_MS = 1000
@@ -264,6 +269,79 @@ ${doneSection([
   'The page waits for the server to close the socket (1000) instead of closing it first.',
   '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
   'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
+])}
+
+Docs: ${feature.links.docs}
+`
+  }
+
+  if (feature.callback) {
+    const shown: Record<string, string | string[]> = { ...params, callback: PROMPT_CALLBACK }
+    const method = String(params.callback_method ?? 'post').toUpperCase()
+    const low = isLow(params)
+    const setting = feature.highlight
+      .filter((k) => k in shown)
+      .map((k) => `\`${k}=${shown[k]}\``)
+      .join(', ')
+    return `${head}
+Build a page with a text box and a Speak button that asks Deepgram text-to-speech for the audio by
+callback: Deepgram answers at once with a \`request_id\`, makes the audio, and sends it to a webhook on
+your server, which the page then plays. Live demo: ${meta.url}
+
+## The request
+
+This exact request, with a real webhook URL in place of the example one, is sent to the live API
+before this file ships and comes back 200 with a \`request_id\`.
+
+${fence('http', `POST ${speakUrl(voice)}?${speakQuery(voice, shown)}
+Authorization: Bearer <token from /api/token>
+Content-Type: application/json
+
+${JSON.stringify(callbackBody(params, text, PROMPT_TEXT_URL))}`)}
+
+The feature is ${setting}. ${voices}
+
+The response holds no audio, only \`{"request_id": "..."}\`. \`callback_method\` is \`post\` (the default)
+or \`put\`, lowercase. ${low ? `\`priority=low\` (lowercase) queues the job as a batch: the body is then \`{"url": ...}\`, a URL Deepgram
+fetches the text from, not \`{"text"}\`. Use a Flux voice: checked live on 2026-11-13, Flux delivered within
+seconds, while Aura-2 took the request and fetched the text but sent no audio.` : `With \`priority=low\` the body becomes \`{"url": ...}\`, a URL Deepgram fetches the text from.`}
+
+## The webhook
+
+Deepgram must reach it from the internet: \`http\` or \`https\`, on port 80, 443, 8080, or 8443. It
+cannot reach \`localhost\`, so use your deployed URL or a tunnel while you build.
+
+1. Before calling Deepgram, make a job: a random id, the text, and a created time, in memory. Put the
+   id in the webhook path, because the delivery carries no \`request_id\` to match on.
+2. Accept \`${method} /api/tts-callback/:id\`. The body is the audio file itself (\`content-type:
+   audio/wav\` for the request above), not JSON. Store it on the job and answer 200. Any other
+   status makes Deepgram retry, up to 10 times, 30 seconds apart.
+3. Refuse anything that is not a job you made: unknown ids get a 404, a second delivery is ignored,
+   and the body is capped (2 MB covers 400 characters of 24 kHz speech). Drop jobs after 10 minutes.${low ? `
+4. For \`priority=low\`, also serve \`GET /api/tts-callback/:id/text\`: the job's text as \`text/plain\`.` : ''}
+
+The page polls its own server (\`GET /api/tts-callback/:id\`, once a second, same-origin only) until
+the audio is in, then plays it.
+
+${tokenSection(false)}
+
+## Play the audio
+
+What the page gets from its own server is the WAV file Deepgram delivered. \`AudioContext.decodeAudioData\`
+it and play the buffer.
+
+## Try it
+
+Speak:
+
+> ${feature.phrases.join('\n> ')}
+
+${doneSection([
+  'The request matches the one above, apart from the text and the job id.',
+  `The webhook takes the ${method} with the audio, and the page plays it a few seconds after the \`request_id\`.`,
+  'Unknown ids, repeat deliveries and oversized bodies are refused.',
+  '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
+  'A failed request, or audio that never comes, shows a sentence that says what to do next.',
 ])}
 
 Docs: ${feature.links.docs}

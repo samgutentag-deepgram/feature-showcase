@@ -147,7 +147,11 @@ export default defineConfig({
   build: { assetsInlineLimit: (file) => (file.endsWith('.js') ? false : undefined) },
   server: {
     port: Number(process.env.VITE_PORT) || 8080,
-    proxy: { '/api': `http://localhost:${process.env.API_PORT || 8081}` },
+    // /api for tokens, /demos/<id>/api/ for a demo's own routes (demos/<id>/server.js).
+    proxy: {
+      '/api': `http://localhost:${process.env.API_PORT || 8081}`,
+      '^/demos/[^/]+/api/': `http://localhost:${process.env.API_PORT || 8081}`,
+    },
   },
   test: { environment: 'node' },
 })

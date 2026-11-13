@@ -78,6 +78,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 | [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [/demos/flux-tts-voices/](https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/) |
 | [telephone-audio](demos/telephone-audio) | Does it sound like a phone call? | [/demos/telephone-audio/](https://dg-devrel-demos.fly.dev/demos/telephone-audio/) |
 | [tts-bit-rate](demos/tts-bit-rate) | How small can the file get? | [/demos/tts-bit-rate/](https://dg-devrel-demos.fly.dev/demos/tts-bit-rate/) |
+| [tts-callback](demos/tts-callback) | Get the audio later, on your webhook. | [/demos/tts-callback/](https://dg-devrel-demos.fly.dev/demos/tts-callback/) |
 | [tts-expressivity](demos/tts-expressivity) | Calm for support, bright for good news. | [/demos/tts-expressivity/](https://dg-devrel-demos.fly.dev/demos/tts-expressivity/) |
 | [tts-interrupt](demos/tts-interrupt) | Let the caller cut in. | [/demos/tts-interrupt/](https://dg-devrel-demos.fly.dev/demos/tts-interrupt/) |
 | [tts-normalize-volume](demos/tts-normalize-volume) | Every voice at the same volume. | [/demos/tts-normalize-volume/](https://dg-devrel-demos.fly.dev/demos/tts-normalize-volume/) |
@@ -258,6 +259,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | `socketUrl`, `cutMessage` | `tts/socket.ts` | One line over the TTS socket with a cut-in (`Interrupt` on Flux, `Clear` on Aura-2) |
 | `close`, `speakThenClose`, `CLOSE_MESSAGE`, `sessionTotals` | `tts/close.ts` | How a demo ends the TTS socket, one `close` option: mid-line `afterMs` after Speak, with `{"type":"Close"}` (Deepgram finishes the line) or a client drop; or, with `session`, Close after the last turn and the `SessionMetadata` totals |
 | `sessionUrl`, `pieces` | `tts/session.ts` | A Flux socket session, a turn at a time, with `Configure` between turns |
+| `openSlot`, `requestCallback`, `waitForAudio` | `tts/callback.ts` | Callback mode: a webhook slot on the demo server, the POST with `callback`, then polling the slot until Deepgram delivers the audio |
 | `tokenUrl`, `tokenize` | `tts/tokens.ts` | LLM-style token streaming to a Flux voice (whole, stream, late) |
 | `LISTEN_URL` | `tts/listen.ts` | Flux STT listener whose `StartOfTurn` triggers a voice cut-in |
 | `AGENT_URL`, `INPUT_RATE`, `OUTPUT_RATE` | `agent/feature.ts` | Agent API socket and audio rates |

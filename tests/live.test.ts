@@ -12,7 +12,8 @@ import type { Feature, Model, Params } from '../shared/common/feature'
 import type { TtsFeature } from '../shared/tts/feature'
 import { speakPath, speakQuery } from '../shared/tts/speak'
 import { cutMessage, socketUrl } from '../shared/tts/socket'
-import { ttsPromptRequests } from '../shared/tts/prompt'
+import { PROMPT_CALLBACK, PROMPT_TEXT_URL, ttsPromptRequests } from '../shared/tts/prompt'
+import { CALLBACK_SHOWN, callbackBody } from '../shared/tts/callback'
 import { LISTEN_URL } from '../shared/tts/listen'
 import { pieces, sessionUrl } from '../shared/tts/session'
 import { tokenize, tokenUrl } from '../shared/tts/tokens'
@@ -267,7 +268,42 @@ async function closeEveryVariant(feature: TtsFeature<unknown>) {
   expect(results.filter((x) => x.r !== 'ok').map((x) => `${x.what} -> ${x.r}`)).toEqual([])
 }
 
+// Where a callback check asks Deepgram to deliver. Reserved for examples (RFC 2606), so nothing real
+// gets the audio; the check is that Deepgram takes the request and answers with a request_id.
+const CHECK_CALLBACK = 'https://example.com/tts-callback'
+const CHECK_TEXT_URL = 'https://example.com/tts-callback.txt'
+
+// Callback mode: every voice and variant is accepted, 200 with a request_id and no audio. A
+// Flux-only variant is sent with Flux voices only, as the page does.
+async function callbackEveryVariant(feature: TtsFeature<unknown>) {
+  const failed: string[] = []
+  const jobs = feature.variants.flatMap((state) =>
+    feature.voices.filter((v) => !feature.callback?.fluxOnly?.(state) || v.startsWith('flux-')).map((voice) => ({ voice, state })),
+  )
+  for (const { voice, state } of jobs) {
+    const params = feature.params(state)
+    expect(params.callback).toBe(CALLBACK_SHOWN)
+    const url = `${speakPath(voice)}?${speakQuery(voice, { ...params, callback: CHECK_CALLBACK })}`
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const res = await fetch(`https://api.deepgram.com${url}`, {
+        method: 'POST',
+        headers: { Authorization: `Token ${process.env.DEEPGRAM_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(callbackBody(params, feature.phrases[0], CHECK_TEXT_URL)),
+      })
+      if (res.status === 429) {
+        await new Promise((r) => setTimeout(r, 1500))
+        continue
+      }
+      const body = await res.text()
+      if (res.status !== 200 || !/"request_id"/.test(body)) failed.push(`${url} -> ${res.status} ${body.slice(0, 160)}`)
+      break
+    }
+  }
+  expect(failed).toEqual([])
+}
+
 async function speakEveryVariant(feature: TtsFeature<unknown>) {
+  if (feature.callback) return callbackEveryVariant(feature)
   if (feature.cutIn) return cutInEveryVariant(feature)
   if (closeMidLine(feature)) return closeEveryVariant(feature)
   if (feature.tokens) await tokensEveryVariant(feature)
@@ -534,9 +570,18 @@ async function ttsPromptLive(md: string): Promise<string[]> {
     if (!r.opened || ![1000, 1005].includes(r.code)) failed.push(`${url} -> opened=${r.opened} code=${r.code} ${r.reason}`)
   }
   for (const p of posts) {
-    const res = await fetch(p.url, { method: 'POST', headers: { Authorization: `Bearer ${await grant()}`, 'Content-Type': 'application/json' }, body: p.body })
-    const bytes = (await res.arrayBuffer()).byteLength
-    if (res.status !== 200 || bytes < 1000) failed.push(`POST ${p.url} -> ${res.status} ${bytes} bytes`)
+    // A callback request answers with a request_id, not audio. Its example webhook is swapped for
+    // one Deepgram can reach.
+    const shown = encodeURIComponent(PROMPT_CALLBACK).replace(/%20/g, '+')
+    const callback = p.url.includes(shown)
+    const url = callback ? p.url.replace(shown, encodeURIComponent(CHECK_CALLBACK)) : p.url
+    const body = callback ? p.body.replace(PROMPT_TEXT_URL, CHECK_TEXT_URL) : p.body
+    const res = await fetch(url, { method: 'POST', headers: { Authorization: `Bearer ${await grant()}`, 'Content-Type': 'application/json' }, body })
+    const got = await res.arrayBuffer()
+    if (callback) {
+      const text = new TextDecoder().decode(got)
+      if (res.status !== 200 || !/"request_id"/.test(text)) failed.push(`POST ${url} -> ${res.status} ${text.slice(0, 160)}`)
+    } else if (res.status !== 200 || got.byteLength < 1000) failed.push(`POST ${p.url} -> ${res.status} ${got.byteLength} bytes`)
   }
   for (const s of sockets) {
     const token = await grant()

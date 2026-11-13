@@ -15,6 +15,7 @@ import { cutMessage, socketUrl, speakSocket, type CutStats } from './socket'
 import { CLOSE_MESSAGE, closeMidLine, speakThenClose, type CloseStats, type SessionTotals } from './close'
 import { speakLineup, spread, type LineupRow } from './lineup'
 import { Spectrum } from './Spectrum'
+import { CALLBACK_SHOWN, TEXT_URL_SHOWN, callbackBody, isLow, openSlot, requestCallback, unreachable, waitForAudio } from './callback'
 import './tts.css'
 
 interface Run<S> {
@@ -46,6 +47,24 @@ interface Run<S> {
   lineup?: LineupRow[]
   playing?: number
   error?: string
+  // Callback mode: what Deepgram answered, then what the webhook brought.
+  cb?: CallbackRun
+}
+
+interface CallbackRun {
+  callback: string
+  textUrl: string
+  requestId?: string
+  acceptedMs?: number
+  // Seconds waited so far for the webhook.
+  waitedS?: number
+  textFetchedMs?: number
+  method?: string
+  contentType?: string
+  bytes?: number
+  afterMs?: number
+  // The webhook is on this machine, so Deepgram cannot reach it.
+  local?: boolean
 }
 
 const MAX_CHARS = 400
@@ -65,7 +84,10 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
   stateRef.current = state
   const [pickedVoice, setVoice] = useState(feature.voices[0])
   // A feature can pick the voice itself (a voice browser); the picker then hides.
-  const voice = feature.voiceFrom ? feature.voiceFrom(state) : pickedVoice
+  // A Flux-only setting (callback priority=low) falls back to the default Flux voice.
+  const voiceFor = (st: S) => (feature.voiceFrom ? feature.voiceFrom(st) : feature.callback?.fluxOnly?.(st) && !isFlux(pickedVoice) ? feature.voices[0] : pickedVoice)
+  const voice = voiceFor(state)
+  const fluxOnly = feature.callback?.fluxOnly?.(state) ?? false
   const [text, setText] = useState(feature.textFor?.(feature.initialState) ?? feature.phrases[0] ?? '')
   const [runs, setRuns] = useState<Run<S>[]>([])
   const [busy, setBusy] = useState(false)
@@ -110,7 +132,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
 
   // st: the setting to speak with. A step button passes its own, since state has not updated yet.
   const go = async (st: S = state) => {
-    const voice = feature.voiceFrom ? feature.voiceFrom(st) : pickedVoice
+    const voice = voiceFor(st)
     // A feature with its own line per setting (a language) speaks that line when the pick changes it.
     const own = feature.textFor?.(st)
     const line = (own !== undefined && own !== feature.textFor?.(state) ? own : text).trim().slice(0, MAX_CHARS)
@@ -120,7 +142,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
     const { c, a } = audio()
     await c.resume()
     const id = ++lastId.current
-    const file = !feature.cutIn && !midClose && feature.params(st).container !== 'none'
+    const file = !feature.cutIn && !midClose && !feature.callback && feature.params(st).container !== 'none'
     setRuns((rs) => [{ id, label: feature.runLabel(st), voice, state: st, text: line, file }, ...rs].slice(0, 2))
     setBusy(true)
     setCutting(false)
@@ -135,6 +157,27 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
         stopRef.current = p.stop
         const { stats, buffers, close } = await p.done
         setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, close } : r)))
+      } else if (feature.callback) {
+        const controller = new AbortController()
+        stopRef.current = () => controller.abort()
+        const update = (patch: Partial<CallbackRun>) => setRuns((rs) => rs.map((r) => (r.id === id && r.cb ? { ...r, cb: { ...r.cb, ...patch } } : r)))
+        const params = feature.params(st)
+        const slot = await openSlot(line)
+        if (lastId.current !== id) throw new DOMException('Stopped', 'AbortError')
+        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, cb: { callback: slot.callback, textUrl: slot.textUrl, local: unreachable(slot.callback) } } : r)))
+        // Running on this machine: Deepgram refuses a callback it cannot reach, so say so and stop.
+        if (unreachable(slot.callback)) return
+        const accepted = await requestCallback(voice, params, slot, line, controller.signal)
+        update(accepted)
+        const t0 = Date.now()
+        const delivery = await waitForAudio(slot.id, controller.signal, (textFetchedMs) => update({ waitedS: Math.round((Date.now() - t0) / 1000), textFetchedMs }))
+        const decoded = await c.decodeAudioData(delivery.audio.slice(0))
+        update({ method: delivery.method, contentType: delivery.contentType, bytes: delivery.audio.byteLength, afterMs: delivery.afterMs, textFetchedMs: delivery.textFetchedMs })
+        if (lastId.current !== id || controller.signal.aborted) throw new DOMException('Stopped', 'AbortError')
+        const stopPlay = replay(c, a, [decoded])
+        stopRef.current = stopPlay
+        const stats = { contentType: delivery.contentType, bytes: delivery.audio.byteLength, firstByteMs: 0, firstAudioMs: delivery.afterMs, lastByteMs: 0, seconds: decoded.duration }
+        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers: [decoded] } : r)))
       } else if (feature.tokens) {
         const onText = (shown: string) => setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, shown } : r)))
         const p = await speakTokens(c, a, voice, feature.params(st), line, feature.tokens.mode(st), feature.tokens.tokenMs, onText)
@@ -250,10 +293,16 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
   }
 
   const params = feature.params(state)
+  const latestCb = runs[0]?.cb
+  // Callback mode: the card shows this run's real webhook once it has one, readable, not encoded.
+  const shownCallback = latestCb?.callback ?? CALLBACK_SHOWN
+  const shownTextUrl = latestCb?.textUrl ?? TEXT_URL_SHOWN
   const latest = runs[0]
   // A lineup shows the request for the voice playing now, the first voice otherwise.
   const shownVoice = feature.lineup && latest?.lineup && (latest.playing ?? -1) >= 0 ? latest.lineup[latest.playing ?? 0].voice : voice
-  const query = speakQuery(shownVoice, params).split('&')
+  const query = speakQuery(shownVoice, params)
+    .split('&')
+    .map((part) => (feature.callback && part.startsWith('callback=') ? `callback=${shownCallback}` : part))
   const marked = (part: string) => feature.highlight.some((k) => part.startsWith(`${k}=`))
   const socket = !!feature.cutIn
   // Session mode: the query holds only the audio format; the rest goes in Configure.
@@ -312,7 +361,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
               return vs.length ? (
                 <optgroup key={label} label={label}>
                   {vs.map((v) => (
-                    <option key={v} value={v}>
+                    <option key={v} value={v} disabled={fluxOnly && !isFlux(v)}>
                       {voiceName(v)}
                     </option>
                   ))}
@@ -500,7 +549,8 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
               ) : (
                 <>
                   <span className="wire__part wire__part--text tts-body">
-                    <span className="wire__key">body</span> {JSON.stringify({ text: line })}
+                    <span className="wire__key">body</span>{' '}
+                    {feature.callback && isLow(params) ? <mark>{JSON.stringify(callbackBody(params, line, shownTextUrl))}</mark> : JSON.stringify({ text: line })}
                   </span>
                   {feature.lineup && (
                     <span className="wire__part wire__part--text tts-body">
@@ -525,6 +575,26 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                     {latest.close.after.length ? 'then ' : latest.close.graceful ? 'no message, then ' : 'nothing more, '}socket closed ({latest.close.code}) {ms(latest.close.closedMs)} in
                   </span>
                 </span>
+              ) : feature.callback && latest?.cb ? (
+                <>
+                  <span className="wire__part wire__part--text">
+                    {latest.cb.local ? (
+                      <span className="wire__key">Not sent: Deepgram cannot deliver to a server on your machine.</span>
+                    ) : latest.cb.requestId ? (
+                      <>
+                        <mark>{JSON.stringify({ request_id: latest.cb.requestId })}</mark> in {ms(latest.cb.acceptedMs ?? 0)}, no audio
+                      </>
+                    ) : (
+                      <span className="wire__key">Sending…</span>
+                    )}
+                  </span>
+                  {latest.cb.method && (
+                    <span className="wire__part wire__part--text tts-body">
+                      <span className="wire__key">then, to the callback</span> <mark>{latest.cb.method}</mark> {latest.cb.contentType},{' '}
+                      {(latest.cb.bytes ?? 0).toLocaleString()} bytes, {((latest.cb.afterMs ?? 0) / 1000).toFixed(1)} s later
+                    </span>
+                  )}
+                </>
               ) : latest?.cut?.ack ? (
                 <span className="wire__part wire__part--text">
                   <mark>{JSON.stringify(ackShown(latest.cut.ack))}</mark> in {ms(latest.cut.ackMs ?? 0)}
@@ -695,6 +765,8 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                 </>
               ) : r.lineup ? (
                 <LineupTable rows={r.lineup} playing={r.playing ?? -1} />
+              ) : r.cb ? (
+                <CallbackCard cb={r.cb} done={!!r.stats} seconds={r.stats?.seconds} />
               ) : r.stats ? (
                 <dl className="tts-stats">
                   <dt>First audio</dt>
@@ -879,5 +951,53 @@ function SessionFoot({ turns, totals, wide }: { turns: Turn[]; totals?: SessionT
         </td>
       </tr>
     </tfoot>
+  )
+}
+
+// A callback run: the request_id at once, then the wait, then what the webhook brought.
+function CallbackCard({ cb, done, seconds }: { cb: CallbackRun; done: boolean; seconds?: number }) {
+  if (cb.local) {
+    return (
+      <p className="hint">
+        This server runs on your machine, so Deepgram cannot reach the webhook at <code>{cb.callback}</code> and would refuse
+        the request. Nothing was sent. The deployed page passes its own public address; to try the whole trip from here, start
+        the server with <code>PUBLIC_URL</code> set to a public address that reaches it.
+      </p>
+    )
+  }
+  return (
+    <>
+      {!done && (
+        <div className="tts-wait" role="status">
+          <p className="hint">
+            {!cb.requestId
+              ? 'Sending the request…'
+              : cb.waitedS
+                ? `Deepgram answered with a request_id and no audio. Waiting for the webhook: ${cb.waitedS} s…`
+                : 'Deepgram answered with a request_id and no audio. Waiting for the webhook…'}
+            {cb.textFetchedMs !== undefined && ` Deepgram fetched the text after ${(cb.textFetchedMs / 1000).toFixed(1)} s.`}
+          </p>
+          <div className="tts-wait__bar" aria-hidden="true">
+            <span />
+          </div>
+        </div>
+      )}
+      <dl className="tts-stats">
+        <dt>Answered (request_id)</dt>
+        <dd>{cb.acceptedMs === undefined ? '…' : ms(cb.acceptedMs)}</dd>
+        {cb.textFetchedMs !== undefined && (
+          <>
+            <dt>Text fetched after</dt>
+            <dd>{(cb.textFetchedMs / 1000).toFixed(1)} s</dd>
+          </>
+        )}
+        <dt>Audio delivered after</dt>
+        <dd>{cb.afterMs === undefined ? '…' : `${(cb.afterMs / 1000).toFixed(1)} s`}</dd>
+        <dt>Delivered by</dt>
+        <dd>{cb.method ?? '…'}</dd>
+        <dt>Audio</dt>
+        <dd>{seconds === undefined ? '…' : `${seconds.toFixed(1)} s, ${Math.round((cb.bytes ?? 0) / 1024)} KB`}</dd>
+      </dl>
+    </>
   )
 }
