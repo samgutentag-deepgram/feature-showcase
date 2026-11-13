@@ -1,0 +1,7 @@
+/* Marked hesitations. var() only: literals live in styles/packs/. */
+.transcript__text .filler {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
