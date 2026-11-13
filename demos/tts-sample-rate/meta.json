@@ -1,0 +1,5 @@
+{
+  "title": "Text-to-speech sample rate | Deepgram",
+  "description": "Hear the same Flux line as 16-bit audio at 8, 16, 24, and 48 kHz, and compare how big each file gets.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tts-sample-rate/"
+}
