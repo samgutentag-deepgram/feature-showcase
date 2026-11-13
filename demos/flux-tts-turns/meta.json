@@ -1,0 +1,5 @@
+{
+  "title": "Flux TTS turns | Deepgram",
+  "description": "Speak a voice agent reply a turn at a time on one Flux socket, and see each turn's speech_id, audio length and billable characters.",
+  "url": "https://dg-devrel-flux-tts-turns.fly.dev"
+}
