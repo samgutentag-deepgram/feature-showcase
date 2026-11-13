@@ -1,0 +1,5 @@
+{
+  "title": "Redaction | Deepgram",
+  "description": "Read out a card number or an SSN, pick what to redact, and watch Nova-3 swap it for a label before the transcript leaves Deepgram.",
+  "url": "https://dg-devrel-redact.fly.dev"
+}
