@@ -68,14 +68,18 @@ export function ttsPrompt<S>(feature: TtsFeature<S>, meta: PromptMeta): string {
   const params = feature.params(state)
   const name = meta.title.replace(/ \| Deepgram$/, '')
   const text = feature.phrases[0]
-  const marked = feature.highlight.map((k) => `\`${k}=${params[k]}\``).join(', ')
+  const sent: Record<string, unknown> = { model: voice, ...params }
+  const marked = feature.highlight.map((k) => `\`${k}=${sent[k]}\``).join(', ')
   const other = aura(feature.voices)
   const head = `<!-- Generated from the feature's index.tsx by shared/tts/prompt.ts. Do not edit by hand. -->
 # Add ${name} to a web app with Deepgram
 
 ${feature.copy.lede}
 `
-  const voices = `\`${voice}\` (${voiceName(voice)}) is a Flux voice: Flux voices are served on \`/v2/speak\` only, and the
+  const voices = voice.startsWith('aura-2-')
+    ? `\`${voice}\` (${voiceName(voice)}) is an Aura-2 voice: Aura-2 voices are served on \`/v1/speak\`. Flux voices
+(\`flux-*\`) go to \`/v2/speak\` instead, with the same query.`
+    : `\`${voice}\` (${voiceName(voice)}) is a Flux voice: Flux voices are served on \`/v2/speak\` only, and the
 same request on \`/v1/speak\` is a 400.${other ? ` Aura-2 voices such as \`${other}\` go to \`/v1/speak\` with the same query.` : ''}`
 
   if (feature.tokens) {

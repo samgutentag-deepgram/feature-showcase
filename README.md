@@ -71,6 +71,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 
 | Demo | What it shows | Live |
 |---|---|---|
+| [aura-voice-picker](demos/aura-voice-picker) | Hear every Aura-2 voice. | [/demos/aura-voice-picker/](https://dg-devrel-demos.fly.dev/demos/aura-voice-picker/) |
 | [flux-tts-configure](demos/flux-tts-configure) | Change the pace without hanging up. | [/demos/flux-tts-configure/](https://dg-devrel-demos.fly.dev/demos/flux-tts-configure/) |
 | [flux-tts-turns](demos/flux-tts-turns) | Every turn, accounted for. | [/demos/flux-tts-turns/](https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/) |
 | [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [/demos/flux-tts-voices/](https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/) |

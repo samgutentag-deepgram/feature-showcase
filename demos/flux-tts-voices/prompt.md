@@ -18,7 +18,7 @@ Content-Type: application/json
 {"text":"Hello, thanks for calling. How can I help you today?"}
 ```
 
-The feature is `model=undefined`. `flux-wes-en` (wes) is a Flux voice: Flux voices are served on `/v2/speak` only, and the
+The feature is `model=flux-wes-en`. `flux-wes-en` (wes) is a Flux voice: Flux voices are served on `/v2/speak` only, and the
 same request on `/v1/speak` is a 400.
 
 ## Keep the API key on your server
