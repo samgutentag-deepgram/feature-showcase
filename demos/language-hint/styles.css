@@ -1,0 +1,53 @@
+/* Language pickers and language rows. var() only: literals live in styles/packs/. */
+
+/* Form labels read as plain sentence case. */
+.picker__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.field--pickers { flex-direction: row; gap: 12px; flex-wrap: wrap; }
+
+/* ---- language pickers -------------------------------------------------- */
+.picker { display: flex; flex-direction: column; gap: 6px; flex: 1 1 220px; }
+.picker[data-slot='1'] { --slot: var(--dg-voice-1); }
+.picker[data-slot='2'] { --slot: var(--dg-voice-2); }
+.picker select {
+  font: inherit;
+  font-size: 16px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--slot);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.picker select:disabled { color: var(--dg-text-label); }
+
+/* ---- one row per language, colored by hint slot ------------------------ */
+.row { --slot: var(--dg-text-disabled); }
+.row[data-slot='1'] { --slot: var(--dg-voice-1); }
+.row[data-slot='2'] { --slot: var(--dg-voice-2); }
+.row[data-slot='other'] { --slot: var(--dg-voice-other); }
+
+.row__words {
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--slot);
+  font-size: 24px;
+  line-height: 1.45;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+.row__tag { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+.chip {
+  background: var(--slot);
+  color: var(--dg-text-on-accent);
+  border-radius: var(--dg-shape-pill);
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: var(--dg-weight-medium);
+}
+.row__code { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+
+.runs--compare .row__words { font-size: 19px; }
+
+@media (max-width: 760px) {
+  .row__words { font-size: 20px; }
+}
