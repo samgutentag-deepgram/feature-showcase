@@ -1,0 +1,5 @@
+{
+  "title": "Barge-in | Deepgram",
+  "description": "Talk over a Deepgram voice agent mid-sentence. See UserStartedSpeaking arrive, and hear the difference when the page stops playback.",
+  "url": "https://dg-devrel-barge-in.fly.dev"
+}
