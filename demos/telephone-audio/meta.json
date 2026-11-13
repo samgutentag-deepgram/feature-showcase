@@ -1,0 +1,5 @@
+{
+  "title": "Telephone audio | Deepgram",
+  "description": "Hear the same Flux line as phone-line audio (mu-law, 8 kHz), at 24 kHz, and at 48 kHz, and watch the spectrum stop at 4 kHz.",
+  "url": "https://dg-devrel-telephone-audio.fly.dev"
+}
