@@ -1,0 +1,5 @@
+{
+  "title": "Streaming text-to-speech | Deepgram",
+  "description": "Speak a long line two ways: wait for the whole file, or play Flux audio as each chunk arrives. Compare time to first audio.",
+  "url": "https://dg-devrel-tts-streaming.fly.dev"
+}
