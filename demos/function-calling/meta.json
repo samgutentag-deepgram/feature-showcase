@@ -1,0 +1,5 @@
+{
+  "title": "Function calling | Deepgram",
+  "description": "Ask a Deepgram voice agent where your order is and watch it call a function in the page, get the answer, and say it.",
+  "url": "https://dg-devrel-function-calling.fly.dev"
+}
