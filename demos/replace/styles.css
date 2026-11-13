@@ -1,0 +1,21 @@
+/* Find and replace rows, marked replacements. var() only: literals live in styles/packs/. */
+.replace-field { gap: 10px; }
+.replace-pair { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.replace-pair input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-radius: var(--dg-shape-control);
+  padding: 10px 12px;
+  flex: 1 1 160px;
+}
+.replace-pair input:disabled { color: var(--dg-text-label); }
+.transcript__text .replaced {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
