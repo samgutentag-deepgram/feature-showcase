@@ -86,6 +86,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 | [tts-speed](demos/tts-speed) | Slow down for the numbers. | [/demos/tts-speed/](https://dg-devrel-demos.fly.dev/demos/tts-speed/) |
 | [tts-streaming](demos/tts-streaming) | Hear it before it finishes. | [/demos/tts-streaming/](https://dg-devrel-demos.fly.dev/demos/tts-streaming/) |
 | [tts-ws-clear](demos/tts-ws-clear) | Clear what the voice was about to say. | [/demos/tts-ws-clear/](https://dg-devrel-demos.fly.dev/demos/tts-ws-clear/) |
+| [tts-ws-close](demos/tts-ws-close) | Hang up without cutting off the last line. | [/demos/tts-ws-close/](https://dg-devrel-demos.fly.dev/demos/tts-ws-close/) |
 | [tts-ws-flush](demos/tts-ws-flush) | Start talking before the LLM finishes. | [/demos/tts-ws-flush/](https://dg-devrel-demos.fly.dev/demos/tts-ws-flush/) |
 
 ### Voice agent
@@ -202,7 +203,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | Component | Path | What it does |
 |---|---|---|
 | `Shell` | `stt/Shell.tsx` | The speech-to-text page: masthead, hero, mode tabs, model toggle (Flux / Nova-3), mic or file capture, Request and Response cards, kept runs (last two side by side), call to action. Used when `kind` is unset |
-| `TtsShell` | `tts/TtsShell.tsx` | The text-to-speech page: type or pick a line, pick a voice, set the feature, Speak. Timings, spectrum, Replay, last two runs side by side. Speaks over REST (one voice, or every voice back to back with `lineup`), or over the socket with `cutIn`, `session`, or token modes |
+| `TtsShell` | `tts/TtsShell.tsx` | The text-to-speech page: type or pick a line, pick a voice, set the feature, Speak. Timings, spectrum, Replay, last two runs side by side. Speaks over REST (one voice, or every voice back to back with `lineup`), or over the socket with `cutIn`, `close`, `session`, or token modes |
 | `AgentShell` | `agent/AgentShell.tsx` | The voice agent page: listen model toggle, Start and talk, agent audio playback, timed event log, mid-call action buttons, last two conversations side by side |
 | `mount` | `main.tsx` | Renders a demo's page, picked by the feature's `kind` (`'tts'`, `'agent'`, or none). Each page's generated entry calls it |
 | `demo`, `setDemo` | `common/demo.ts` | Which demo this page is, set by its entry at run time: folder, `utm_source`, page path |
@@ -212,7 +213,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | Piece | Path | What it does |
 |---|---|---|
 | `defineFeature`, `Feature<S>` | `common/feature.ts` | The speech-to-text contract: `models`, `modes`, `variants`, `phrases`, `params`, `highlight`, `echo`, `Controls`, `Response`, `Result`, `copy`, `links` |
-| `defineTtsFeature`, `TtsFeature<S>` | `tts/feature.ts` | The TTS contract: `voices`, `phrases`, `params`, `variants`, `Controls`, plus optional `cutIn`, `session`, `tokens`, `lineup`, `restartOnPick`, `phoneMark`, `promptState` |
+| `defineTtsFeature`, `TtsFeature<S>` | `tts/feature.ts` | The TTS contract: `voices`, `phrases`, `params`, `variants`, `Controls`, plus optional `cutIn`, `close`, `session`, `tokens`, `lineup`, `restartOnPick`, `phoneMark`, `promptState` |
 | `defineAgentFeature`, `AgentFeature<S>` | `agent/feature.ts` | The agent contract: `agent` settings, `actions` (mid-call messages with their `ack`), `events`, `functionExample` |
 | `LISTEN_MODELS` | `agent/feature.ts` | Flux then Nova-3 as the agent's listen model, behind the shared toggle |
 | `settingsMessage` | `agent/feature.ts` | Builds the exact Settings message the agent socket sends and the Request card shows |
@@ -254,6 +255,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | capture, `readDuration` | `common/capture.ts` + `pcm-worklet.js` | Mic or uploaded file to 16 kHz linear16 PCM; uploads play aloud while they stream |
 | `speakQuery`, `replay`, `pcm16ToFloat`, `mulawToFloat` | `tts/speak.ts` | One TTS request played as bytes arrive; decoders for linear16 and mu-law |
 | `socketUrl`, `cutMessage` | `tts/socket.ts` | One line over the TTS socket with a cut-in (`Interrupt` on Flux, `Clear` on Aura-2) |
+| `speakThenClose`, `CLOSE_MESSAGE` | `tts/close.ts` | One line over the TTS socket, then closed mid-line: `{"type":"Close"}` (Deepgram finishes the line) or the client drops it |
 | `sessionUrl`, `pieces` | `tts/session.ts` | A Flux socket session, a turn at a time, with `Configure` between turns |
 | `tokenUrl`, `tokenize` | `tts/tokens.ts` | LLM-style token streaming to a Flux voice (whole, stream, late) |
 | `LISTEN_URL` | `tts/listen.ts` | Flux STT listener whose `StartOfTurn` triggers a voice cut-in |

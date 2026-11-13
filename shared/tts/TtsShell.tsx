@@ -1,6 +1,7 @@
 // The page every text-to-speech demo shares: type or pick a line, pick a voice, set the feature,
 // press Speak. The last two runs stay side by side with their timings and a Replay button.
 // A feature with cutIn speaks over the socket instead and offers Cut in while the line plays.
+// A feature with close speaks over the socket and closes it mid-line, with Close or by dropping it.
 import { useEffect, useRef, useState } from 'react'
 import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { TakeHome } from '../common/TakeHome'
@@ -10,7 +11,8 @@ import { isFlux, replay, speak, speakPath, speakQuery, voiceName, type SpeakStat
 import { listenForTurn, type Listener } from './listen'
 import { sessionUrl, speakSession, type Turn } from './session'
 import { LATE_MS, speakTokens, tokenUrl, type TokenStats } from './tokens'
-import { cutMessage, speakSocket, type CutStats } from './socket'
+import { cutMessage, socketUrl, speakSocket, type CutStats } from './socket'
+import { CLOSE_MESSAGE, speakThenClose, type CloseStats } from './close'
 import { speakLineup, spread, type LineupRow } from './lineup'
 import { Spectrum } from './Spectrum'
 import './tts.css'
@@ -28,6 +30,8 @@ interface Run<S> {
   // Whether this run waits for the whole file before it plays.
   file?: boolean
   cut?: CutStats
+  // Close mode: how the socket was closed and what came after.
+  close?: CloseStats
   // Token mode: the reply as typed so far, and the timeline once done.
   shown?: string
   tokenStats?: TokenStats
@@ -113,13 +117,22 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
     const { c, a } = audio()
     await c.resume()
     const id = ++lastId.current
-    const file = !feature.cutIn && feature.params(st).container !== 'none'
+    const file = !feature.cutIn && !feature.close && feature.params(st).container !== 'none'
     setRuns((rs) => [{ id, label: feature.runLabel(st), voice, state: st, text: line, file }, ...rs].slice(0, 2))
     setBusy(true)
     setCutting(false)
     try {
       const { cutIn } = feature
-      if (feature.tokens) {
+      if (feature.close) {
+        const p = await speakThenClose(c, a, socketUrl(voice, feature.params(st)), feature.params(st), line, feature.close.graceful(st), feature.close.afterMs)
+        if (lastId.current !== id) {
+          p.stop()
+          throw new DOMException('Stopped', 'AbortError')
+        }
+        stopRef.current = p.stop
+        const { stats, buffers, close } = await p.done
+        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, close } : r)))
+      } else if (feature.tokens) {
         const onText = (shown: string) => setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, shown } : r)))
         const p = await speakTokens(c, a, voice, feature.params(st), line, feature.tokens.mode(st), feature.tokens.tokenMs, onText)
         if (lastId.current !== id) {
@@ -420,7 +433,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           <div className="wire__block">
             <span className="wire__label">Request</span>
             <code>
-              <span className="wire__part">{socket || feature.session || feature.tokens ? 'WSS' : 'POST'} {speakPath(voice)}</span>
+              <span className="wire__part">{socket || feature.session || feature.tokens || feature.close ? 'WSS' : 'POST'} {speakPath(voice)}</span>
               {(feature.session ? sessionPath.split('?')[1].split('&') : feature.tokens ? tokenUrl(voice, params).split('?')[1].split('&') : query).map((part, i) => {
                 const t = `${i === 0 ? '?' : '&'}${part}`
                 return (
@@ -429,7 +442,21 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                   </span>
                 )
               })}
-              {feature.tokens ? (
+              {feature.close ? (
+                <>
+                  <span className="wire__part wire__part--text tts-body">
+                    <span className="wire__key">send</span> {JSON.stringify({ type: 'Speak', text: line })}
+                  </span>
+                  <span className="wire__part wire__part--text tts-body">
+                    <span className="wire__key">{feature.close.afterMs} ms later</span>{' '}
+                    {feature.close.graceful(state) ? (
+                      <mark>{JSON.stringify(CLOSE_MESSAGE)}</mark>
+                    ) : (
+                      <span className="wire__key">nothing; the page calls ws.close()</span>
+                    )}
+                  </span>
+                </>
+              ) : feature.tokens ? (
                 <span className="wire__part wire__part--text tts-body">
                   {feature.tokens.mode(state) === 'whole' ? (
                     <>
@@ -478,7 +505,18 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           <div className="wire__block">
             <span className="wire__label">Response</span>
             <code>
-              {latest?.cut?.ack ? (
+              {latest?.close ? (
+                <span className="wire__part wire__part--text">
+                  {latest.close.after.map((m, i) => (
+                    <span key={i}>
+                      <mark>{JSON.stringify(closeShown(m))}</mark>{' '}
+                    </span>
+                  ))}
+                  <span className="wire__key">
+                    {latest.close.after.length ? 'then ' : latest.close.graceful ? 'no message, then ' : 'nothing more, '}socket closed ({latest.close.code}) {ms(latest.close.closedMs)} in
+                  </span>
+                </span>
+              ) : latest?.cut?.ack ? (
                 <span className="wire__part wire__part--text">
                   <mark>{JSON.stringify(ackShown(latest.cut.ack))}</mark> in {ms(latest.cut.ackMs ?? 0)}
                 </span>
@@ -578,6 +616,22 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                     ))}
                   </tbody>
                 </table>
+              ) : r.close ? (
+                <>
+                  <p className="hint">
+                    {r.close.graceful
+                      ? `The page sent Close ${ms(r.close.closeSentMs)} in. Deepgram finished the line, then closed the socket (${r.close.code}).`
+                      : `The page closed the socket ${ms(r.close.closeSentMs)} in. Nothing arrived after that (${r.close.code}).`}
+                  </p>
+                  <dl className="tts-stats">
+                    <dt>Audio before the close</dt>
+                    <dd>{r.close.beforeS.toFixed(1)} s</dd>
+                    <dt>Audio after the close</dt>
+                    <dd>{r.close.afterS.toFixed(1)} s</dd>
+                    <dt>Socket closed</dt>
+                    <dd>{ms(r.close.closedMs)}</dd>
+                  </dl>
+                </>
               ) : r.cut ? (
                 <>
                   {r.cutBy && (
@@ -676,6 +730,13 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
 function ackShown(ack: Record<string, unknown>) {
   const { type, audio_played_ms, text_spoken, sequence_id } = ack
   return Object.fromEntries(Object.entries({ type, audio_played_ms, text_spoken, sequence_id }).filter(([, v]) => v !== undefined))
+}
+
+// Only the fields the page talks about from what arrives after Close.
+function closeShown(m: Record<string, unknown>) {
+  const { type, speech_id, audio_duration_ms, total_audio_duration_ms, total_billable_character_count } = m
+  const keep = { type, speech_id, audio_duration_ms, total_audio_duration_ms, total_billable_character_count }
+  return Object.fromEntries(Object.entries(keep).filter(([, v]) => v !== undefined))
 }
 
 // The line as Flux split it: what the listener heard, then what they never got to.

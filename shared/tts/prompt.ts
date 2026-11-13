@@ -9,6 +9,7 @@ import { LISTEN_URL } from './listen'
 import { pieces, sessionUrl } from './session'
 import { LATE_MS, tokenize, tokenUrl } from './tokens'
 import { cutMessage, socketUrl } from './socket'
+import { CLOSE_MESSAGE } from './close'
 import { isFlux, speakQuery, speakUrl, voiceName } from './speak'
 
 const fence = (lang: string, body: string) => '```' + lang + '\n' + body + '\n```'
@@ -192,6 +193,63 @@ ${doneSection([
   'The socket URL and messages match the ones above, apart from the text.',
   '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
   ...(configure ? ['Changing the setting while it talks changes the next turn, with no reconnect and no gap.'] : ['Every turn shows its speech_id, audio length and billable characters.']),
+  'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
+])}
+
+Docs: ${feature.links.docs}
+`
+  }
+
+  if (feature.close) {
+    return `${head}
+Build a page that speaks a line over a Deepgram text-to-speech socket and then closes the socket
+without cutting off the end of the line. Live demo: ${meta.url}
+
+## The connection
+
+Open this socket. It is opened and run through every message below with a granted token before
+this file ships.
+
+${fence('text', socketUrl(voice, params))}
+
+${voices}
+
+Send the line as a text frame:
+
+${fence('json', JSON.stringify({ type: 'Speak', text }))}
+
+## Close it the graceful way
+
+When you have sent your last line, don't call \`ws.close()\`. Send this text frame instead, even
+while audio is still arriving:
+
+${fence('json', JSON.stringify(CLOSE_MESSAGE))}
+
+Deepgram finishes the text it already has, streams the rest of the audio, and then closes the
+socket itself with code 1000. You don't need a Flush first. Keep handling binary frames until the
+socket closes, and play every one. On \`/v2/speak\` (Flux), \`SpeechMetadata\` and then
+\`SessionMetadata\` (with \`total_billable_character_count\`) arrive just before the close; on
+\`/v1/speak\` (Aura-2) no message comes, only the audio and the close.
+
+Measured live on 2026-11-13, with the close sent 600 ms after the line: Close delivered the whole
+line on both endpoints (9.2-9.9 s of Flux audio after Close). Closing the socket from the client
+instead kept only what had arrived, 0.6-1.7 s of audio, and the rest was lost.
+
+${tokenSection(true)}
+
+${playSection(String(params.encoding), Number(params.sample_rate))}
+
+## Try it
+
+Speak this, and send Close half a second later:
+
+> ${text}
+
+${doneSection([
+  'The socket URL and messages match the ones above, apart from the text.',
+  'The whole line plays even though Close went out while the audio was still arriving.',
+  'The page waits for the server to close the socket (1000) instead of closing it first.',
+  '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
   'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
 ])}
 

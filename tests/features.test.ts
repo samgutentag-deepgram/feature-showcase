@@ -128,10 +128,12 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
       expect(['linear16', 'mulaw']).toContain(p.encoding)
       expect(Number(p.sample_rate)).toBeGreaterThan(0)
       // The socket streams raw audio and takes no container; POST needs one the shell can play.
-      if (feature.cutIn) expect(p.container).toBeUndefined()
+      if (feature.cutIn || feature.close) expect(p.container).toBeUndefined()
       else expect(['none', 'wav']).toContain(p.container)
     }
     if (feature.cutIn) expect(feature.cutIn.reply.trim().length).toBeGreaterThan(0)
+    // Close mode shows both ways to close, so the two runs can be compared.
+    if (feature.close) expect(new Set(feature.variants.map((s) => feature.close!.graceful(s)))).toEqual(new Set([true, false]))
     // A session or token stream runs on the Flux socket: Flux voices only, raw audio.
     if (feature.session || feature.tokens) {
       expect(feature.voices.every((v) => v.startsWith('flux-'))).toBe(true)

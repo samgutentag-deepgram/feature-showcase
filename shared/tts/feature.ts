@@ -67,6 +67,15 @@ export interface TtsFeature<S> {
   // A line of its own per setting (the same words in each language). When a pick changes it, the
   // text box takes the new line.
   textFor?(state: S): string
+  // Close mode (shared/tts/close.ts): the page sends the line over the socket with no Flush and,
+  // afterMs later, closes the socket while the audio is still coming, the way an app hangs up after
+  // its last line. graceful(state) picks how: send {"type":"Close"} and let Deepgram finish, or
+  // close the socket from the client and lose what had not arrived. params() gives encoding and
+  // sample_rate only, as in socket mode.
+  close?: {
+    afterMs: number
+    graceful(state: S): boolean
+  }
   // Socket mode: the page speaks over wss://.../v2/speak (Flux) or /v1/speak (Aura-2) instead of
   // POST, and shows a Cut in button while the line plays, like a caller talking over the agent.
   // params() then gives encoding and sample_rate only: the socket streams raw audio, no container.

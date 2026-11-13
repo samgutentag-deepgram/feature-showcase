@@ -16,6 +16,7 @@ import { ttsPromptRequests } from '../shared/tts/prompt'
 import { LISTEN_URL } from '../shared/tts/listen'
 import { pieces, sessionUrl } from '../shared/tts/session'
 import { tokenize, tokenUrl } from '../shared/tts/tokens'
+import { CLOSE_MESSAGE } from '../shared/tts/close'
 
 // The voice cut-in socket: opens with the key, takes a second of silence, and closes cleanly.
 function probeListen(): Promise<string> {
@@ -207,8 +208,59 @@ async function tokensEveryVariant(feature: TtsFeature<unknown>) {
   expect(results.filter((x) => x.r !== 'ok').map((x) => `${x.what} -> ${x.r}`)).toEqual([])
 }
 
+// Close mode: every voice and variant as the page sends it, Speak then the close afterMs later.
+// Close must bring the rest of the line after it and end in a 1000 from Deepgram, with no Error or
+// Warning; on Flux, SessionMetadata must come first. A dropped socket must have opened and taken audio.
+async function closeEveryVariant(feature: TtsFeature<unknown>) {
+  const close = feature.close!
+  const one = (voice: string, state: unknown) =>
+    new Promise<string>((resolve) => {
+      const graceful = close.graceful(state)
+      const ws = new WebSocket(socketUrl(voice, feature.params(state)), ['token', process.env.DEEPGRAM_API_KEY ?? ''])
+      ws.binaryType = 'arraybuffer'
+      let bytes = 0
+      let after = 0
+      let sent = false
+      let session = false
+      let bad = ''
+      const end = (r: string) => (clearTimeout(timer), resolve(r))
+      const timer = setTimeout(() => (ws.close(), end(`timed out (bytes ${bytes}, after ${after})`)), 30_000)
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'Speak', text: feature.phrases[0] }))
+        setTimeout(() => {
+          sent = true
+          if (graceful) return ws.send(JSON.stringify(CLOSE_MESSAGE))
+          ws.close()
+          end(bytes > 0 && !bad ? 'ok' : bad || 'no audio before the drop')
+        }, close.afterMs)
+      }
+      ws.onerror = () => {}
+      ws.onmessage = (e) => {
+        if (typeof e.data !== 'string') {
+          bytes += (e.data as ArrayBuffer).byteLength
+          if (sent) after += (e.data as ArrayBuffer).byteLength
+          return
+        }
+        const m = JSON.parse(e.data)
+        if (m.type === 'Error' || m.type === 'Warning') bad = `${m.type}: ${e.data.slice(0, 200)}`
+        if (m.type === 'SessionMetadata') session = true
+      }
+      ws.onclose = (e) => {
+        if (!graceful) return
+        if (bad) return end(bad)
+        if (e.code !== 1000) return end(`closed ${e.code} ${e.reason}`)
+        if (after < 48_000) return end(`only ${after} bytes after Close`)
+        if (voice.startsWith('flux-') && !session) return end('no SessionMetadata before the close')
+        end('ok')
+      }
+    })
+  const results = await Promise.all(feature.voices.flatMap((v) => feature.variants.map(async (s) => ({ what: `${v} ${JSON.stringify(s)}`, r: await one(v, s) }))))
+  expect(results.filter((x) => x.r !== 'ok').map((x) => `${x.what} -> ${x.r}`)).toEqual([])
+}
+
 async function speakEveryVariant(feature: TtsFeature<unknown>) {
   if (feature.cutIn) return cutInEveryVariant(feature)
+  if (feature.close) return closeEveryVariant(feature)
   if (feature.tokens) await tokensEveryVariant(feature)
   if (feature.session) await sessionEveryVariant(feature)
   const failed: string[] = []
@@ -485,6 +537,11 @@ async function ttsPromptLive(md: string): Promise<string[]> {
       // A prompt with Interrupt: Speak and Flush, then the cut once audio flows. Otherwise every
       // message in order (Configure, Speak, Flush): each Configure must be applied and the turn end.
       const interrupts = s.messages.some((m) => m.type === 'Interrupt' || m.type === 'Clear')
+      // A prompt with Close: every message in order, then the rest of the audio and a 1000 from Deepgram.
+      const closes = s.messages.some((m) => m.type === 'Close')
+      ws.onclose = (e) => {
+        if (closes) end(e.code === 1000 && bytes > 48_000 ? 'ok' : `closed ${e.code} with ${bytes} bytes`)
+      }
       const wantConfigured = s.messages.filter((m) => m.type === 'Configure').length
       let configured = 0
       const [first, ...rest] = interrupts ? [s.messages.slice(0, 2), s.messages.slice(2)] : [s.messages, []]
@@ -509,6 +566,7 @@ async function ttsPromptLive(md: string): Promise<string[]> {
         const m = JSON.parse(e.data)
         if (m.type === 'Error' || m.type === 'Warning' || m.type === 'ConfigureFailure') return end(`${m.type}: ${e.data.slice(0, 200)}`)
         if (m.type === 'ConfigureSuccess') configured++
+        if (closes) return
         if (!interrupts && m.type === 'SpeechMetadata') return end(configured === wantConfigured && bytes > 1000 && m.speech_id ? 'ok' : `configured ${configured}/${wantConfigured}, ${bytes} bytes, speech_id ${m.speech_id}`)
         if (m.type === 'SpeechInterrupted') {
           if (typeof m.text_spoken !== 'string' || !m.text_spoken.trim()) return end(`no text_spoken: ${e.data.slice(0, 200)}`)

@@ -1,0 +1,5 @@
+{
+  "title": "Graceful close for text-to-speech sockets | Deepgram",
+  "description": "Send Close instead of dropping the text-to-speech socket, and the line plays to the end instead of cutting off.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tts-ws-close/"
+}
