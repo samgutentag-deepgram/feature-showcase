@@ -1,0 +1,5 @@
+{
+  "title": "Text-to-speech interrupt | Deepgram",
+  "description": "Cut in while a Flux voice is talking. Send Interrupt and the answer starts in about 250 ms, with the exact words the caller heard.",
+  "url": "https://dg-devrel-tts-interrupt.fly.dev"
+}
