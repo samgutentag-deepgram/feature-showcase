@@ -18,8 +18,7 @@ Content-Type: application/json
 {"text":"Hello, thanks for calling. How can I help you today?"}
 ```
 
-The feature is `model=aura-2-thalia-en`. `aura-2-thalia-en` (thalia) is an Aura-2 voice: Aura-2 voices are served on `/v1/speak`. Flux voices
-(`flux-*`) go to `/v2/speak` instead, with the same query.
+The feature is `model=aura-2-thalia-en`. `aura-2-thalia-en` (thalia) is an Aura-2 voice, served on `/v1/speak`. Aura-2 only. This is the Aura-2 voice tour: Flux voices (flux-*) take the same query on /v2/speak and have their own tour, the Flux voices demo.
 
 ## Keep the API key on your server
 

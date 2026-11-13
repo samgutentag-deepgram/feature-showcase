@@ -1,0 +1,5 @@
+{
+  "title": "Clear the text-to-speech socket | Deepgram",
+  "description": "Cut off an Aura-2 voice mid-sentence: send Clear on the speak socket, get Cleared back in tens of milliseconds, and hear the answer right after.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tts-ws-clear/"
+}

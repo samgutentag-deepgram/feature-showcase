@@ -85,6 +85,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 | [tts-sample-rate](demos/tts-sample-rate) | How many kilohertz do you need? | [/demos/tts-sample-rate/](https://dg-devrel-demos.fly.dev/demos/tts-sample-rate/) |
 | [tts-speed](demos/tts-speed) | Slow down for the numbers. | [/demos/tts-speed/](https://dg-devrel-demos.fly.dev/demos/tts-speed/) |
 | [tts-streaming](demos/tts-streaming) | Hear it before it finishes. | [/demos/tts-streaming/](https://dg-devrel-demos.fly.dev/demos/tts-streaming/) |
+| [tts-ws-clear](demos/tts-ws-clear) | Clear what the voice was about to say. | [/demos/tts-ws-clear/](https://dg-devrel-demos.fly.dev/demos/tts-ws-clear/) |
 | [tts-ws-flush](demos/tts-ws-flush) | Start talking before the LLM finishes. | [/demos/tts-ws-flush/](https://dg-devrel-demos.fly.dev/demos/tts-ws-flush/) |
 
 ### Voice agent

@@ -9,7 +9,7 @@ import { LISTEN_URL } from './listen'
 import { pieces, sessionUrl } from './session'
 import { LATE_MS, tokenize, tokenUrl } from './tokens'
 import { cutMessage, socketUrl } from './socket'
-import { speakQuery, speakUrl, voiceName } from './speak'
+import { isFlux, speakQuery, speakUrl, voiceName } from './speak'
 
 const fence = (lang: string, body: string) => '```' + lang + '\n' + body + '\n```'
 
@@ -84,9 +84,8 @@ export function ttsPrompt<S>(feature: TtsFeature<S>, meta: PromptMeta): string {
 
 ${feature.copy.lede}
 `
-  const voices = voice.startsWith('aura-2-')
-    ? `\`${voice}\` (${voiceName(voice)}) is an Aura-2 voice: Aura-2 voices are served on \`/v1/speak\`. Flux voices
-(\`flux-*\`) go to \`/v2/speak\` instead, with the same query.`
+  const voices = feature.auraOnly
+    ? `\`${voice}\` (${voiceName(voice)}) is an Aura-2 voice, served on \`/v1/speak\`. ${feature.auraOnly}`
     : `\`${voice}\` (${voiceName(voice)}) is a Flux voice: Flux voices are served on \`/v2/speak\` only, and the
 same request on \`/v1/speak\` is a 400.${other ? ` Aura-2 voices such as \`${other}\` go to \`/v1/speak\` with the same query.` : ''}`
 
@@ -238,6 +237,7 @@ Docs: ${feature.links.docs}
   }
 
   const cut = cutMessage(voice, EXAMPLE_OFFSET_MS)
+  if (!isFlux(voice)) return clearPrompt(feature, meta, head, voices, cut, text)
   return `${head}
 Build a page that speaks a line over a Deepgram text-to-speech socket, with a Cut in button that
 works while the line is playing, the way a caller talks over a voice agent. Live demo: ${meta.url}
@@ -315,6 +315,86 @@ ${doneSection([
   '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
   'Cut in silences the audio at once, and the answer starts in well under a second.',
   'After a cut, `text_spoken` matches what you heard.',
+  'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
+])}
+
+Docs: ${feature.links.docs}
+`
+}
+
+// A cut-in on the Aura-2 socket (/v1/speak): Clear, Cleared, then the reply on the same socket.
+function clearPrompt<S>(feature: TtsFeature<S>, meta: PromptMeta, head: string, voices: string, cut: object, text: string): string {
+  const params = feature.params(feature.promptState ?? feature.variants.at(-1) ?? feature.initialState)
+  const reply = feature.cutIn?.reply ?? ''
+  return `${head}
+Build a page that speaks a line over a Deepgram text-to-speech socket, with a Cut in button that
+works while the line is playing, the way a caller talks over a voice agent. Live demo: ${meta.url}
+
+## The connection
+
+Open this socket. It is opened and run through every step below with a granted token before this
+file ships.
+
+${fence('text', socketUrl(feature.voices[0], params))}
+
+${voices}
+
+Send the line as two text frames:
+
+${fence('json', JSON.stringify({ type: 'Speak', text }))}
+
+${fence('json', JSON.stringify({ type: 'Flush' }))}
+
+The server answers \`Metadata\` when the socket opens, streams the audio as binary frames, and ends
+the line with \`{"type":"Flushed","sequence_id":0}\`. Each Flush you send gets the next
+\`sequence_id\`.
+
+${tokenSection(true)}
+
+${playSection(String(params.encoding), Number(params.sample_rate))}
+
+Keep every queued \`AudioBufferSourceNode\` so you can stop them. Audio arrives faster than it plays
+(about twice as fast, measured live on 2026-11-13), so at any moment some of the line is already in
+the page but not yet heard.
+
+## Cut in
+
+When the user cuts in, stop every queued source in the page first, right away. Clear cannot take
+back audio the server already sent: only the page can silence it. Then send, as a text frame:
+
+${fence('json', JSON.stringify(cut))}
+
+The server drops the text and audio it has not sent yet and answers:
+
+${fence('text', JSON.stringify({ type: 'Cleared', sequence_id: 0 }))}
+
+\`sequence_id\` counts the Clear messages on this socket: 0 for the first, 1 for the second. A few
+binary frames of the old line can arrive between your Clear and \`Cleared\` (0.04 to 0.56 s of audio
+in testing): throw away every binary frame until \`Cleared\` arrives. The old line never sends its
+\`Flushed\`.
+
+Then speak the answer on the same socket, no reconnect:
+
+${fence('json', JSON.stringify({ type: 'Speak', text: reply }))}
+
+${fence('json', JSON.stringify({ type: 'Flush' }))}
+
+Measured live on 2026-11-13 with four Aura-2 voices, cutting 1.5 s into a 211-character line:
+\`Cleared\` came back in 20 to 198 ms and the answer's first audio 96 to 198 ms after the cut. Without
+Clear the rest of the old line (about 8 s of audio) streams first, and the answer waits behind it.
+Send Clear before the answer's Speak, not after: a Clear sent after it clears the answer too.
+
+## Try it
+
+Speak this, and cut in a second or two into it:
+
+> ${text}
+
+${doneSection([
+  'The socket URL and messages match the ones above, apart from the text.',
+  '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
+  'Cut in silences the audio at once, including what was already queued in the page.',
+  'Binary frames between Clear and `Cleared` are dropped, and the answer starts in well under a second.',
   'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
 ])}
 

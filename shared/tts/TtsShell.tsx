@@ -306,6 +306,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           </select>
         </label>
         )}
+        {feature.auraOnly && <p className="note">{feature.auraOnly}</p>}
 
         {(feature.restartOnPick || feature.session?.configure) && !feature.voiceFrom ? (
           <>
@@ -583,19 +584,38 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                     <p className="hint">
                       {r.cutBy === 'voice' ? `You cut in by talking${r.cutWord ? `: "${r.cutWord}"` : ''}.` : 'You pressed Cut in.'}{' '}
                       {r.cut.sent
-                        ? 'The page sent Interrupt, so Deepgram stopped the old line at once.'
+                        ? `The page sent ${(r.cut.sent as { type: string }).type}, so Deepgram stopped the old line at once.`
                         : 'Nothing told Deepgram to stop, so the reply waited behind the rest of the old line.'}
                     </p>
                   )}
                   <SpokenLine ack={r.cut.ack} />
-                  <dl className="tts-stats">
-                    <dt>Heard before the cut</dt>
-                    <dd>{(r.cut.heardMs / 1000).toFixed(1)} s</dd>
-                    <dt>Reply started after</dt>
-                    <dd>{r.cut.replyFirstAudioMs === undefined ? '-' : ms(r.cut.replyFirstAudioMs)}</dd>
-                    <dt>Old line thrown away</dt>
-                    <dd>{(r.cut.droppedMs / 1000).toFixed(1)} s</dd>
-                  </dl>
+                  {feature.cutIn?.buffer ? (
+                    <dl className="tts-stats">
+                      <dt>Heard before the cut</dt>
+                      <dd>{(r.cut.heardMs / 1000).toFixed(1)} s</dd>
+                      <dt>In the browser, never played</dt>
+                      <dd>{(Math.max(r.cut.receivedMs - r.cut.heardMs, 0) / 1000).toFixed(1)} s</dd>
+                      <dt>{r.cut.sent ? 'Arrived after the cut, dropped' : 'Rest of the line, dropped'}</dt>
+                      <dd>{(r.cut.droppedMs / 1000).toFixed(1)} s</dd>
+                      {r.cut.ack && (
+                        <>
+                          <dt>{String(r.cut.ack.type)} after</dt>
+                          <dd>{ms(r.cut.ackMs ?? 0)}</dd>
+                        </>
+                      )}
+                      <dt>Reply started after</dt>
+                      <dd>{r.cut.replyFirstAudioMs === undefined ? '-' : ms(r.cut.replyFirstAudioMs)}</dd>
+                    </dl>
+                  ) : (
+                    <dl className="tts-stats">
+                      <dt>Heard before the cut</dt>
+                      <dd>{(r.cut.heardMs / 1000).toFixed(1)} s</dd>
+                      <dt>Reply started after</dt>
+                      <dd>{r.cut.replyFirstAudioMs === undefined ? '-' : ms(r.cut.replyFirstAudioMs)}</dd>
+                      <dt>Old line thrown away</dt>
+                      <dd>{(r.cut.droppedMs / 1000).toFixed(1)} s</dd>
+                    </dl>
+                  )}
                 </>
               ) : r.lineup ? (
                 <LineupTable rows={r.lineup} playing={r.playing ?? -1} />

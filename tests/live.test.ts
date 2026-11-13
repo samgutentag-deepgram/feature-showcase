@@ -462,8 +462,9 @@ function converse(settings: unknown, token: string, audio: ArrayBuffer, answer?:
 }
 
 // A TTS prompt: each POST it shows comes back 200 with audio, and each socket runs the prompt's
-// messages in order (Speak, Flush, then Interrupt, Speak, Flush once 2 s of audio is in) and must
-// answer SpeechInterrupted with text_spoken, then the reply's audio. Warnings count as failures.
+// messages in order (Speak, Flush, then Interrupt or Clear, Speak, Flush once 2 s of audio is in) and
+// must answer SpeechInterrupted with text_spoken (Flux) or Cleared (Aura-2), then the reply's audio.
+// Warnings count as failures.
 async function ttsPromptLive(md: string): Promise<string[]> {
   const { posts, sockets, listens } = ttsPromptRequests(md)
   const failed: string[] = []
@@ -483,7 +484,7 @@ async function ttsPromptLive(md: string): Promise<string[]> {
       ws.binaryType = 'arraybuffer'
       // A prompt with Interrupt: Speak and Flush, then the cut once audio flows. Otherwise every
       // message in order (Configure, Speak, Flush): each Configure must be applied and the turn end.
-      const interrupts = s.messages.some((m) => m.type === 'Interrupt')
+      const interrupts = s.messages.some((m) => m.type === 'Interrupt' || m.type === 'Clear')
       const wantConfigured = s.messages.filter((m) => m.type === 'Configure').length
       let configured = 0
       const [first, ...rest] = interrupts ? [s.messages.slice(0, 2), s.messages.slice(2)] : [s.messages, []]
@@ -513,7 +514,9 @@ async function ttsPromptLive(md: string): Promise<string[]> {
           if (typeof m.text_spoken !== 'string' || !m.text_spoken.trim()) return end(`no text_spoken: ${e.data.slice(0, 200)}`)
           spoken = true
         }
-        if (m.type === 'SpeechMetadata' && spoken) end(reply > 1000 ? 'ok' : `reply had ${reply} bytes`)
+        if (m.type === 'Cleared') spoken = true
+        const replyDone = m.type === 'SpeechMetadata' || (m.type === 'Flushed' && Number(m.sequence_id) > 0)
+        if (replyDone && spoken) end(reply > 1000 ? 'ok' : `reply had ${reply} bytes`)
       }
     })
     if (r !== 'ok') failed.push(`${s.url} -> ${r}`)

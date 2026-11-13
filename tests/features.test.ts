@@ -102,10 +102,14 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
     // flux-{voice}-{language}: Flux has voices in some 45 languages, Aura-2 in a few.
     for (const v of feature.voices) expect(v).toMatch(/^(flux|aura-2)-[a-z]+-[a-z]{2}$/)
     // The company push is Flux: the default voice is Flux, and every Flux voice comes before any Aura-2.
-    // The one exception is an Aura-2 voice browser (aura-voice-picker): Aura-2 voices only, by
-    // definition. Flux voices have their own browser, flux-tts-voices.
-    const auraBrowser = !!feature.voiceFrom && feature.voices.every((v) => v.startsWith('aura-2-'))
-    if (!auraBrowser) expect(feature.voices[0]).toMatch(/^flux-/)
+    // The one exception is a demo that is Aura-2 only on purpose: a feature Flux does not have
+    // (tts-ws-clear) or the Aura-2 voice tour (aura-voice-picker). It sets auraOnly, a note that the
+    // page shows and prompt.md repeats, saying why and what Flux offers instead. Without the note an
+    // all-Aura-2 list fails here.
+    if (feature.auraOnly) {
+      expect(feature.voices.every((v) => v.startsWith('aura-2-'))).toBe(true)
+      expect(feature.auraOnly).toMatch(/^Aura-2 only\. .*Flux/)
+    } else expect(feature.voices[0]).toMatch(/^flux-/)
     const firstAura = feature.voices.findIndex((v) => v.startsWith('aura-2-'))
     if (firstAura >= 0) expect(feature.voices.slice(firstAura).every((v) => v.startsWith('aura-2-'))).toBe(true)
     // Cleared for use, but they drift in pitch and volume between calls, so not the default.

@@ -15,6 +15,10 @@ export interface TtsFeature<S> {
   // Voice model names, Flux first (POST /v2/speak), then Aura-2 to fill in (POST /v1/speak).
   // The first is the default; the page offers the rest in a picker, grouped by family.
   voices: string[]
+  // Only for a demo that is Aura-2 only on purpose: a feature Flux does not have, or the Aura-2
+  // voice tour. Every voice is Aura-2, and this note, shown under the voice picker and repeated in
+  // prompt.md, starts "Aura-2 only." and says why and what Flux offers instead.
+  auraOnly?: string
   initialState: S
   // Every setting the page can be in, for the pre-deploy checks (each is requested live).
   variants: S[]
@@ -75,6 +79,9 @@ export interface TtsFeature<S> {
     // Also cut in when the listener starts talking: the mic streams to Flux speech-to-text and
     // StartOfTurn cuts in (shared/tts/listen.ts). The button stays for no mic or no permission.
     listen?: boolean
+    // Break the run card down by where the old line's audio was at the cut: heard, already in the
+    // browser but not yet played, and arriving after the cut. Plus how long the ack took.
+    buffer?: boolean
   }
 }
 

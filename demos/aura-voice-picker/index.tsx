@@ -36,6 +36,8 @@ export default defineTtsFeature<State>({
   },
   links: { docs: 'https://developers.deepgram.com/docs/tts-models' },
   voices: [DEFAULT, ...VOICES.map((v) => v.model).filter((m) => m !== DEFAULT)],
+  auraOnly:
+    'Aura-2 only. This is the Aura-2 voice tour: Flux voices (flux-*) take the same query on /v2/speak and have their own tour, the Flux voices demo.',
   initialState: { lang: 'English', voice: DEFAULT },
   variants: [{ lang: 'English', voice: DEFAULT }],
   params: () => ({ encoding: 'linear16', sample_rate: '24000', container: 'none' }),
