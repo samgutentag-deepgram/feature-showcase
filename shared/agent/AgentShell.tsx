@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { startCapture, type Capture } from '../common/capture'
 import { MAX_SECONDS, clock, fetchToken } from '../common/config'
 import type { Json } from '../common/feature'
-import { LINKS, dgLink, type Button, type Placement } from '../common/links'
+import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { pcm16ToFloat } from '../tts/speak'
 import { AGENT_URL, LISTEN_MODELS, OUTPUT_RATE, settingsMessage, type AgentFeature } from './feature'
 import './agent.css'
@@ -489,6 +489,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
         <a href={link(feature.links.docs, 'footer', 'docs')}>Docs</a>
         <a href={link(LINKS.playground, 'footer', 'playground')}>Playground</a>
         <a href={LINKS.discord}>Discord</a>
+        <a href={sourceLink()}>View source</a>
         <a href={link(LINKS.signup, 'footer', 'signup')}>Get an API key</a>
       </footer>
     </main>

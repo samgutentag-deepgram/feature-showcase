@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { CAMPAIGN, LINKS, dgLink } from '../shared/common/links'
+import { CAMPAIGN, LINKS, REPO, dgLink, sourceLink } from '../shared/common/links'
 import { FEATURE, demoId, readMeta } from '../vite.config'
 
 const tags = (href: string) => Object.fromEntries(new URL(href).searchParams)
@@ -14,6 +14,13 @@ describe('outbound links', () => {
         utm_campaign: 'devrel-demos',
         utm_content: 'sam_gutentag_cta_docs',
       })
+    }
+  })
+
+  it('point View source at this demo\'s folder in the public repo', () => {
+    expect(sourceLink()).toBe(`${REPO}/tree/main/demos/${FEATURE}`)
+    for (const folder of readdirSync('demos')) {
+      expect(sourceLink(folder)).toBe(`https://github.com/samgutentag-deepgram/feature-showcase/tree/main/demos/${folder}`)
     }
   })
 

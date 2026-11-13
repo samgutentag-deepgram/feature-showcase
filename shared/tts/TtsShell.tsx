@@ -2,7 +2,7 @@
 // press Speak. The last two runs stay side by side with their timings and a Replay button.
 // A feature with cutIn speaks over the socket instead and offers Cut in while the line plays.
 import { useEffect, useRef, useState } from 'react'
-import { LINKS, dgLink, type Button, type Placement } from '../common/links'
+import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { TakeHome } from '../common/TakeHome'
 import type { Params } from '../common/feature'
 import type { TtsFeature } from './feature'
@@ -617,6 +617,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
         <a href={link(feature.links.docs, 'footer', 'docs')}>Docs</a>
         <a href={link(LINKS.playground, 'footer', 'playground')}>Playground</a>
         <a href={LINKS.discord}>Discord</a>
+        <a href={sourceLink()}>View source</a>
         <a href={link(LINKS.signup, 'footer', 'signup')}>Get an API key</a>
       </footer>
     </main>

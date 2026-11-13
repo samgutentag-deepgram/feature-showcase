@@ -47,3 +47,8 @@ export const LINKS = {
   sales: 'https://deepgram.com/contact-us',
   discord: 'https://dpgr.am/discord',
 } as const
+
+export const REPO = 'https://github.com/samgutentag-deepgram/feature-showcase'
+
+/** This demo's folder in the public repo, for the footer's View source link. */
+export const sourceLink = (folder: string = __DEMO_FOLDER__): string => `${REPO}/tree/main/demos/${folder}`

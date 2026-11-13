@@ -5,7 +5,7 @@ import { readDuration, startCapture, type Capture, type Source } from '../common
 import { MAX_SECONDS, MAX_UPLOAD_BYTES, clock, describeRequest, formatMB } from '../common/config'
 import type { Ctx, Feature, Run } from '../common/feature'
 import { LimitDialog } from './LimitDialog'
-import { LINKS, dgLink, type Button, type Placement } from '../common/links'
+import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { openStream, type Stream } from './stream'
 import { TakeHome } from '../common/TakeHome'
 
@@ -428,6 +428,7 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
         <a href={link(feature.links.docs, 'footer', 'docs')}>Docs</a>
         <a href={link(LINKS.playground, 'footer', 'playground')}>Playground</a>
         <a href={LINKS.discord}>Discord</a>
+        <a href={sourceLink()}>View source</a>
         <a href={link(LINKS.signup, 'footer', 'signup')}>Get an API key</a>
       </footer>
       <LimitDialog reason={tooBig} onClose={() => setTooBig(null)} />

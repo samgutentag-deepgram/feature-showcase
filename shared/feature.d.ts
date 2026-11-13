@@ -7,6 +7,7 @@ declare module '@feature' {
 
 // The demo's id (its Fly app name, e.g. dg-devrel-keyterm), set by vite.config.ts from meta.json.
 declare const __DEMO_ID__: string
+declare const __DEMO_FOLDER__: string
 
 // True when the feature folder has a prompt.md; vite.config.ts then ships it as /prompt.md.
 declare const __HAS_PROMPT__: boolean

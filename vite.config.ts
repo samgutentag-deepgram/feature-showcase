@@ -65,6 +65,7 @@ export default defineConfig({
   // utm_source on every Deepgram link; see shared/common/links.ts.
   define: {
     __DEMO_ID__: JSON.stringify(demoId(readMeta())),
+    __DEMO_FOLDER__: JSON.stringify(FEATURE),
     __HAS_PROMPT__: JSON.stringify(existsSync(promptFile())),
   },
   // The mic worklet ships as its own file, never a data: URL, so the CSP can say script-src 'self'.
