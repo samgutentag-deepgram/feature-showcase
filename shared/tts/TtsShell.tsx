@@ -44,6 +44,8 @@ const VOICE_GROUPS = [
   { label: 'Aura-2', flux: false },
 ]
 const ms = (n: number) => `${Math.round(n)} ms`
+// Small compressed files differ by a few KB, so they keep a decimal.
+const kb = (bytes: number) => (bytes / 1024).toFixed(bytes < 100 * 1024 ? 1 : 0)
 
 export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
   const [state, setState] = useState<S>(feature.initialState)
@@ -580,7 +582,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                   <dt>Audio</dt>
                   <dd>{r.stats.seconds.toFixed(1)} s</dd>
                   <dt>Size</dt>
-                  <dd>{(r.stats.bytes / 1024).toFixed(0)} KB</dd>
+                  <dd>{kb(r.stats.bytes)} KB</dd>
                 </dl>
               ) : (
                 <Waiting run={r} />
@@ -658,16 +660,20 @@ function Waiting<S>({ run }: { run: Run<S> }) {
 }
 
 // Waiting for a file, shown right under Speak: the KB in so far and a bar that fills against the
-// expected size (16-bit audio for about 14 characters a second), held short of full until it lands.
+// expected size (about 14 characters a second, at the bit_rate asked for, or 16-bit audio), held
+// short of full until it lands.
 function FileProgress<S>({ run, params }: { run: Run<S>; params: Params }) {
   const received = run.received ?? 0
-  const bytesPerSec = Number(params.sample_rate ?? 24000) * (params.encoding === 'mulaw' ? 1 : 2)
+  const bytesPerSec = params.bit_rate
+    ? Number(params.bit_rate) / 8
+    : Number(params.sample_rate ?? 24000) * (params.encoding === 'mulaw' ? 1 : 2)
   const expected = (run.text.length / 14) * bytesPerSec
   const pct = Math.min(received / expected, 0.97) * 100
+  const ext = params.encoding === 'mp3' ? 'mp3' : params.encoding === 'opus' ? 'ogg' : 'wav'
   return (
     <div className="tts-file" role="status">
       <div className="tts-file__head">
-        <span className="tts-file__name">speech.wav</span>
+        <span className="tts-file__name">speech.{ext}</span>
         <span className="tts-file__kb">{Math.round(received / 1024)} KB</span>
       </div>
       <div className="tts-file__bar" aria-hidden="true">

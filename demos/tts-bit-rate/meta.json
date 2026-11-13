@@ -1,0 +1,5 @@
+{
+  "title": "Text-to-speech bit rate | Deepgram",
+  "description": "Speak the same Flux line as MP3 or Opus at five bit rates each, and compare the real file size and the sound.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tts-bit-rate/"
+}

@@ -20,6 +20,8 @@ export interface TtsFeature<S> {
   variants: S[]
   // The query for POST /v2/speak or /v1/speak, besides model. Must include encoding, sample_rate, and
   // container: the shell plays container=none as it arrives and waits for the file otherwise.
+  // Compressed files are the exception: encoding=mp3 or opus with bit_rate, no sample_rate, and
+  // container=ogg for opus only (tests/features.test.ts holds the rules).
   params(state: S): Params
   // Params marked on the Request card.
   highlight: string[]

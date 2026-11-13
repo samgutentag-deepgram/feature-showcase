@@ -43,6 +43,14 @@ const playSection = (encoding: string, rate: number, container?: string) => {
 standard G.711 table) before you queue it.`
     : `16-bit signed little-endian PCM at ${rate / 1000} kHz mono. A chunk can end halfway through a
 sample: hold the odd byte and put it in front of the next chunk.`
+  if (encoding === 'mp3' || encoding === 'opus') {
+    const what = encoding === 'mp3' ? 'an MP3 file (`audio/mpeg`)' : 'an Ogg Opus file (`audio/ogg;codecs=opus`)'
+    return `## Play the audio
+
+The response is ${what}, compressed to the \`bit_rate\` you asked for. Read the whole body, then
+\`AudioContext.decodeAudioData\` it and play the buffer. Its byte length is the size you would store
+or send on.`
+  }
   if (container === 'wav') {
     return `## Play the audio
 

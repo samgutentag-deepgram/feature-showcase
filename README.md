@@ -76,6 +76,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 | [flux-tts-turns](demos/flux-tts-turns) | Every turn, accounted for. | [/demos/flux-tts-turns/](https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/) |
 | [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [/demos/flux-tts-voices/](https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/) |
 | [telephone-audio](demos/telephone-audio) | Does it sound like a phone call? | [/demos/telephone-audio/](https://dg-devrel-demos.fly.dev/demos/telephone-audio/) |
+| [tts-bit-rate](demos/tts-bit-rate) | How small can the file get? | [/demos/tts-bit-rate/](https://dg-devrel-demos.fly.dev/demos/tts-bit-rate/) |
 | [tts-expressivity](demos/tts-expressivity) | Calm for support, bright for good news. | [/demos/tts-expressivity/](https://dg-devrel-demos.fly.dev/demos/tts-expressivity/) |
 | [tts-interrupt](demos/tts-interrupt) | Let the caller cut in. | [/demos/tts-interrupt/](https://dg-devrel-demos.fly.dev/demos/tts-interrupt/) |
 | [tts-pause-markers](demos/tts-pause-markers) | Give them time to write it down. | [/demos/tts-pause-markers/](https://dg-devrel-demos.fly.dev/demos/tts-pause-markers/) |

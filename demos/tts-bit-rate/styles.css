@@ -1,0 +1,3 @@
+/* The encoding toggle over its row of bit rates. */
+.bit-rate { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.bit-rate .tts-steps { width: 100%; }

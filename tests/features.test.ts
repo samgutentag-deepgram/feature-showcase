@@ -112,6 +112,15 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
     expect(['flux-marcus-en', 'flux-brittany-en']).not.toContain(feature.voices[0])
     for (const state of feature.variants) {
       const p = feature.params(state)
+      if (p.encoding === 'mp3' || p.encoding === 'opus') {
+        // Compressed files, POST only: the rate is fixed (a 400 if sent), the size is set by bit_rate.
+        // mp3 takes no container (a 400 if sent); opus comes in ogg (container=none is a 400).
+        expect(feature.cutIn || feature.session || feature.tokens).toBeFalsy()
+        expect(p.sample_rate).toBeUndefined()
+        expect(Number(p.bit_rate)).toBeGreaterThan(0)
+        expect(p.container).toBe(p.encoding === 'opus' ? 'ogg' : undefined)
+        continue
+      }
       expect(['linear16', 'mulaw']).toContain(p.encoding)
       expect(Number(p.sample_rate)).toBeGreaterThan(0)
       // The socket streams raw audio and takes no container; POST needs one the shell can play.
