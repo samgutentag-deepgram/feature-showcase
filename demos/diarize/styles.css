@@ -1,0 +1,33 @@
+/* One row per speaker turn. var() only: literals live in styles/packs/. */
+
+.turn { --slot: var(--dg-text-disabled); display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; align-items: baseline; }
+.turn[data-slot='0'] { --slot: var(--dg-voice-1); }
+.turn[data-slot='1'] { --slot: var(--dg-voice-2); }
+.turn[data-slot='2'] { --slot: var(--dg-voice-other); }
+
+.turn__chip {
+  justify-self: start;
+  background: var(--slot);
+  color: var(--dg-text-on-accent);
+  border-radius: var(--dg-shape-pill);
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: var(--dg-weight-medium);
+  white-space: nowrap;
+}
+.turn__words {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--slot);
+  font-size: 22px;
+  line-height: 1.45;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+.runs--compare .turn { grid-template-columns: 1fr; gap: 6px; }
+.runs--compare .turn__words { font-size: 19px; }
+
+@media (max-width: 760px) {
+  .turn { grid-template-columns: 1fr; gap: 6px; }
+  .turn__words { font-size: 19px; }
+}
