@@ -1,0 +1,76 @@
+/* Voice agent page pieces. var() only: literals live in styles/packs/. */
+
+.agent-listen { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); margin-right: auto; }
+
+.agent-json {
+  margin: 0;
+  font-family: var(--dg-font-code);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dg-code-text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.agent-run { display: flex; flex-direction: column; gap: 16px; }
+.agent-lines { display: flex; flex-direction: column; gap: 10px; }
+.agent-line { margin: 0; font-size: 18px; line-height: 1.45; color: var(--dg-text-primary); }
+.agent-line__who {
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  letter-spacing: var(--dg-type-label-tracking);
+  text-transform: uppercase;
+  border-radius: var(--dg-shape-pill);
+  padding: 2px 8px;
+  margin-right: 6px;
+  background: var(--dg-bg-well);
+  color: var(--dg-text-label);
+  vertical-align: 0.15em;
+}
+.agent-line--user .agent-line__who { background: var(--dg-accent); color: var(--dg-text-on-accent); }
+
+.agent-events { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--dg-border); display: flex; flex-direction: column; gap: 4px; }
+.agent-events li { display: grid; grid-template-columns: 56px minmax(0, auto) minmax(0, 1fr); gap: 10px; font-size: 13px; color: var(--dg-text-label); align-items: baseline; }
+.agent-events__ms { font-family: var(--dg-font-code); }
+.agent-events__type { font-family: var(--dg-font-code); color: var(--dg-text-body); }
+.agent-events__detail { overflow-wrap: anywhere; }
+.agent-events li.is-marked .agent-events__type { color: var(--dg-text-primary); background: var(--dg-accent-dim); border-radius: var(--dg-shape-control); padding: 0 6px; }
+.agent-events li.is-marked .agent-events__detail { color: var(--dg-text-primary); }
+
+@media (max-width: 760px) {
+  .agent-events li { grid-template-columns: 48px 1fr; }
+  .agent-events__detail { grid-column: 2; }
+}
+
+/* Think Live lines (backchannel, presence check, filler) read as asides, not turns. */
+.agent-line--aside { font-size: 15px; color: var(--dg-text-label); }
+.agent-line__tag {
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-shape-pill);
+  padding: 1px 7px;
+  margin-right: 6px;
+  vertical-align: 0.15em;
+}
+.agent-action:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* A mid-call button pulses while the server has not answered, then shows what it did. */
+.agent-action { position: relative; transition: transform 80ms ease; }
+.agent-action:active:not(:disabled) { transform: scale(0.96); }
+.agent-action__note { font-family: var(--dg-font-code); font-size: 11px; margin-left: 8px; opacity: 0.85; }
+.agent-action.is-wait { animation: agent-action-pulse 0.9s ease-in-out infinite; }
+.agent-action.is-ok { box-shadow: 0 0 0 2px var(--dg-accent); }
+.agent-action.is-warn { box-shadow: 0 0 0 2px var(--dg-danger); }
+@keyframes agent-action-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--dg-accent-dim); }
+  50% { box-shadow: 0 0 0 6px var(--dg-accent-dim); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-action.is-wait { animation: none; box-shadow: 0 0 0 2px var(--dg-accent-dim); }
+}
+
+/* A line a mid-call button made the agent say. */
+.agent-line__tag--sent { border-color: var(--dg-accent); background: var(--dg-accent-dim); color: var(--dg-text-primary); }

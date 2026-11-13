@@ -1,0 +1,29 @@
+[meta]
+title = "Deepgram feature showcase"
+description = "Every one-feature Deepgram demo in one repo: one shell, one folder per demo, each deployed to its own dg-devrel-<demo>.fly.dev."
+author = "Sam Gutentag"
+useCase = "demos"
+language = "typescript"
+framework = "react"
+sdk = "@deepgram/sdk"
+tags = ["live-transcription", "text-to-speech", "voice-agent", "nova-3", "flux", "react", "typescript"]
+
+[check]
+command = ["pnpm check"]
+message = "Typecheck passed"
+
+[install]
+command = ["pnpm install"]
+message = "Dependencies installed"
+
+[start]
+command = ["FEATURE=language-hint pnpm dev"]
+message = "Running at http://localhost:8080"
+
+[test]
+command = ["pnpm test"]
+message = "Tests passed"
+
+[clean]
+command = ["rm -rf node_modules dist"]
+message = "Build artifacts cleaned"

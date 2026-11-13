@@ -1,0 +1,7 @@
+# agent: one demo id per line; blank lines and # comments are ignored.
+barge-in
+context-history
+function-calling
+inject-agent-message
+think-live
+update-speak

@@ -1,0 +1,119 @@
+/* ============================================================================
+   Deepgram style pack: deepgram-2026
+   ----------------------------------------------------------------------------
+   THIS IS THE ONLY KIND OF FILE IN THE REPO ALLOWED TO CONTAIN LITERAL VALUES.
+
+   Values from the Deepgram brand starter kit 2026 (color palette page) and
+   deepgram.com: primary Fuchsia #E042FF, off-white #FCFAF8, off-black
+   #1D1D1D; supporting blue #00B2FF, orange #FA8100, yellow #F7F300, red
+   #EB2A2E. Light page, white cards, dark code cards, material art. Work Sans and Azeret Mono are self-hosted
+   from public/fonts (SIL OFL). Perfektta, the headline face, is licensed and
+   not shipped, so display text falls back to Work Sans.
+
+   Same token names as flux-2026.css. Swap by repointing theme.css.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Work Sans";
+  src: url("/fonts/WorkSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Azeret Mono";
+  src: url("/fonts/AzeretMono-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  /* ---- palette: surfaces ------------------------------------------------
+     deepgram.com is light: off-white page, white cards. */
+  --dg-surface-page: #fcfaf8;
+  --dg-surface-raised: #ffffff;
+  --dg-surface-glass: rgba(255, 255, 255, 0.82);
+  --dg-surface-scrim: rgba(29, 29, 29, 0.4);
+  --dg-surface-deep: #f1eeeb;
+
+  /* ---- palette: ink ----------------------------------------------------- */
+  --dg-ink-primary: #1d1d1d;
+  --dg-ink-secondary: #3a3937;
+  --dg-ink-muted: #6e6c6a;
+  --dg-ink-faint: #a3a09d;
+  --dg-ink-on-accent: #1d1d1d;
+
+  /* ---- palette: strokes ------------------------------------------------- */
+  --dg-line-hairline: rgba(29, 29, 29, 0.1);
+  --dg-line-hover: rgba(29, 29, 29, 0.22);
+  --dg-line-active: rgba(29, 29, 29, 0.4);
+
+  /* ---- palette: accent --------------------------------------------------
+     Fuchsia is the hero. Blue is the second identity color; orange is
+     a supporting color for any third language the model hears. */
+  --dg-accent: #e042ff;
+  --dg-accent-dim: #f3c2fc;
+  --dg-accent-alt: #00b2ff;
+  --dg-accent-3: #fa8100;
+  --dg-danger: #eb2a2e;
+
+  /* ---- palette: code cards (the dark slate of the social cards) -------- */
+  --dg-code-bg: #1d1d1d;
+  --dg-code-ink: #fcfaf8;
+  --dg-code-muted: #a3a09d;
+  --dg-code-highlight: #f7f300;
+
+  /* ---- palette: grey ramp ----------------------------------------------- */
+  --dg-grey-100: #ffffff;
+  --dg-grey-200: #6e6c6a;
+  --dg-grey-300: #a3a09d;
+  --dg-grey-400: #c4c4c4;
+  --dg-grey-500: #e6e3e0;
+
+  /* ---- materials: brand kit 2026 header art, cropped ------------------- */
+  --dg-material-hero: url("/materials/clay-globe.jpg");
+  --dg-material-empty: url("/materials/glass-waveform.jpg");
+
+  /* ---- type --------------------------------------------------------------
+     Perfektta is the headline face and is licensed, so it is not shipped.
+     Work Sans at 600 with tight tracking stands in. */
+  --dg-font-display: "Work Sans", system-ui, sans-serif;
+  --dg-font-ui: "Work Sans", system-ui, sans-serif;
+  --dg-font-mono: "Azeret Mono", ui-monospace, Menlo, monospace;
+
+  --dg-weight-regular: 400;
+  --dg-weight-medium: 500;
+  --dg-weight-bold: 600;
+  --dg-tracking-display: -0.03em;
+  --dg-tracking-body: -0.01em;
+  --dg-tracking-label: 0.06em;
+
+  /* ---- geometry --------------------------------------------------------- */
+  --dg-radius-sm: 8px;
+  --dg-radius-md: 12px;
+  --dg-radius-lg: 20px;
+  --dg-radius-round: 50%;
+  --dg-radius-pill: 9999px;
+
+  /* ---- elevation -------------------------------------------------------- */
+  --dg-shadow-panel: 0 24px 60px rgba(29, 29, 29, 0.12);
+  --dg-shadow-soft: 0 1px 2px rgba(29, 29, 29, 0.06), 0 8px 24px rgba(29, 29, 29, 0.06);
+  --dg-blur-glass: 18px;
+
+  /* ---- motion ----------------------------------------------------------- */
+  --dg-motion-breathe: 2.4s;
+  --dg-motion-fast: 160ms;
+  --dg-motion-base: 280ms;
+  --dg-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dg-orb-glow-blur: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dg-motion-breathe: 0s;
+    --dg-motion-fast: 0s;
+    --dg-motion-base: 0s;
+  }
+}

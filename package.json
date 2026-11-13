@@ -1,0 +1,42 @@
+{
+  "name": "feature-showcase-lab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": { "node": ">=22.9" },
+  "scripts": {
+    "dev": "concurrently -n web,api \"vite\" \"PORT=${API_PORT:-8081} node --watch --env-file-if-exists=.env server.js\"",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env server.js",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "sample": "bash demos/${FEATURE:-language-hint}/make-sample.sh",
+    "og": "bash scripts/og/render.sh",
+    "verify:live": "LIVE=1 vitest run tests/live.test.ts",
+    "build:all": "bash scripts/build.sh --all",
+    "new": "bash scripts/new.sh",
+    "deploy": "bash scripts/deploy.sh",
+    "checks": "bash scripts/check.sh"
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^5.18.0",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/supertest": "^7.2.1",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^10.0.7",
+    "supertest": "^7.3.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0"
+  }
+}

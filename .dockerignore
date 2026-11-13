@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+.env
+tests
+scripts
+samples
+.claude
+.hub
+advocacy
+*.log
+docs
+sets

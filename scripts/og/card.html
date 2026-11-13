@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: 'Work Sans'; src: url('../../public/fonts/WorkSans-VariableFont_wght.ttf'); font-weight: 100 900; }
+@font-face { font-family: 'Azeret Mono'; src: url('../../public/fonts/AzeretMono-VariableFont_wght.ttf'); font-weight: 100 900; }
+html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+body { background: #fcfaf8; font-family: 'Work Sans'; color: #1d1d1d; position: relative; }
+.art.wave { background: url('../../public/materials/glass-waveform.jpg') center / 100% auto no-repeat, #e042ff; }
+.art { position: absolute; right: 0; top: 0; width: 470px; height: 630px; background: url('../../public/materials/clay-globe.jpg') center / cover no-repeat; }
+.copy { position: absolute; left: 72px; top: 64px; width: 600px; display: flex; flex-direction: column; gap: 26px; height: 502px; }
+.logo { height: 38px; width: auto; align-self: flex-start; }
+h1 { margin: 0; font-weight: 700; font-size: 76px; line-height: 0.98; letter-spacing: -0.03em; }
+p { margin: 0; font-size: 28px; line-height: 1.35; color: #3a3937; }
+code { white-space: nowrap; margin-top: auto; align-self: flex-start; background: #1d1d1d; color: #fcfaf8; font-family: 'Azeret Mono'; font-size: 22px; padding: 16px 22px; border-radius: 14px; }
+code mark { background: transparent; color: #f7f300; }
+</style></head>
+<body>
+<div class="art" id="a"></div>
+<div class="copy">
+  <img class="logo" src="../../public/deepgram-logo.svg" alt="">
+  <h1 id="h"></h1>
+  <p id="p"></p>
+  <code id="c"></code>
+</div>
+<script>
+const q = new URLSearchParams(location.search)
+if (q.get('art') === 'wave') document.getElementById('a').classList.add('wave')
+document.getElementById('h').textContent = q.get('h')
+// Never break a hyphenated name like Nova-3 across lines.
+const p = document.getElementById('p')
+for (const part of q.get('p').split(/(\S+-\S+)/)) {
+  if (part.includes('-')) p.append(Object.assign(document.createElement('span'), { textContent: part, style: 'white-space: nowrap' }))
+  else p.append(part)
+}
+const c = q.get('c'), m = q.get('m')
+const i = c.indexOf(m)
+document.getElementById('c').innerHTML = ''
+document.getElementById('c').append(c.slice(0, i), Object.assign(document.createElement('mark'), { textContent: m }), c.slice(i + m.length))
+</script>
+</body></html>

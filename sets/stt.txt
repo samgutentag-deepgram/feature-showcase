@@ -1,0 +1,14 @@
+# stt: one demo id per line; blank lines and # comments are ignored.
+diarize
+dictation
+filler-words
+interim-results
+keyterm
+language-hint
+measurements
+numerals
+profanity-filter
+redact
+replace
+smart-format
+turn-detection

@@ -1,0 +1,12 @@
+# tts: one demo id per line; blank lines and # comments are ignored.
+flux-tts-configure
+flux-tts-turns
+flux-tts-voices
+telephone-audio
+tts-expressivity
+tts-interrupt
+tts-pause-markers
+tts-pronunciation
+tts-speed
+tts-streaming
+tts-ws-flush
