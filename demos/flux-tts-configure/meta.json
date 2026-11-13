@@ -1,0 +1,5 @@
+{
+  "title": "Flux TTS Configure | Deepgram",
+  "description": "Change a Flux voice's speed while it talks: Configure on the open socket, and the next phrase obeys it. No reconnect.",
+  "url": "https://dg-devrel-flux-tts-configure.fly.dev"
+}
