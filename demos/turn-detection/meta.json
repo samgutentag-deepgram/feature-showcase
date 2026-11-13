@@ -1,0 +1,5 @@
+{
+  "title": "Turn detection | Deepgram",
+  "description": "Pause mid-sentence and see who cuts you off: Nova-3 endpointing waits for silence, Flux eot_threshold listens to what you said.",
+  "url": "https://dg-devrel-turn-detection.fly.dev"
+}

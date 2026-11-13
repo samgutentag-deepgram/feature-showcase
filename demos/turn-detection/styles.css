@@ -1,0 +1,25 @@
+/* One row per turn. var() only: literals live in styles/packs/. */
+.turn-field { gap: 10px; }
+.turn-field__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.turn-field .segmented { align-self: flex-start; }
+
+.turn { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.turn__num { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); text-transform: uppercase; }
+.turn__words {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px dashed var(--dg-border-hover);
+  font-size: 22px;
+  line-height: 1.45;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+/* A turn the model has ended gets a solid line. */
+.turn.is-done .turn__words { border-left: 3px solid var(--dg-accent); }
+.runs--compare .turn { grid-template-columns: 1fr; gap: 4px; }
+.runs--compare .turn__words { font-size: 19px; }
+
+@media (max-width: 760px) {
+  .turn { grid-template-columns: 1fr; gap: 4px; }
+  .turn__words { font-size: 19px; }
+}
