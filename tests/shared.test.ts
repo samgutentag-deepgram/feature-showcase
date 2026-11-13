@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fetchToken, requestParams } from '../shared/common/config'
 import { closeMessage, finalTranscript, parseFlux, parseNova } from '../shared/stt/stream'
+import { loudness } from '../shared/tts/loudness'
+import { spread } from '../shared/tts/lineup'
 
 // What a stranger sees when something breaks: a sentence that says what to do, no status codes
 // on their own and no upstream detail.
@@ -106,5 +108,29 @@ describe('requestParams', () => {
   it('streams interim results on Nova unless the feature says otherwise', () => {
     expect(requestParams(nova, {})).toMatchObject({ interim_results: 'true' })
     expect(requestParams(nova, { interim_results: 'false' })).toMatchObject({ interim_results: 'false' })
+  })
+})
+
+// The lineup's loudness numbers: peak, and the RMS of the speech only, silence skipped.
+describe('loudness', () => {
+  const rate = 24000
+  const tone = (amp: number, seconds: number) => Float32Array.from({ length: rate * seconds }, (_, i) => amp * Math.sin((2 * Math.PI * 440 * i) / rate))
+
+  it('reads a half-scale sine as -6 dBFS peak and -9 dBFS speech level', () => {
+    const { peakDb, speechDb } = loudness(tone(0.5, 1), rate)
+    expect(peakDb).toBeCloseTo(-6.02, 1)
+    expect(speechDb).toBeCloseTo(-9.03, 1)
+  })
+
+  it('leaves silence out of the speech level', () => {
+    const half = tone(0.5, 1)
+    const padded = new Float32Array(half.length * 3)
+    padded.set(half, half.length)
+    expect(loudness(padded, rate).speechDb).toBeCloseTo(loudness(half, rate).speechDb, 1)
+  })
+
+  it('says how far apart the loudest and quietest voices are', () => {
+    expect(spread([{ voice: 'a', speechDb: -16 }, { voice: 'b', speechDb: -19.5 }, { voice: 'c' }])).toBeCloseTo(3.5)
+    expect(spread([{ voice: 'a', speechDb: -16 }])).toBeUndefined()
   })
 })

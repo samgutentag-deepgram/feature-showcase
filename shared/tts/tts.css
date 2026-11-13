@@ -91,6 +91,8 @@
 .tts-turns td { padding: 6px 8px; vertical-align: top; color: var(--dg-text-body); border-bottom: 1px solid var(--dg-bg-well); }
 .tts-turns td code { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-primary); }
 .tts-turns tr.is-pending td { color: var(--dg-text-label); }
+.tts-turns tr.is-playing td { background: var(--dg-bg-well); color: var(--dg-text-primary); }
+.tts-turns tr.is-playing td:first-child { box-shadow: inset 3px 0 0 var(--dg-accent); }
 .tts-turns__ok { font-family: var(--dg-font-code); font-size: 11px; color: var(--dg-text-label); }
 .tts-turns__text { min-width: 180px; }
 @media (max-width: 760px) { .tts-turns th:nth-child(2), .tts-turns td:nth-child(2) { display: none; } }

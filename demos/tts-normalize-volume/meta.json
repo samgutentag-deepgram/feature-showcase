@@ -1,0 +1,5 @@
+{
+  "title": "Text-to-speech volume normalization | Deepgram",
+  "description": "Hear five Flux voices back to back with normalize_volume off and on, and see each one's loudness measured as it plays.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tts-normalize-volume/"
+}

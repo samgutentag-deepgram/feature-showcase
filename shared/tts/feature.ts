@@ -53,6 +53,10 @@ export interface TtsFeature<S> {
     tokenMs: number
     mode(state: S): 'whole' | 'stream' | 'late'
   }
+  // A lineup (shared/tts/lineup.ts): one press speaks the line in every voice in `voices`, back to
+  // back, and the run card lists each voice's peak and speech level, plus the spread between the
+  // loudest and quietest. The voice picker hides. POST only, linear16 with container=none.
+  lineup?: boolean
   // A voice browser: the voice comes from the state, and the shell's voice picker hides. Every voice
   // it can return must be in voices, which the checks request one by one.
   voiceFrom?(state: S): string

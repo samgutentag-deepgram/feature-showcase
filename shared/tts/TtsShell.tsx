@@ -11,6 +11,7 @@ import { listenForTurn, type Listener } from './listen'
 import { sessionUrl, speakSession, type Turn } from './session'
 import { LATE_MS, speakTokens, tokenUrl, type TokenStats } from './tokens'
 import { cutMessage, speakSocket, type CutStats } from './socket'
+import { speakLineup, spread, type LineupRow } from './lineup'
 import { Spectrum } from './Spectrum'
 import './tts.css'
 
@@ -35,6 +36,9 @@ interface Run<S> {
   // How the cut came: the button (or space bar), or the listener's voice, with the first word heard.
   cutBy?: 'button' | 'voice'
   cutWord?: string
+  // Lineup mode: each voice's loudness, and which one is playing (-1 when none).
+  lineup?: LineupRow[]
+  playing?: number
   error?: string
 }
 
@@ -175,6 +179,17 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           listener?.stop()
           setMic('off')
         }
+      } else if (feature.lineup) {
+        const onUpdate = (lineup: LineupRow[], playing?: number) =>
+          setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, lineup, ...(playing === undefined ? {} : { playing }) } : r)))
+        const p = await speakLineup(c, a, feature.voices, feature.params(st), line, onUpdate)
+        if (lastId.current !== id) {
+          p.stop()
+          throw new DOMException('Stopped', 'AbortError')
+        }
+        stopRef.current = p.stop
+        const { stats, buffers, rows } = await p.done
+        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, lineup: rows } : r)))
       } else {
         const onProgress = file ? (received: number) => setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, received } : r))) : undefined
         const p = await speak(c, a, voice, feature.params(st), line, onProgress)
@@ -219,9 +234,11 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
   }
 
   const params = feature.params(state)
-  const query = speakQuery(voice, params).split('&')
-  const marked = (part: string) => feature.highlight.some((k) => part.startsWith(`${k}=`))
   const latest = runs[0]
+  // A lineup shows the request for the voice playing now, the first voice otherwise.
+  const shownVoice = feature.lineup && latest?.lineup && (latest.playing ?? -1) >= 0 ? latest.lineup[latest.playing ?? 0].voice : voice
+  const query = speakQuery(shownVoice, params).split('&')
+  const marked = (part: string) => feature.highlight.some((k) => part.startsWith(`${k}=`))
   const socket = !!feature.cutIn
   // Session mode: the query holds only the audio format; the rest goes in Configure.
   const sessionPath = feature.session
@@ -270,7 +287,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
             </button>
           ))}
         </div>
-        {!feature.voiceFrom && (
+        {!feature.voiceFrom && !feature.lineup && (
         <label className="tts-voice">
           <span className="tts-text__label">Voice</span>
           <select value={voice} disabled={busy} onChange={(e) => setVoice(e.target.value)}>
@@ -444,9 +461,16 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                   </span>
                 </>
               ) : (
-                <span className="wire__part wire__part--text tts-body">
-                  <span className="wire__key">body</span> {JSON.stringify({ text: line })}
-                </span>
+                <>
+                  <span className="wire__part wire__part--text tts-body">
+                    <span className="wire__key">body</span> {JSON.stringify({ text: line })}
+                  </span>
+                  {feature.lineup && (
+                    <span className="wire__part wire__part--text tts-body">
+                      <span className="wire__key">sent once per voice, only model changes:</span> {feature.voices.map(voiceName).join(', ')}
+                    </span>
+                  )}
+                </>
               )}
             </code>
           </div>
@@ -573,6 +597,8 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                     <dd>{(r.cut.droppedMs / 1000).toFixed(1)} s</dd>
                   </dl>
                 </>
+              ) : r.lineup ? (
+                <LineupTable rows={r.lineup} playing={r.playing ?? -1} />
               ) : r.stats ? (
                 <dl className="tts-stats">
                   <dt>First audio</dt>
@@ -681,5 +707,43 @@ function FileProgress<S>({ run, params }: { run: Run<S>; params: Params }) {
       </div>
       <p className="hint">Downloading the whole file. Nothing plays until it is all here.</p>
     </div>
+  )
+}
+
+// Lineup mode: one row per voice, the one playing now marked, and the spread underneath.
+function LineupTable({ rows, playing }: { rows: LineupRow[]; playing: number }) {
+  const db = (v?: number) => (v === undefined ? '…' : `${v.toFixed(1)} dB`)
+  const s = spread(rows)
+  return (
+    <>
+      <table className="tts-turns">
+        <thead>
+          <tr>
+            <th>Voice</th>
+            <th>Peak</th>
+            <th>Speech level</th>
+            <th>Audio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={r.voice} className={r.speechDb === undefined ? 'is-pending' : i === playing ? 'is-playing' : ''}>
+              <td>
+                <code>{r.voice}</code>
+              </td>
+              <td>{db(r.peakDb)}</td>
+              <td>{db(r.speechDb)}</td>
+              <td>{r.seconds === undefined ? '…' : `${r.seconds.toFixed(1)} s`}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {s !== undefined && (
+        <dl className="tts-stats">
+          <dt>Loudest to quietest</dt>
+          <dd>{s.toFixed(1)} dB</dd>
+        </dl>
+      )}
+    </>
   )
 }

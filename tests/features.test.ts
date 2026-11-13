@@ -133,6 +133,12 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
       expect(feature.voices.every((v) => v.startsWith('flux-'))).toBe(true)
       for (const state of feature.variants) expect(feature.params(state).container).toBe('none')
     }
+    // A lineup measures raw samples, so it asks for 16-bit PCM with no container, over POST.
+    if (feature.lineup) {
+      expect(feature.cutIn ?? feature.session ?? feature.tokens ?? feature.voiceFrom).toBeUndefined()
+      expect(feature.voices.length).toBeGreaterThan(1)
+      for (const state of feature.variants) expect([feature.params(state).encoding, feature.params(state).container]).toEqual(['linear16', 'none'])
+    }
     // A voice browser only ever asks for voices the checks request.
     if (feature.voiceFrom) for (const state of feature.variants) expect(feature.voices).toContain(feature.voiceFrom(state))
   })

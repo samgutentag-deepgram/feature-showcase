@@ -79,6 +79,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 | [tts-bit-rate](demos/tts-bit-rate) | How small can the file get? | [/demos/tts-bit-rate/](https://dg-devrel-demos.fly.dev/demos/tts-bit-rate/) |
 | [tts-expressivity](demos/tts-expressivity) | Calm for support, bright for good news. | [/demos/tts-expressivity/](https://dg-devrel-demos.fly.dev/demos/tts-expressivity/) |
 | [tts-interrupt](demos/tts-interrupt) | Let the caller cut in. | [/demos/tts-interrupt/](https://dg-devrel-demos.fly.dev/demos/tts-interrupt/) |
+| [tts-normalize-volume](demos/tts-normalize-volume) | Every voice at the same volume. | [/demos/tts-normalize-volume/](https://dg-devrel-demos.fly.dev/demos/tts-normalize-volume/) |
 | [tts-pause-markers](demos/tts-pause-markers) | Give them time to write it down. | [/demos/tts-pause-markers/](https://dg-devrel-demos.fly.dev/demos/tts-pause-markers/) |
 | [tts-pronunciation](demos/tts-pronunciation) | Say the drug name right. | [/demos/tts-pronunciation/](https://dg-devrel-demos.fly.dev/demos/tts-pronunciation/) |
 | [tts-sample-rate](demos/tts-sample-rate) | How many kilohertz do you need? | [/demos/tts-sample-rate/](https://dg-devrel-demos.fly.dev/demos/tts-sample-rate/) |
@@ -200,7 +201,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | Component | Path | What it does |
 |---|---|---|
 | `Shell` | `stt/Shell.tsx` | The speech-to-text page: masthead, hero, mode tabs, model toggle (Flux / Nova-3), mic or file capture, Request and Response cards, kept runs (last two side by side), call to action. Used when `kind` is unset |
-| `TtsShell` | `tts/TtsShell.tsx` | The text-to-speech page: type or pick a line, pick a voice, set the feature, Speak. Timings, spectrum, Replay, last two runs side by side. Speaks over REST, or over the socket with `cutIn`, `session`, or token modes |
+| `TtsShell` | `tts/TtsShell.tsx` | The text-to-speech page: type or pick a line, pick a voice, set the feature, Speak. Timings, spectrum, Replay, last two runs side by side. Speaks over REST (one voice, or every voice back to back with `lineup`), or over the socket with `cutIn`, `session`, or token modes |
 | `AgentShell` | `agent/AgentShell.tsx` | The voice agent page: listen model toggle, Start and talk, agent audio playback, timed event log, mid-call action buttons, last two conversations side by side |
 | `mount` | `main.tsx` | Renders a demo's page, picked by the feature's `kind` (`'tts'`, `'agent'`, or none). Each page's generated entry calls it |
 | `demo`, `setDemo` | `common/demo.ts` | Which demo this page is, set by its entry at run time: folder, `utm_source`, page path |
@@ -210,7 +211,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | Piece | Path | What it does |
 |---|---|---|
 | `defineFeature`, `Feature<S>` | `common/feature.ts` | The speech-to-text contract: `models`, `modes`, `variants`, `phrases`, `params`, `highlight`, `echo`, `Controls`, `Response`, `Result`, `copy`, `links` |
-| `defineTtsFeature`, `TtsFeature<S>` | `tts/feature.ts` | The TTS contract: `voices`, `phrases`, `params`, `variants`, `Controls`, plus optional `cutIn`, `session`, `tokens`, `restartOnPick`, `phoneMark`, `promptState` |
+| `defineTtsFeature`, `TtsFeature<S>` | `tts/feature.ts` | The TTS contract: `voices`, `phrases`, `params`, `variants`, `Controls`, plus optional `cutIn`, `session`, `tokens`, `lineup`, `restartOnPick`, `phoneMark`, `promptState` |
 | `defineAgentFeature`, `AgentFeature<S>` | `agent/feature.ts` | The agent contract: `agent` settings, `actions` (mid-call messages with their `ack`), `events`, `functionExample` |
 | `LISTEN_MODELS` | `agent/feature.ts` | Flux then Nova-3 as the agent's listen model, behind the shared toggle |
 | `settingsMessage` | `agent/feature.ts` | Builds the exact Settings message the agent socket sends and the Request card shows |
@@ -225,6 +226,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | `LimitDialog` | `stt/LimitDialog.tsx` | The dialog shown when an upload breaks the 1 minute or 1 MB limit |
 | `TakeHome` | `common/TakeHome.tsx` | "Build this yourself": copies the demo's generated `prompt.md` for a coding agent |
 | `Steps` | `tts/Steps.tsx` | A row of up to five settings, least to most ("Slower" over "0.85x"); a click restarts the line with it |
+| Lineup | `tts/lineup.ts`, `tts/loudness.ts` | `lineup: true`: the line in every voice, back to back with a 0.4 s gap, each voice's peak and speech level (dBFS) in a table, and the loudest-to-quietest spread. Linear16, `container=none` only |
 | `Spectrum` | `tts/Spectrum.tsx` | Live 0 to 12 kHz frequency bars for whatever is playing, with an optional 4 kHz phone-line mark |
 | Voice picker | `tts/TtsShell.tsx` | Built in: the feature's `voices`, grouped Flux then Aura-2, first one is the default |
 | Model toggle, mode tabs | `stt/Shell.tsx` | Built in: one tab per `modes` entry (hidden when there is one), one toggle button per `models` entry |
