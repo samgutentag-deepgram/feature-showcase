@@ -73,6 +73,7 @@ served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 |---|---|---|
 | [aura-voice-picker](demos/aura-voice-picker) | Hear every Aura-2 voice. | [/demos/aura-voice-picker/](https://dg-devrel-demos.fly.dev/demos/aura-voice-picker/) |
 | [flux-tts-configure](demos/flux-tts-configure) | Change the pace without hanging up. | [/demos/flux-tts-configure/](https://dg-devrel-demos.fly.dev/demos/flux-tts-configure/) |
+| [flux-tts-session-metadata](demos/flux-tts-session-metadata) | One bill for the whole call. | [/demos/flux-tts-session-metadata/](https://dg-devrel-demos.fly.dev/demos/flux-tts-session-metadata/) |
 | [flux-tts-turns](demos/flux-tts-turns) | Every turn, accounted for. | [/demos/flux-tts-turns/](https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/) |
 | [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [/demos/flux-tts-voices/](https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/) |
 | [telephone-audio](demos/telephone-audio) | Does it sound like a phone call? | [/demos/telephone-audio/](https://dg-devrel-demos.fly.dev/demos/telephone-audio/) |
@@ -255,7 +256,7 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | capture, `readDuration` | `common/capture.ts` + `pcm-worklet.js` | Mic or uploaded file to 16 kHz linear16 PCM; uploads play aloud while they stream |
 | `speakQuery`, `replay`, `pcm16ToFloat`, `mulawToFloat` | `tts/speak.ts` | One TTS request played as bytes arrive; decoders for linear16 and mu-law |
 | `socketUrl`, `cutMessage` | `tts/socket.ts` | One line over the TTS socket with a cut-in (`Interrupt` on Flux, `Clear` on Aura-2) |
-| `speakThenClose`, `CLOSE_MESSAGE` | `tts/close.ts` | One line over the TTS socket, then closed mid-line: `{"type":"Close"}` (Deepgram finishes the line) or the client drops it |
+| `close`, `speakThenClose`, `CLOSE_MESSAGE`, `sessionTotals` | `tts/close.ts` | How a demo ends the TTS socket, one `close` option: mid-line `afterMs` after Speak, with `{"type":"Close"}` (Deepgram finishes the line) or a client drop; or, with `session`, Close after the last turn and the `SessionMetadata` totals |
 | `sessionUrl`, `pieces` | `tts/session.ts` | A Flux socket session, a turn at a time, with `Configure` between turns |
 | `tokenUrl`, `tokenize` | `tts/tokens.ts` | LLM-style token streaming to a Flux voice (whole, stream, late) |
 | `LISTEN_URL` | `tts/listen.ts` | Flux STT listener whose `StartOfTurn` triggers a voice cut-in |

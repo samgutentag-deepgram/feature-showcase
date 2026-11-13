@@ -95,7 +95,10 @@
 .tts-turns tr.is-playing td:first-child { box-shadow: inset 3px 0 0 var(--dg-accent); }
 .tts-turns__ok { font-family: var(--dg-font-code); font-size: 11px; color: var(--dg-text-label); }
 .tts-turns__text { min-width: 180px; }
-@media (max-width: 760px) { .tts-turns th:nth-child(2), .tts-turns td:nth-child(2) { display: none; } }
+.tts-turns tfoot th { border-bottom: none; padding-top: 8px; }
+.tts-turns tfoot td { border-bottom: none; padding-top: 8px; }
+.tts-turns tr.tts-turns__total th, .tts-turns tr.tts-turns__total td { color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }
+@media (max-width: 760px) { .tts-turns thead th:nth-child(2), .tts-turns tbody td:nth-child(2) { display: none; } }
 
 /* Token mode: the reply as it arrives, like an LLM typing. */
 .tts-typed { margin: 0; font-size: 15px; line-height: 1.5; color: var(--dg-text-primary); min-height: 3em; }

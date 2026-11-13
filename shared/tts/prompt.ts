@@ -9,7 +9,7 @@ import { LISTEN_URL } from './listen'
 import { pieces, sessionUrl } from './session'
 import { LATE_MS, tokenize, tokenUrl } from './tokens'
 import { cutMessage, socketUrl } from './socket'
-import { CLOSE_MESSAGE } from './close'
+import { CLOSE_MESSAGE, closeMidLine } from './close'
 import { isFlux, speakQuery, speakUrl, voiceName } from './speak'
 
 const fence = (lang: string, body: string) => '```' + lang + '\n' + body + '\n```'
@@ -178,7 +178,19 @@ ends with \`SpeechMetadata\`: the same \`speech_id\`, \`audio_duration_ms\`, and
 \`billable_character_count\`. Send the next turn when about a second of audio is left in your playback
 queue. The server adds no space between turns, so end each one with a space. Keep the socket open
 across turns; the voice carries its tone from one to the next.
+${feature.close ? `
+## Close the session and read the totals
 
+After the last turn's \`SpeechMetadata\`, send:
+
+${fence('json', JSON.stringify(CLOSE_MESSAGE))}
+
+Flux answers with one last message, \`SessionMetadata\`, then closes the socket with code 1000:
+\`total_audio_duration_ms\`, \`total_input_character_count\`, and \`total_billable_character_count\`
+for every turn on the socket. In testing, each total equaled the sum of the turns' \`SpeechMetadata\`. Closing the
+socket yourself, without \`Close\`, gets no \`SessionMetadata\`. Flush the last turn before you send
+\`Close\`.
+` : ''}
 ${tokenSection(true)}
 
 ${playSection(String(params.encoding), Number(params.sample_rate))}
@@ -193,6 +205,7 @@ ${doneSection([
   'The socket URL and messages match the ones above, apart from the text.',
   '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
   ...(configure ? ['Changing the setting while it talks changes the next turn, with no reconnect and no gap.'] : ['Every turn shows its speech_id, audio length and billable characters.']),
+  ...(feature.close ? ['After the last turn, Close is sent and the page shows the totals from `SessionMetadata` next to the sum of the turns.'] : []),
   'Socket errors and closes show a sentence that says what to do next, not a stack trace.',
 ])}
 
@@ -200,7 +213,7 @@ Docs: ${feature.links.docs}
 `
   }
 
-  if (feature.close) {
+  if (closeMidLine(feature)) {
     return `${head}
 Build a page that speaks a line over a Deepgram text-to-speech socket and then closes the socket
 without cutting off the end of the line. Live demo: ${meta.url}

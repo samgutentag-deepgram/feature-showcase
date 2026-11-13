@@ -46,6 +46,8 @@ export interface TtsFeature<S> {
   // audio length and billable characters. configure(state) is sent as Configure before the next
   // turn whenever it changes, so a pick mid-line lands on the next turn with no reconnect and no
   // restart. Flux voices only.
+  // With close (below), the page sends Close after the last turn's SpeechMetadata and waits for
+  // SessionMetadata, the session's totals, before the socket shuts.
   session?: {
     split: 'sentence' | 'phrase'
     configure?(state: S): Record<string, number>
@@ -67,14 +69,17 @@ export interface TtsFeature<S> {
   // A line of its own per setting (the same words in each language). When a pick changes it, the
   // text box takes the new line.
   textFor?(state: S): string
-  // Close mode (shared/tts/close.ts): the page sends the line over the socket with no Flush and,
-  // afterMs later, closes the socket while the audio is still coming, the way an app hangs up after
-  // its last line. graceful(state) picks how: send {"type":"Close"} and let Deepgram finish, or
-  // close the socket from the client and lose what had not arrived. params() gives encoding and
-  // sample_rate only, as in socket mode.
+  // How the page ends the socket (shared/tts/close.ts). One concept, two places to use it:
+  //   afterMs set (close mode): the line goes out as one Speak with no Flush and, afterMs later,
+  //     the socket is closed while the audio is still coming, the way an app hangs up after its
+  //     last line. params() gives encoding and sample_rate only, as in socket mode.
+  //   with session (no afterMs): Close goes out once the last turn's audio is in, and the page
+  //     shows SessionMetadata, the session's totals, next to the sum of the turns. Flux only.
+  // graceful(state) picks how: send {"type":"Close"} and let Deepgram finish (the default), or
+  // close the socket from the client and lose what had not arrived. A session always sends Close.
   close?: {
-    afterMs: number
-    graceful(state: S): boolean
+    afterMs?: number
+    graceful?(state: S): boolean
   }
   // Socket mode: the page speaks over wss://.../v2/speak (Flux) or /v1/speak (Aura-2) instead of
   // POST, and shows a Cut in button while the line plays, like a caller talking over the agent.

@@ -16,7 +16,7 @@ import { ttsPromptRequests } from '../shared/tts/prompt'
 import { LISTEN_URL } from '../shared/tts/listen'
 import { pieces, sessionUrl } from '../shared/tts/session'
 import { tokenize, tokenUrl } from '../shared/tts/tokens'
-import { CLOSE_MESSAGE } from '../shared/tts/close'
+import { CLOSE_MESSAGE, closeMidLine } from '../shared/tts/close'
 
 // The voice cut-in socket: opens with the key, takes a second of silence, and closes cleanly.
 function probeListen(): Promise<string> {
@@ -137,7 +137,8 @@ async function cutInEveryVariant(feature: TtsFeature<unknown>) {
 // Every voice with every variant, 8 at a time (a voice browser has hundreds), retrying a 429.
 // Session mode: one socket per voice, every variant in turn, each a turn of its own (Configure
 // first when the variant has one). Each must answer ConfigureSuccess when configured, and every
-// turn must end in SpeechMetadata with a new speech_id, audio and billable characters.
+// turn must end in SpeechMetadata with a new speech_id, audio and billable characters. With close,
+// Close goes after the last turn and SessionMetadata must report the sum of every turn.
 async function sessionEveryVariant(feature: TtsFeature<unknown>) {
   const session = feature.session!
   const one = (voice: string) =>
@@ -149,6 +150,7 @@ async function sessionEveryVariant(feature: TtsFeature<unknown>) {
       let i = 0
       let ok = 0
       let bytes = 0
+      const sum = { audio: 0, billed: 0 }
       const end = (r: string) => (clearTimeout(timer), ws.close(), resolve(r))
       const timer = setTimeout(() => end(`timed out at variant ${i}`), 45_000)
       const turn = () => {
@@ -168,8 +170,15 @@ async function sessionEveryVariant(feature: TtsFeature<unknown>) {
           if (!m.speech_id || ids.has(m.speech_id) || bytes < 1000 || !(m.billable_character_count > 0)) return end(`variant ${i}: ${e.data.slice(0, 200)}, ${bytes} bytes`)
           ids.add(m.speech_id)
           bytes = 0
-          if (++i === feature.variants.length) return end('ok')
-          turn()
+          sum.audio += m.audio_duration_ms
+          sum.billed += m.billable_character_count
+          if (++i < feature.variants.length) return turn()
+          if (!feature.close) return end('ok')
+          ws.send(JSON.stringify(CLOSE_MESSAGE))
+        }
+        if (m.type === 'SessionMetadata') {
+          const same = m.total_audio_duration_ms === sum.audio && m.total_billable_character_count === sum.billed
+          end(same ? 'ok' : `SessionMetadata ${e.data.slice(0, 200)} vs turns ${JSON.stringify(sum)}`)
         }
       }
     })
@@ -212,7 +221,7 @@ async function tokensEveryVariant(feature: TtsFeature<unknown>) {
 // Close must bring the rest of the line after it and end in a 1000 from Deepgram, with no Error or
 // Warning; on Flux, SessionMetadata must come first. A dropped socket must have opened and taken audio.
 async function closeEveryVariant(feature: TtsFeature<unknown>) {
-  const close = feature.close!
+  const close = closeMidLine(feature)!
   const one = (voice: string, state: unknown) =>
     new Promise<string>((resolve) => {
       const graceful = close.graceful(state)
@@ -260,7 +269,7 @@ async function closeEveryVariant(feature: TtsFeature<unknown>) {
 
 async function speakEveryVariant(feature: TtsFeature<unknown>) {
   if (feature.cutIn) return cutInEveryVariant(feature)
-  if (feature.close) return closeEveryVariant(feature)
+  if (closeMidLine(feature)) return closeEveryVariant(feature)
   if (feature.tokens) await tokensEveryVariant(feature)
   if (feature.session) await sessionEveryVariant(feature)
   const failed: string[] = []
@@ -537,10 +546,18 @@ async function ttsPromptLive(md: string): Promise<string[]> {
       // A prompt with Interrupt: Speak and Flush, then the cut once audio flows. Otherwise every
       // message in order (Configure, Speak, Flush): each Configure must be applied and the turn end.
       const interrupts = s.messages.some((m) => m.type === 'Interrupt' || m.type === 'Clear')
-      // A prompt with Close: every message in order, then the rest of the audio and a 1000 from Deepgram.
+      // A prompt with Close: every message in order, then the rest of the audio and a 1000 from
+      // Deepgram. On Flux (/v2/speak), SessionMetadata must come first, its billable total the sum of
+      // the turns' SpeechMetadata.
       const closes = s.messages.some((m) => m.type === 'Close')
+      const flux = s.url.includes('/v2/speak')
+      let billed = 0
+      let totals = ''
       ws.onclose = (e) => {
-        if (closes) end(e.code === 1000 && bytes > 48_000 ? 'ok' : `closed ${e.code} with ${bytes} bytes`)
+        if (!closes) return
+        if (e.code !== 1000 || bytes <= 48_000) return end(`closed ${e.code} with ${bytes} bytes`)
+        if (flux && totals !== 'ok') return end(totals || 'no SessionMetadata before the close')
+        end('ok')
       }
       const wantConfigured = s.messages.filter((m) => m.type === 'Configure').length
       let configured = 0
@@ -566,7 +583,11 @@ async function ttsPromptLive(md: string): Promise<string[]> {
         const m = JSON.parse(e.data)
         if (m.type === 'Error' || m.type === 'Warning' || m.type === 'ConfigureFailure') return end(`${m.type}: ${e.data.slice(0, 200)}`)
         if (m.type === 'ConfigureSuccess') configured++
-        if (closes) return
+        if (closes) {
+          if (m.type === 'SpeechMetadata') billed += m.billable_character_count
+          if (m.type === 'SessionMetadata') totals = m.total_billable_character_count === billed && billed > 0 ? 'ok' : `SessionMetadata ${e.data.slice(0, 200)}, turns billed ${billed}`
+          return
+        }
         if (!interrupts && m.type === 'SpeechMetadata') return end(configured === wantConfigured && bytes > 1000 && m.speech_id ? 'ok' : `configured ${configured}/${wantConfigured}, ${bytes} bytes, speech_id ${m.speech_id}`)
         if (m.type === 'SpeechInterrupted') {
           if (typeof m.text_spoken !== 'string' || !m.text_spoken.trim()) return end(`no text_spoken: ${e.data.slice(0, 200)}`)

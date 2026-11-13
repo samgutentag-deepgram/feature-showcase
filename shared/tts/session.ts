@@ -10,9 +10,16 @@
 //   which is why the line is split into turns.
 //   Each Speak + Flush is a turn of its own: SpeechStarted {speech_id}, Flushed, then
 //   SpeechMetadata {speech_id, audio_duration_ms, input_character_count, billable_character_count}.
+// Close, verified live 2026-11-13 (flux-wes-en and flux-hannah-en): sent after the last turn's
+//   SpeechMetadata, it is answered in 24-80 ms by SessionMetadata {total_audio_duration_ms,
+//   total_input_character_count, total_billable_character_count}, then a 1000 close. On 3- and
+//   4-turn sessions each total was the exact sum of the turns' SpeechMetadata, and the character
+//   totals matched the characters sent, trailing spaces included. Closing the socket without
+//   Close gets no SessionMetadata.
 import { fetchToken } from '../common/config'
 import type { Params } from '../common/feature'
 import type { TtsFeature } from './feature'
+import { closeSocket, sessionTotals, type SessionTotals } from './close'
 import { mulawToFloat, pcm16ToFloat, speakPath, speakQuery } from './speak'
 
 export interface Turn {
@@ -32,6 +39,7 @@ export interface Turn {
 export interface SessionResult {
   buffers: AudioBuffer[]
   turns: Turn[]
+  totals?: SessionTotals
   seconds: number
   firstAudioMs: number
 }
@@ -40,6 +48,9 @@ export interface SessionPlayback {
   done: Promise<SessionResult>
   stop(): void
 }
+
+// How long to wait for SessionMetadata after Close. It came in 24-80 ms in testing.
+const CLOSE_WAIT_MS = 5000
 
 // Ask for the next turn when less than this much audio is left in the queue.
 const LEAD_S = 0.8
@@ -99,6 +110,9 @@ export async function speakSession<S>(
   let current: Turn | null = null
   let sentAt = 0
   let turnDone: (() => void) | null = null
+  let closedAt = 0
+  let totals: SessionTotals | undefined
+  let totalsIn: (() => void) | null = null
   let fail: (e: Error) => void = () => {}
   const failed = new Promise<never>((_, reject) => {
     fail = reject
@@ -151,6 +165,10 @@ export async function speakSession<S>(
     if (typeof e.data !== 'string') return play(decode(new Uint8Array(e.data as ArrayBuffer)))
     const m = JSON.parse(e.data) as Record<string, unknown>
     if (m.type === 'Error' || m.type === 'ConfigureFailure') return fail(new Error(`Deepgram: ${String(m.description ?? m.code ?? m.type)}`))
+    if (m.type === 'SessionMetadata') {
+      totals = sessionTotals(m, performance.now() - closedAt)
+      return totalsIn?.()
+    }
     if (!current) return
     if (m.type === 'ConfigureSuccess') current.configured = m.applied as Record<string, unknown>
     if (m.type === 'SpeechStarted') current.speechId = String(m.speech_id)
@@ -204,11 +222,23 @@ export async function speakSession<S>(
         report()
         await Promise.race([finished, failed])
       }
+      if (feature.close && !stopped) {
+        // Every turn's audio is in, so Close ends nothing early: the server answers with the
+        // session's totals, then shuts the socket (1000).
+        const arrived = new Promise<void>((r) => {
+          totalsIn = r
+        })
+        closedAt = performance.now()
+        closeSocket(ws, true)
+        const late = new Promise<void>((r) => setTimeout(r, CLOSE_WAIT_MS))
+        await Promise.race([arrived, late, failed])
+        if (!totals) throw new Error(`Sent Close, but no SessionMetadata came back within ${CLOSE_WAIT_MS / 1000} s. Try again.`)
+      }
       await new Promise((r) => setTimeout(r, Math.max(next - ctx.currentTime, 0) * 1000 + 50))
       if (stopped) throw new DOMException('Stopped', 'AbortError')
       ws.close()
       const buffers = played.map((s) => s.buffer).filter((b): b is AudioBuffer => !!b)
-      return { buffers, turns, seconds: buffers.reduce((s, b) => s + b.duration, 0), firstAudioMs }
+      return { buffers, turns, totals, seconds: buffers.reduce((s, b) => s + b.duration, 0), firstAudioMs }
     } catch (err) {
       ws.close()
       throw err

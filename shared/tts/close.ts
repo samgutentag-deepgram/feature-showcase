@@ -13,9 +13,43 @@
 // Close drains the text without a Flush: no Flush was sent in any of these runs.
 import { fetchToken } from '../common/config'
 import type { Params } from '../common/feature'
+import type { TtsFeature } from './feature'
 import { mulawToFloat, pcm16ToFloat, type Result } from './speak'
 
 export const CLOSE_MESSAGE = { type: 'Close' } as const
+
+// Close mode: the feature's close, when it ends the line mid-way (afterMs after Speak) rather than
+// after a session's last turn. graceful defaults to sending Close.
+export function closeMidLine<S>(f: TtsFeature<S>) {
+  const c = f.close
+  if (!c || f.session || c.afterMs === undefined) return undefined
+  return { afterMs: c.afterMs, graceful: (s: S) => c.graceful?.(s) ?? true }
+}
+
+// SessionMetadata, Flux's last message after Close: totals for every turn on the socket. Verified
+// live 2026-11-13 (see shared/tts/session.ts): each total is the sum of the turns' SpeechMetadata.
+// Aura-2 (/v1/speak) sends no message after Close, only the rest of the audio and the close.
+export interface SessionTotals {
+  audioMs: number
+  inputChars: number
+  billableChars: number
+  // From sending Close to SessionMetadata arriving.
+  afterCloseMs: number
+}
+
+export const sessionTotals = (m: Record<string, unknown>, afterCloseMs: number): SessionTotals => ({
+  audioMs: Number(m.total_audio_duration_ms),
+  inputChars: Number(m.total_input_character_count),
+  billableChars: Number(m.total_billable_character_count),
+  afterCloseMs,
+})
+
+// The two ways to end the socket: Close lets Deepgram finish and close it (1000); dropping it from
+// the client loses whatever had not arrived.
+export function closeSocket(ws: WebSocket, graceful: boolean) {
+  if (graceful) ws.send(JSON.stringify(CLOSE_MESSAGE))
+  else ws.close(1000)
+}
 
 export interface CloseStats {
   graceful: boolean
@@ -30,6 +64,8 @@ export interface CloseStats {
   afterS: number
   // Text messages that came in after the close went out, as received.
   after: Record<string, unknown>[]
+  // Flux only: SessionMetadata, if it came before the close.
+  totals?: SessionTotals
 }
 
 export interface ClosePlayback {
@@ -63,6 +99,7 @@ export async function speakThenClose(
   let carry: Uint8Array | null = null
   let timer: ReturnType<typeof setTimeout> | undefined
   const after: Record<string, unknown>[] = []
+  let totals: SessionTotals | undefined
   const played: AudioBufferSourceNode[] = []
 
   let finish: (r: Result & { close: CloseStats }) => void = () => {}
@@ -104,8 +141,7 @@ export async function speakThenClose(
       if (ws.readyState !== WebSocket.OPEN) return
       closeSentMs = performance.now() - t0
       before = bytes
-      if (graceful) ws.send(JSON.stringify(CLOSE_MESSAGE))
-      else ws.close(1000)
+      closeSocket(ws, graceful)
     }, afterMs)
   }
   ws.onerror = () => {
@@ -135,6 +171,7 @@ export async function speakThenClose(
       ws.close()
       return
     }
+    if (m.type === 'SessionMetadata') totals = sessionTotals(m, performance.now() - t0 - closeSentMs)
     if (closeSentMs) after.push(m)
   }
   ws.onclose = (e) => {
@@ -154,7 +191,7 @@ export async function speakThenClose(
       finish({
         stats: { contentType: mulaw ? `audio/mulaw;rate=${rate}` : `audio/l16;rate=${rate}`, bytes, firstByteMs: firstAudioMs, firstAudioMs, lastByteMs: closedMs, seconds },
         buffers,
-        close: { graceful, closeSentMs, firstAudioMs, closedMs, code: e.code, beforeS: before / bytesPerSec, afterS: (bytes - before) / bytesPerSec, after },
+        close: { graceful, closeSentMs, firstAudioMs, closedMs, code: e.code, beforeS: before / bytesPerSec, afterS: (bytes - before) / bytesPerSec, after, totals },
       })
     }, wait)
   }

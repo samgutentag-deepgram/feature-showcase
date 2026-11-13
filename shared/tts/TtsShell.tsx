@@ -12,7 +12,7 @@ import { listenForTurn, type Listener } from './listen'
 import { sessionUrl, speakSession, type Turn } from './session'
 import { LATE_MS, speakTokens, tokenUrl, type TokenStats } from './tokens'
 import { cutMessage, socketUrl, speakSocket, type CutStats } from './socket'
-import { CLOSE_MESSAGE, speakThenClose, type CloseStats } from './close'
+import { CLOSE_MESSAGE, closeMidLine, speakThenClose, type CloseStats, type SessionTotals } from './close'
 import { speakLineup, spread, type LineupRow } from './lineup'
 import { Spectrum } from './Spectrum'
 import './tts.css'
@@ -37,6 +37,8 @@ interface Run<S> {
   tokenStats?: TokenStats
   // Session mode: every turn on the socket, as reported.
   turns?: Turn[]
+  // Session mode with close: SessionMetadata, the totals after Close.
+  totals?: SessionTotals
   // How the cut came: the button (or space bar), or the listener's voice, with the first word heard.
   cutBy?: 'button' | 'voice'
   cutWord?: string
@@ -56,6 +58,7 @@ const ms = (n: number) => `${Math.round(n)} ms`
 const kb = (bytes: number) => (bytes / 1024).toFixed(bytes < 100 * 1024 ? 1 : 0)
 
 export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
+  const midClose = closeMidLine(feature)
   const [state, setState] = useState<S>(feature.initialState)
   // Session mode reads the controls between turns, after the click that started the run.
   const stateRef = useRef(state)
@@ -117,14 +120,14 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
     const { c, a } = audio()
     await c.resume()
     const id = ++lastId.current
-    const file = !feature.cutIn && !feature.close && feature.params(st).container !== 'none'
+    const file = !feature.cutIn && !midClose && feature.params(st).container !== 'none'
     setRuns((rs) => [{ id, label: feature.runLabel(st), voice, state: st, text: line, file }, ...rs].slice(0, 2))
     setBusy(true)
     setCutting(false)
     try {
       const { cutIn } = feature
-      if (feature.close) {
-        const p = await speakThenClose(c, a, socketUrl(voice, feature.params(st)), feature.params(st), line, feature.close.graceful(st), feature.close.afterMs)
+      if (midClose) {
+        const p = await speakThenClose(c, a, socketUrl(voice, feature.params(st)), feature.params(st), line, midClose.graceful(st), midClose.afterMs)
         if (lastId.current !== id) {
           p.stop()
           throw new DOMException('Stopped', 'AbortError')
@@ -151,9 +154,9 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           throw new DOMException('Stopped', 'AbortError')
         }
         stopRef.current = p.stop
-        const { buffers, turns, seconds, firstAudioMs } = await p.done
+        const { buffers, turns, totals, seconds, firstAudioMs } = await p.done
         const stats = { contentType: '', bytes: 0, firstByteMs: 0, firstAudioMs, lastByteMs: 0, seconds }
-        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, turns } : r)))
+        setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, turns, totals } : r)))
       } else if (cutIn) {
         let listener: Listener | null = null
         let cutDone = false
@@ -442,14 +445,14 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                   </span>
                 )
               })}
-              {feature.close ? (
+              {midClose ? (
                 <>
                   <span className="wire__part wire__part--text tts-body">
                     <span className="wire__key">send</span> {JSON.stringify({ type: 'Speak', text: line })}
                   </span>
                   <span className="wire__part wire__part--text tts-body">
-                    <span className="wire__key">{feature.close.afterMs} ms later</span>{' '}
-                    {feature.close.graceful(state) ? (
+                    <span className="wire__key">{midClose.afterMs} ms later</span>{' '}
+                    {midClose.graceful(state) ? (
                       <mark>{JSON.stringify(CLOSE_MESSAGE)}</mark>
                     ) : (
                       <span className="wire__key">nothing; the page calls ws.close()</span>
@@ -476,6 +479,12 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                   <span className="wire__key">per turn</span>{' '}
                   {feature.session.configure && <mark>{JSON.stringify({ type: 'Configure', ...feature.session.configure(state) })}</mark>}{' '}
                   {JSON.stringify({ type: 'Speak', text: '<sentence>' })} {'{"type":"Flush"}'}
+                  {feature.close && (
+                    <>
+                      {' '}
+                      <span className="wire__key">after the last turn</span> <mark>{'{"type":"Close"}'}</mark>
+                    </>
+                  )}
                 </span>
               ) : socket && feature.cutIn ? (
                 <>
@@ -523,6 +532,18 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
               ) : latest?.cut ? (
                 <span className="wire__part wire__part--text">
                   <span className="wire__key">Nothing sent, so nothing back: the rest of the line kept streaming.</span>
+                </span>
+              ) : latest?.totals ? (
+                <span className="wire__part wire__part--text">
+                  <span className="wire__key">after Close, in {ms(latest.totals.afterCloseMs)}:</span>{' '}
+                  <mark>
+                    {JSON.stringify({
+                      type: 'SessionMetadata',
+                      total_audio_duration_ms: latest.totals.audioMs,
+                      total_input_character_count: latest.totals.inputChars,
+                      total_billable_character_count: latest.totals.billableChars,
+                    })}
+                  </mark>
                 </span>
               ) : latest?.turns?.length ? (
                 <span className="wire__part wire__part--text">
@@ -615,6 +636,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                       </tr>
                     ))}
                   </tbody>
+                  {feature.close && <SessionFoot turns={r.turns} totals={r.totals} wide={!!feature.session?.configure} />}
                 </table>
               ) : r.close ? (
                 <>
@@ -826,5 +848,36 @@ function LineupTable({ rows, playing }: { rows: LineupRow[]; playing: number }) 
         </dl>
       )}
     </>
+  )
+}
+
+// Under a session's turns: what the turns add up to, then what SessionMetadata reported after Close.
+function SessionFoot({ turns, totals, wide }: { turns: Turn[]; totals?: SessionTotals; wide: boolean }) {
+  const done = turns.every((t) => t.audioMs !== undefined)
+  const audio = turns.reduce((s, t) => s + (t.audioMs ?? 0), 0)
+  const billed = turns.reduce((s, t) => s + (t.billableChars ?? 0), 0)
+  const sent = turns.reduce((s, t, i) => s + t.text.length + (i < turns.length - 1 ? 1 : 0), 0)
+  const matches = totals && totals.audioMs === audio && totals.billableChars === billed
+  return (
+    <tfoot>
+      <tr className={done ? '' : 'is-pending'}>
+        <th colSpan={wide ? 3 : 2}>Sum of the turns</th>
+        <td>{done ? `${(audio / 1000).toFixed(2)} s` : '…'}</td>
+        <td>{done ? `${billed} chars` : '…'}</td>
+        <td className="tts-turns__text">{sent} characters sent</td>
+      </tr>
+      <tr className={totals ? 'tts-turns__total' : 'is-pending'}>
+        <th colSpan={wide ? 3 : 2}>SessionMetadata</th>
+        <td>{totals ? `${(totals.audioMs / 1000).toFixed(2)} s` : '…'}</td>
+        <td>{totals ? `${totals.billableChars} chars` : '…'}</td>
+        <td className="tts-turns__text">
+          {!totals
+            ? 'Sent after Close, once the last turn is done.'
+            : matches
+              ? `Matches the sum of the turns. ${totals.inputChars} input characters.`
+              : `Differs from the sum of the turns. ${totals.inputChars} input characters.`}
+        </td>
+      </tr>
+    </tfoot>
   )
 }

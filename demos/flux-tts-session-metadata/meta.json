@@ -1,0 +1,5 @@
+{
+  "title": "Flux TTS session totals | Deepgram",
+  "description": "Speak a reply a turn at a time on one Flux socket, send Close, and see SessionMetadata report the total audio and billable characters for the whole session.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-tts-session-metadata/"
+}

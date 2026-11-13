@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { PLUMBING, describeRequest, requestParams, toQuery } from '../shared/common/config'
 import type { Feature } from '../shared/common/feature'
 import type { TtsFeature } from '../shared/tts/feature'
+import { closeMidLine } from '../shared/tts/close'
 import { LISTEN_MODELS, settingsMessage, type AgentFeature } from '../shared/agent/feature'
 import { FEATURE, demoUrl, listDemos, readMeta } from '../vite.config'
 
@@ -128,12 +129,21 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
       expect(['linear16', 'mulaw']).toContain(p.encoding)
       expect(Number(p.sample_rate)).toBeGreaterThan(0)
       // The socket streams raw audio and takes no container; POST needs one the shell can play.
-      if (feature.cutIn || feature.close) expect(p.container).toBeUndefined()
+      if (feature.cutIn || closeMidLine(feature)) expect(p.container).toBeUndefined()
       else expect(['none', 'wav']).toContain(p.container)
     }
     if (feature.cutIn) expect(feature.cutIn.reply.trim().length).toBeGreaterThan(0)
     // Close mode shows both ways to close, so the two runs can be compared.
-    if (feature.close) expect(new Set(feature.variants.map((s) => feature.close!.graceful(s)))).toEqual(new Set([true, false]))
+    // One close concept (shared/tts/close.ts). Mid-line, it is timed and offers both ways to close,
+    // so the two runs can be compared. After a session's last turn, it always sends Close (a dropped
+    // socket gets no SessionMetadata) and has no timer.
+    if (feature.close && feature.session) expect([feature.close.afterMs, feature.close.graceful]).toEqual([undefined, undefined])
+    const mid = closeMidLine(feature)
+    if (feature.close && !feature.session) {
+      expect(mid?.afterMs).toBeGreaterThan(0)
+      expect(feature.cutIn ?? feature.tokens ?? feature.lineup).toBeUndefined()
+      expect(new Set(feature.variants.map((s) => mid!.graceful(s)))).toEqual(new Set([true, false]))
+    }
     // A session or token stream runs on the Flux socket: Flux voices only, raw audio.
     if (feature.session || feature.tokens) {
       expect(feature.voices.every((v) => v.startsWith('flux-'))).toBe(true)
