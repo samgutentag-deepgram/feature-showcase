@@ -1,0 +1,10 @@
+/* Starred words: a dark pill, like a bleep. var() only: literals live in styles/packs/. */
+.transcript__text .starred {
+  background: var(--dg-text-primary);
+  color: var(--dg-bg-app);
+  font-family: var(--dg-font-code);
+  font-size: 0.8em;
+  border-radius: var(--dg-shape-pill);
+  padding: 2px 10px;
+  vertical-align: 0.1em;
+}
