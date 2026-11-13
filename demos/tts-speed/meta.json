@@ -1,0 +1,5 @@
+{
+  "title": "Text-to-speech speed | Deepgram",
+  "description": "Speak the same line at 0.7x to 1.5x with a Flux voice and compare the audio length. Slow for numbers, fast for disclaimers.",
+  "url": "https://dg-devrel-tts-speed.fly.dev"
+}
