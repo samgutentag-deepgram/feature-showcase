@@ -477,7 +477,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           </>
         )}
 
-        {busy && latest?.file && !latest.stats && <FileProgress run={latest} params={feature.params(latest.state)} />}
+        {busy && latest?.file && !latest.stats && !feature.quietFile && <FileProgress run={latest} params={feature.params(latest.state)} />}
 
         {error && <p className="error" role="alert">{error}</p>}
 

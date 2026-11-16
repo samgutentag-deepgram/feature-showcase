@@ -1,7 +1,7 @@
 <!-- Generated from the feature's index.tsx by shared/tts/prompt.ts. Do not edit by hand. -->
 # Add Clear the text-to-speech socket to a web app with Deepgram
 
-Press Speak, then press Cut in (or the space bar) while the voice is still talking. The page stops the audio it already has, sends Clear on the Aura-2 socket, and speaks "Sure, go ahead." on the same connection. The run card shows where the old line was at the cut: heard, already in the browser but never played, and still arriving. Try it with Clear, then without, and compare when the answer starts.
+No mic needed. Press Speak, then press Cut in (or the space bar) while the voice is still talking: it stands in for a caller talking over the agent. The page stops the audio it already has, sends Clear on the Aura-2 socket, and speaks "Sure, go ahead." on the same connection. The run card shows where the old line was at the cut: heard, already in the browser but never played, and still arriving. Try it with Clear, then without, and compare when the answer starts.
 
 Build a page that speaks a line over a Deepgram text-to-speech socket, with a Cut in button that
 works while the line is playing, the way a caller talks over a voice agent. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-ws-clear/

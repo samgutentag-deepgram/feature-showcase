@@ -27,6 +27,9 @@ export interface TtsFeature<S> {
   // Compressed files are the exception: encoding=mp3 or opus with bit_rate, no sample_rate, and
   // container=ogg for opus only (tests/features.test.ts holds the rules).
   params(state: S): Params
+  // Hide the "downloading the whole file" panel while a file is on its way; the clip just plays when
+  // it lands. For pages where the wait is not the point (bit rate).
+  quietFile?: boolean
   // Params marked on the Request card.
   highlight: string[]
   // Names a run: "phone line, 8 kHz".

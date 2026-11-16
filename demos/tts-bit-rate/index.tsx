@@ -64,6 +64,7 @@ export default defineTtsFeature<State>({
   params: ({ encoding, bit_rate }): Params => (encoding === 'opus' ? { encoding, container: 'ogg', bit_rate } : { encoding, bit_rate }),
   highlight: ['encoding', 'bit_rate'],
   restartOnPick: true,
+  quietFile: true,
   runLabel: ({ encoding, bit_rate }) => `${RATES[encoding].label} at ${kbps(bit_rate)}`,
   phrases: [
     'Thanks for calling Acme support. Your order shipped this morning, and it should arrive by Thursday. The tracking number is in your email, and if you are not home, the driver will leave it at the front desk.',
