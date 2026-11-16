@@ -27,9 +27,9 @@ export interface TtsFeature<S> {
   // Compressed files are the exception: encoding=mp3 or opus with bit_rate, no sample_rate, and
   // container=ogg for opus only (tests/features.test.ts holds the rules).
   params(state: S): Params
-  // Hide the "downloading the whole file" panel while a file is on its way; the clip just plays when
-  // it lands. For pages where the wait is not the point (bit rate).
-  quietFile?: boolean
+  // A recorded response to play instead of calling Deepgram, for this exact setting, voice and text
+  // (the default line, recorded ahead so the first press is instant). The run is labeled as recorded.
+  recorded?(state: S, voice: string, text: string): string | undefined
   // Params marked on the Request card.
   highlight: string[]
   // Names a run: "phone line, 8 kHz".

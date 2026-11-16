@@ -30,6 +30,8 @@ interface Run<S> {
   received?: number
   // Whether this run waits for the whole file before it plays.
   file?: boolean
+  // The recorded response it played instead of calling Deepgram.
+  recorded?: string
   cut?: CutStats
   // Close mode: how the socket was closed and what came after.
   close?: CloseStats
@@ -143,7 +145,9 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
     await c.resume()
     const id = ++lastId.current
     const file = !feature.cutIn && !midClose && !feature.callback && feature.params(st).container !== 'none'
-    setRuns((rs) => [{ id, label: feature.runLabel(st), voice, state: st, text: line, file }, ...rs].slice(0, 2))
+    const recorded = feature.recorded?.(st, voice, line)
+    const label = feature.runLabel(st) + (recorded ? ', recorded ahead' : '')
+    setRuns((rs) => [{ id, label, voice, state: st, text: line, file, recorded }, ...rs].slice(0, 2))
     setBusy(true)
     setCutting(false)
     try {
@@ -251,7 +255,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
         setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, stats, buffers, lineup: rows } : r)))
       } else {
         const onProgress = file ? (received: number) => setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, received } : r))) : undefined
-        const p = await speak(c, a, voice, feature.params(st), line, onProgress)
+        const p = await speak(c, a, voice, feature.params(st), line, onProgress, recorded)
         // A newer pick came in while this one was still asking for a token: stop before it plays.
         if (lastId.current !== id) {
           p.stop()
@@ -477,7 +481,7 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
           </>
         )}
 
-        {busy && latest?.file && !latest.stats && !feature.quietFile && <FileProgress run={latest} params={feature.params(latest.state)} />}
+        {busy && latest?.file && !latest.stats && !latest.recorded && <FileProgress run={latest} params={feature.params(latest.state)} />}
 
         {error && <p className="error" role="alert">{error}</p>}
 
@@ -769,10 +773,14 @@ export function TtsShell<S>({ feature }: { feature: TtsFeature<S> }) {
                 <CallbackCard cb={r.cb} done={!!r.stats} seconds={r.stats?.seconds} />
               ) : r.stats ? (
                 <dl className="tts-stats">
-                  <dt>First audio</dt>
-                  <dd>{ms(r.stats.firstAudioMs)}</dd>
-                  <dt>Last byte</dt>
-                  <dd>{ms(r.stats.lastByteMs)}</dd>
+                  {!r.recorded && (
+                    <>
+                      <dt>First audio</dt>
+                      <dd>{ms(r.stats.firstAudioMs)}</dd>
+                      <dt>Last byte</dt>
+                      <dd>{ms(r.stats.lastByteMs)}</dd>
+                    </>
+                  )}
                   <dt>Audio</dt>
                   <dd>{r.stats.seconds.toFixed(1)} s</dd>
                   <dt>Size</dt>

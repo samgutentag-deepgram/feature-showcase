@@ -24,6 +24,14 @@ import { Steps } from '../../shared/tts/Steps'
 import { FLUX_THEN_AURA } from '../../shared/tts/voices'
 import './styles.css'
 
+// The first line in the default voice at every bit rate, recorded 2026-11-16 with record.mjs (real
+// /v2/speak responses, saved as returned), so the first press of each button plays at once. Any
+// other text or voice calls Deepgram live.
+const CLIPS = import.meta.glob('./clips/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>
+const DEFAULT_VOICE = 'flux-wes-en'
+const LINE =
+  'Thanks for calling Acme support. Your order shipped this morning, and it should arrive by Thursday. The tracking number is in your email, and if you are not home, the driver will leave it at the front desk.'
+
 type Encoding = 'mp3' | 'opus'
 
 interface State {
@@ -64,10 +72,11 @@ export default defineTtsFeature<State>({
   params: ({ encoding, bit_rate }): Params => (encoding === 'opus' ? { encoding, container: 'ogg', bit_rate } : { encoding, bit_rate }),
   highlight: ['encoding', 'bit_rate'],
   restartOnPick: true,
-  quietFile: true,
+  recorded: ({ encoding, bit_rate }, voice, text) =>
+    voice === DEFAULT_VOICE && text === LINE ? CLIPS[`./clips/${encoding}-${bit_rate}.${encoding === 'mp3' ? 'mp3' : 'ogg'}`] : undefined,
   runLabel: ({ encoding, bit_rate }) => `${RATES[encoding].label} at ${kbps(bit_rate)}`,
   phrases: [
-    'Thanks for calling Acme support. Your order shipped this morning, and it should arrive by Thursday. The tracking number is in your email, and if you are not home, the driver will leave it at the front desk.',
+    LINE,
     'She sells seashells by the seashore, and the shells she sells are surely seashells. So if she sells shells on the seashore, I am sure she sells seashore shells.',
     'Your verification code is 5 0 9 2 7 1. Six sixty six Fifth Avenue, suite 1450. Please have your fax number ready.',
   ],

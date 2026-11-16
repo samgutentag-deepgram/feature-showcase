@@ -84,8 +84,11 @@ export async function speak(
   params: Params,
   text: string,
   onProgress?: (bytes: number) => void,
+  // A recorded response for this exact request (same model, params and text), served with the page:
+  // fetched and played the same way, with no token and no call to Deepgram.
+  recorded?: string,
 ): Promise<Playback> {
-  const token = await fetchToken()
+  const token = recorded ? '' : await fetchToken()
   const controller = new AbortController()
   const sources: AudioBufferSourceNode[] = []
   const stop = () => {
@@ -103,12 +106,14 @@ export async function speak(
     const t0 = performance.now()
     let res: Response
     try {
-      res = await fetch(`${speakUrl(model)}?${speakQuery(model, params)}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-        signal: controller.signal,
-      })
+      res = recorded
+        ? await fetch(recorded, { signal: controller.signal })
+        : await fetch(`${speakUrl(model)}?${speakQuery(model, params)}`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+            signal: controller.signal,
+          })
     } catch (err) {
       // Stopped before the response came (Stop, or a new pick): not a network problem.
       if ((err as Error).name === 'AbortError') throw err
