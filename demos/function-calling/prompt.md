@@ -4,7 +4,7 @@
 Ask the agent about an order. With the function on, it calls get_order_status in this page, gets an answer back, and says it out loud. Turn the function off and ask again: it has nothing to look it up with.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-function-calling.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/function-calling/
 
 ## The connection
 

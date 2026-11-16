@@ -2,7 +2,7 @@
 
 **Four eight one five, or 4815?** Read out a phone number, a date, and a price. Run it with smart_format off, then on, and compare what Deepgram writes down.
 
-- **Live:** https://dg-devrel-smart-format.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/smart-format/
 - **Kind:** Speech-to-text (Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/smart-format
 

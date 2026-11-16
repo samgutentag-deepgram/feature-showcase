@@ -2,7 +2,7 @@
 
 **Um, did it hear that?** Read the phrase with all its ums and uhs. Run it with filler_words off, then on, and see which hesitations Deepgram keeps.
 
-- **Live:** https://dg-devrel-filler-words.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/filler-words/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/filler-words
 

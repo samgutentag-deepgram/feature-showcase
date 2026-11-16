@@ -2,7 +2,7 @@
 
 **Calm for support, bright for good news.** Press Speak, then pick a register any time, from calmest to liveliest: the line starts over with it. Same Flux voice, same words. Expressivity is in beta. Normal (0) is the tuned default, and the far ends can drop or repeat a word, so listen before you ship one.
 
-- **Live:** https://dg-devrel-tts-expressivity.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-expressivity/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/tts-expressivity
 

@@ -2,7 +2,7 @@
 
 **Keep it clean.** Read the phrase, mild language and all. Run it with profanity_filter off, then on, and watch the swear words come back starred.
 
-- **Live:** https://dg-devrel-profanity-filter.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/profanity-filter/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/profanity-filter
 

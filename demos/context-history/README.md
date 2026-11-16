@@ -2,7 +2,7 @@
 
 **Pick up where you left off.** Send the earlier conversation in the Settings message and the agent starts the call already knowing you. Ask it about "my order" with the history on, then off.
 
-- **Live:** https://dg-devrel-context-history.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/context-history/
 - **Kind:** Voice agent
 - **Docs:** https://developers.deepgram.com/docs/voice-agent-conversation-context
 

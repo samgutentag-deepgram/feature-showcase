@@ -1,0 +1,13 @@
+/* The site root: a plain list of every demo. The real index (devrel-demos-lab) replaces it later. */
+@import "./theme.css";
+@import "./app.css";
+
+.demo-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.demo-list li {
+  background: var(--dg-bg-panel);
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-shape-panel);
+  padding: 14px 16px;
+}
+.demo-list a { font-weight: var(--dg-type-strong); color: var(--dg-text-primary); }
+.demo-list p { margin: 4px 0 0; color: var(--dg-text-body); }

@@ -2,7 +2,7 @@
 
 **Five kilograms, or 5 kg?** Read the phrase with measurements off, then on. Weights and lengths come back as numbers and units, the way a shipping label writes them.
 
-- **Live:** https://dg-devrel-measurements.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/measurements/
 - **Kind:** Speech-to-text (Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/measurements
 

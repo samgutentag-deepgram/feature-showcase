@@ -2,7 +2,7 @@
 
 **Slow down for the numbers.** Press Speak, then pick a speed any time: the line starts over at that pace. Slow it down for a confirmation number someone has to write down, speed it up for the disclaimer nobody wants to sit through. Same voice, same words.
 
-- **Live:** https://dg-devrel-tts-speed.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-speed/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/tts-voice-controls
 

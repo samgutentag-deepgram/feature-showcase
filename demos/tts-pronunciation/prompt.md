@@ -4,7 +4,7 @@
 Drug names, brands and surnames trip up any voice. Pick a word, then hear it as written and with an IPA override in the text: the override tells Flux exactly how to say it. Pronunciation on Flux is in Early Access, so play each one a few times.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
-plays the audio. Live demo: https://dg-devrel-tts-pronunciation.fly.dev
+plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-pronunciation/
 
 ## The request
 

@@ -1,14 +1,17 @@
 # Feature showcase
 
 One small live page per Deepgram API feature. Each one shows a single feature or setting doing its
-thing, with the exact request on screen, at `https://dg-devrel-<demo>.fly.dev`. They are listed on
-[dg-devrel-demos.fly.dev](https://dg-devrel-demos.fly.dev).
+thing, with the exact request on screen, at `https://dg-devrel-demos.fly.dev/demos/<demo>/`. The
+whole site is one Fly app, `dg-devrel-demos`; its root lists every demo.
 
 Every demo is one folder under [`demos/`](demos), with its own README. Everything around it (the
 page, the token server, mic capture, the sockets, the Request and Response cards, the brand
 styles, the Dockerfile and `fly.toml`) lives once in [`shared/`](shared), so the demos look alike
-and a new one is mostly a single `index.tsx`. A build serves exactly one demo, picked by the
-`FEATURE` env var, and each demo deploys to its own Fly app.
+and a new one is mostly a single `index.tsx`. One build makes one real HTML page per demo (its own
+title, description, and share card), and one server mints tokens for all of them.
+
+Until 2026-11-16 each demo was its own Fly app at `https://dg-devrel-<demo>.fly.dev`. Those 30 apps
+now answer with a 301 to the demo's page here, path and query kept (`redirect/`).
 
 Private (`-lab`). This repo is the single source of truth for the demos; it replaced the 30
 separate `<demo>-lab` repos on 2026-11-12.
@@ -26,19 +29,20 @@ corepack enable && pnpm install
 FEATURE=keyterm pnpm dev
 ```
 
-Open <http://localhost:8080>. Any folder name under `demos/` works as `FEATURE`. A bare
-`pnpm dev` serves `language-hint`.
+Open <http://localhost:8080>; with `FEATURE` set, `/` goes straight to that demo. Every demo is
+served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
 
 | Command | Does |
 |---|---|
-| `FEATURE=<demo> pnpm dev` | Vite on 8080 and the token server on 8081 for one demo |
+| `FEATURE=<demo> pnpm dev` | Vite on 8080 and the token server on 8081; `/` opens that demo |
 | `pnpm check` | TypeScript over the whole repo |
 | `pnpm test` | Unit tests for every demo folder at once (contract, links, prompts, style rules) |
-| `FEATURE=<demo> pnpm build` | Builds one demo into `dist/` (what `pnpm start` and the image serve) |
-| `bash scripts/build.sh <demo>... \| --set <name> \| --all` | Builds each into `dist/<demo>/` |
+| `pnpm build` | Builds the whole site into `dist/`, one `dist/demos/<id>/index.html` per demo (what `pnpm start` and the image serve). `FEATURE=<demo>` builds only that page |
+| `bash scripts/build.sh [<demo>... \| --set <name> \| --all]` | No names: the site. With names: each demo's page on its own, so a broken one is named |
 | `bash scripts/check.sh [--no-live] <targets>` | The automated pre-deploy checks, one line per demo |
-| `bash scripts/deploy.sh [--dry-run] <targets>` | Checks, then deploys the ones that pass |
-| `bash scripts/probe.sh <targets>` | Read-only check of the live sites |
+| `bash scripts/deploy.sh site [--dry-run]` | Checks every demo, then deploys the site |
+| `bash scripts/deploy.sh redirects [--dry-run]` | Deploys the redirect image to the 30 old per-demo apps |
+| `bash scripts/probe.sh <targets>` | Read-only check of the live pages; `--redirects` checks the old apps |
 | `bash scripts/new.sh <demo> [stt\|tts\|agent]` | Starts a new demo folder |
 | `UPDATE_PROMPTS=1 pnpm test prompt` | Regenerates every `prompt.md` after a feature change |
 | `pnpm og <demo> ...` | Renders a 1200x630 share card (macOS, needs Chrome) |
@@ -49,59 +53,61 @@ Open <http://localhost:8080>. Any folder name under `demos/` works as `FEATURE`.
 
 | Demo | What it shows | Live |
 |---|---|---|
-| [diarize](demos/diarize) | Who said that? | [dg-devrel-diarize](https://dg-devrel-diarize.fly.dev) |
-| [dictation](demos/dictation) | Say "comma." Get a comma. | [dg-devrel-dictation](https://dg-devrel-dictation.fly.dev) |
-| [filler-words](demos/filler-words) | Um, did it hear that? | [dg-devrel-filler-words](https://dg-devrel-filler-words.fly.dev) |
-| [interim-results](demos/interim-results) | Watch it think out loud. | [dg-devrel-interim-results](https://dg-devrel-interim-results.fly.dev) |
-| [keyterm](demos/keyterm) | Was that Kallistrum or Callistram? | [dg-devrel-keyterm](https://dg-devrel-keyterm.fly.dev) |
-| [language-hint](demos/language-hint) | Which language was that? | [dg-devrel-language-hint](https://dg-devrel-language-hint.fly.dev) |
-| [measurements](demos/measurements) | Five kilograms, or 5 kg? | [dg-devrel-measurements](https://dg-devrel-measurements.fly.dev) |
-| [numerals](demos/numerals) | Twenty five, or 25? | [dg-devrel-numerals](https://dg-devrel-numerals.fly.dev) |
-| [profanity-filter](demos/profanity-filter) | Keep it clean. | [dg-devrel-profanity-filter](https://dg-devrel-profanity-filter.fly.dev) |
-| [redact](demos/redact) | Say the card number. Never store it. | [dg-devrel-redact](https://dg-devrel-redact.fly.dev) |
-| [replace](demos/replace) | Say Acme. Get ACME Corp. | [dg-devrel-replace](https://dg-devrel-replace.fly.dev) |
-| [smart-format](demos/smart-format) | Four eight one five, or 4815? | [dg-devrel-smart-format](https://dg-devrel-smart-format.fly.dev) |
-| [turn-detection](demos/turn-detection) | Did it cut you off? | [dg-devrel-turn-detection](https://dg-devrel-turn-detection.fly.dev) |
+| [diarize](demos/diarize) | Who said that? | [/demos/diarize/](https://dg-devrel-demos.fly.dev/demos/diarize/) |
+| [dictation](demos/dictation) | Say "comma." Get a comma. | [/demos/dictation/](https://dg-devrel-demos.fly.dev/demos/dictation/) |
+| [filler-words](demos/filler-words) | Um, did it hear that? | [/demos/filler-words/](https://dg-devrel-demos.fly.dev/demos/filler-words/) |
+| [interim-results](demos/interim-results) | Watch it think out loud. | [/demos/interim-results/](https://dg-devrel-demos.fly.dev/demos/interim-results/) |
+| [keyterm](demos/keyterm) | Was that Kallistrum or Callistram? | [/demos/keyterm/](https://dg-devrel-demos.fly.dev/demos/keyterm/) |
+| [language-hint](demos/language-hint) | Which language was that? | [/demos/language-hint/](https://dg-devrel-demos.fly.dev/demos/language-hint/) |
+| [measurements](demos/measurements) | Five kilograms, or 5 kg? | [/demos/measurements/](https://dg-devrel-demos.fly.dev/demos/measurements/) |
+| [numerals](demos/numerals) | Twenty five, or 25? | [/demos/numerals/](https://dg-devrel-demos.fly.dev/demos/numerals/) |
+| [profanity-filter](demos/profanity-filter) | Keep it clean. | [/demos/profanity-filter/](https://dg-devrel-demos.fly.dev/demos/profanity-filter/) |
+| [redact](demos/redact) | Say the card number. Never store it. | [/demos/redact/](https://dg-devrel-demos.fly.dev/demos/redact/) |
+| [replace](demos/replace) | Say Acme. Get ACME Corp. | [/demos/replace/](https://dg-devrel-demos.fly.dev/demos/replace/) |
+| [smart-format](demos/smart-format) | Four eight one five, or 4815? | [/demos/smart-format/](https://dg-devrel-demos.fly.dev/demos/smart-format/) |
+| [turn-detection](demos/turn-detection) | Did it cut you off? | [/demos/turn-detection/](https://dg-devrel-demos.fly.dev/demos/turn-detection/) |
 
 ### Text-to-speech
 
 | Demo | What it shows | Live |
 |---|---|---|
-| [flux-tts-configure](demos/flux-tts-configure) | Change the pace without hanging up. | [dg-devrel-flux-tts-configure](https://dg-devrel-flux-tts-configure.fly.dev) |
-| [flux-tts-turns](demos/flux-tts-turns) | Every turn, accounted for. | [dg-devrel-flux-tts-turns](https://dg-devrel-flux-tts-turns.fly.dev) |
-| [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [dg-devrel-flux-tts-voices](https://dg-devrel-flux-tts-voices.fly.dev) |
-| [telephone-audio](demos/telephone-audio) | Does it sound like a phone call? | [dg-devrel-telephone-audio](https://dg-devrel-telephone-audio.fly.dev) |
-| [tts-expressivity](demos/tts-expressivity) | Calm for support, bright for good news. | [dg-devrel-tts-expressivity](https://dg-devrel-tts-expressivity.fly.dev) |
-| [tts-interrupt](demos/tts-interrupt) | Let the caller cut in. | [dg-devrel-tts-interrupt](https://dg-devrel-tts-interrupt.fly.dev) |
-| [tts-pause-markers](demos/tts-pause-markers) | Give them time to write it down. | [dg-devrel-tts-pause-markers](https://dg-devrel-tts-pause-markers.fly.dev) |
-| [tts-pronunciation](demos/tts-pronunciation) | Say the drug name right. | [dg-devrel-tts-pronunciation](https://dg-devrel-tts-pronunciation.fly.dev) |
-| [tts-speed](demos/tts-speed) | Slow down for the numbers. | [dg-devrel-tts-speed](https://dg-devrel-tts-speed.fly.dev) |
-| [tts-streaming](demos/tts-streaming) | Hear it before it finishes. | [dg-devrel-tts-streaming](https://dg-devrel-tts-streaming.fly.dev) |
-| [tts-ws-flush](demos/tts-ws-flush) | Start talking before the LLM finishes. | [dg-devrel-tts-ws-flush](https://dg-devrel-tts-ws-flush.fly.dev) |
+| [flux-tts-configure](demos/flux-tts-configure) | Change the pace without hanging up. | [/demos/flux-tts-configure/](https://dg-devrel-demos.fly.dev/demos/flux-tts-configure/) |
+| [flux-tts-turns](demos/flux-tts-turns) | Every turn, accounted for. | [/demos/flux-tts-turns/](https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/) |
+| [flux-tts-voices](demos/flux-tts-voices) | Hear every Flux voice. | [/demos/flux-tts-voices/](https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/) |
+| [telephone-audio](demos/telephone-audio) | Does it sound like a phone call? | [/demos/telephone-audio/](https://dg-devrel-demos.fly.dev/demos/telephone-audio/) |
+| [tts-expressivity](demos/tts-expressivity) | Calm for support, bright for good news. | [/demos/tts-expressivity/](https://dg-devrel-demos.fly.dev/demos/tts-expressivity/) |
+| [tts-interrupt](demos/tts-interrupt) | Let the caller cut in. | [/demos/tts-interrupt/](https://dg-devrel-demos.fly.dev/demos/tts-interrupt/) |
+| [tts-pause-markers](demos/tts-pause-markers) | Give them time to write it down. | [/demos/tts-pause-markers/](https://dg-devrel-demos.fly.dev/demos/tts-pause-markers/) |
+| [tts-pronunciation](demos/tts-pronunciation) | Say the drug name right. | [/demos/tts-pronunciation/](https://dg-devrel-demos.fly.dev/demos/tts-pronunciation/) |
+| [tts-speed](demos/tts-speed) | Slow down for the numbers. | [/demos/tts-speed/](https://dg-devrel-demos.fly.dev/demos/tts-speed/) |
+| [tts-streaming](demos/tts-streaming) | Hear it before it finishes. | [/demos/tts-streaming/](https://dg-devrel-demos.fly.dev/demos/tts-streaming/) |
+| [tts-ws-flush](demos/tts-ws-flush) | Start talking before the LLM finishes. | [/demos/tts-ws-flush/](https://dg-devrel-demos.fly.dev/demos/tts-ws-flush/) |
 
 ### Voice agent
 
 | Demo | What it shows | Live |
 |---|---|---|
-| [barge-in](demos/barge-in) | Interrupt it. | [dg-devrel-barge-in](https://dg-devrel-barge-in.fly.dev) |
-| [context-history](demos/context-history) | Pick up where you left off. | [dg-devrel-context-history](https://dg-devrel-context-history.fly.dev) |
-| [function-calling](demos/function-calling) | Where is my order? | [dg-devrel-function-calling](https://dg-devrel-function-calling.fly.dev) |
-| [inject-agent-message](demos/inject-agent-message) | Cut in on your own agent. | [dg-devrel-inject-agent-message](https://dg-devrel-inject-agent-message.fly.dev) |
-| [think-live](demos/think-live) | It says mhmm. | [dg-devrel-think-live](https://dg-devrel-think-live.fly.dev) |
-| [update-speak](demos/update-speak) | Change its voice mid-call. | [dg-devrel-update-speak](https://dg-devrel-update-speak.fly.dev) |
+| [barge-in](demos/barge-in) | Interrupt it. | [/demos/barge-in/](https://dg-devrel-demos.fly.dev/demos/barge-in/) |
+| [context-history](demos/context-history) | Pick up where you left off. | [/demos/context-history/](https://dg-devrel-demos.fly.dev/demos/context-history/) |
+| [function-calling](demos/function-calling) | Where is my order? | [/demos/function-calling/](https://dg-devrel-demos.fly.dev/demos/function-calling/) |
+| [inject-agent-message](demos/inject-agent-message) | Cut in on your own agent. | [/demos/inject-agent-message/](https://dg-devrel-demos.fly.dev/demos/inject-agent-message/) |
+| [think-live](demos/think-live) | It says mhmm. | [/demos/think-live/](https://dg-devrel-demos.fly.dev/demos/think-live/) |
+| [update-speak](demos/update-speak) | Change its voice mid-call. | [/demos/update-speak/](https://dg-devrel-demos.fly.dev/demos/update-speak/) |
 
-Named sets for build, check, and deploy live in [`sets/`](sets): `stt`, `tts`, `agent`, and
-`flux-tts` (the three Flux socket demos). Add a file to make a new set.
+Sets name groups of demos for `build.sh`, `check.sh`, and `probe.sh`. `stt`, `tts`, and `agent`
+are worked out from each folder's `index.tsx`, so a new demo is in its kind's set with no edit.
+Hand-picked sets are files in [`sets/`](sets), like `flux-tts` (the three Flux socket demos).
 
 ## Make a new demo
 
 `TEMPLATE.md` has the full rules (Flux first, mic only, verified code, link tags). The short path:
 
-1. Pick an id: lowercase words joined by `-`. It becomes the folder, the Fly app
-   `dg-devrel-<id>`, and the URL. Pick the kind: `stt`, `tts`, or `agent`.
+1. Pick an id: lowercase words joined by `-`. It becomes the folder, the URL
+   (`/demos/<id>/`), and the `utm_source` (`dg-devrel-<id>`). Pick the kind: `stt`, `tts`, or
+   `agent`.
 
 2. Start the folder from the smallest example of that kind (smart-format, telephone-audio, or
-   barge-in). This also adds the id to `sets/<kind>.txt`.
+   barge-in). Nothing else to register: the folder is the page.
 
    ```bash
    bash scripts/new.sh <id> tts
@@ -132,62 +138,54 @@ Named sets for build, check, and deploy live in [`sets/`](sets): `stt`, `tts`, `
    bash scripts/check.sh <id>
    ```
 
-6. Once per new demo, create its Fly app and secret (Sam runs these; the key comes from `~/.env`):
-
-   ```bash
-   fly apps create dg-devrel-<id> --org deepgram
-   ```
-
-   ```bash
-   fly secrets set DEEPGRAM_API_KEY=your-key -a dg-devrel-<id>
-   ```
-
-7. Deploy it (next section), commit, and add it to the index in `devrel-demos-lab/demos.json`.
+6. Commit, deploy the site (next section), and add it to the index in `devrel-demos-lab/demos.json`.
+   No new app or secret: every demo shares the site's.
 
 ## Deploy
 
-Every demo deploys from the repo root with the shared `fly.toml` and `Dockerfile`; the script
-passes `--app dg-devrel-<demo>` and `--build-arg FEATURE=<demo>`. Before deploying it runs
-`check.sh` on the same demos (types, tests, build, live API check) and deploys only the ones that
-pass. After deploying it runs `probe.sh`: page 200, `/api/token` 200 same-origin, 403 cross-site.
-It never creates apps or secrets, and refuses an app with no `DEEPGRAM_API_KEY` secret.
+Deploys are Sam's. The site is one Fly app, `dg-devrel-demos`, deployed from the repo root with
+`fly.toml` and `Dockerfile`. Add `--dry-run` to print the `fly deploy` line without running it.
 
-Add `--dry-run` to any of these to print the `fly deploy` lines without running anything, or
-`--skip-checks` to deploy without the checks.
-
-**One demo**
+**The site.** Runs `check.sh --all` (types, tests, each page's build, live API checks) and deploys
+only if every demo passes, then runs `probe.sh --all`: each page 200, its `og.png` 200,
+`/api/token?demo=<id>` 200 same-origin and 403 cross-site. `--no-live` skips the live API checks,
+`--skip-checks` skips them all. It refuses an app with no `DEEPGRAM_API_KEY` secret and never
+creates apps or secrets.
 
 ```bash
-bash scripts/deploy.sh keyterm
+bash scripts/deploy.sh site
 ```
 
-**Several by name**
+**The redirects.** The 30 demos that had their own app before 2026-11-16 are listed in
+`redirect/apps.txt`. Each of those apps runs the same tiny Caddy image (`redirect/`), which sends a
+301 to `https://dg-devrel-demos.fly.dev/demos/<id>/` with the path and query kept. The id comes
+from the app's own name, so one image fits all. With no names it deploys all 30, then probes each.
+Demos added after the move never get an app.
 
 ```bash
-bash scripts/deploy.sh keyterm redact numerals
+bash scripts/deploy.sh redirects
 ```
-
-**A named set** (any `sets/<name>.txt`; repeat `--set` to combine, and mix with names)
 
 ```bash
-bash scripts/deploy.sh --set tts
+bash scripts/deploy.sh redirects keyterm redact
 ```
 
-**All of them**
+The raw commands, if you need them without the script:
 
 ```bash
-bash scripts/deploy.sh --all
+fly deploy . --config fly.toml --app dg-devrel-demos --remote-only --ha=false
 ```
-
-A set file is one demo id per line; `#` comments and blank lines are ignored. Add a file to make
-a new set, for example `sets/launch-week.txt`. A name with no folder stops the run before
-anything deploys. `--all` reads the folders under `demos/`, not a set file.
-
-The raw command for one demo, if you need it without the script:
 
 ```bash
-fly deploy . --config fly.toml --app dg-devrel-keyterm --build-arg FEATURE=keyterm --remote-only --ha=false
+cd redirect && fly deploy . --config fly.toml --app dg-devrel-keyterm --remote-only --ha=false
 ```
+
+### Token limits
+
+Every demo shares one key, so `/api/token?demo=<id>` is limited two ways: per address across every
+demo (20 a minute, 120 an hour), and per demo across every address (120 a minute, 2000 an hour by
+default; `DEMO_TOKENS_PER_MINUTE` and `DEMO_TOKENS_PER_HOUR` raise them). A run at one demo uses
+up that demo's budget and leaves the rest working.
 
 ## Template components
 
@@ -201,7 +199,8 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 | `Shell` | `stt/Shell.tsx` | The speech-to-text page: masthead, hero, mode tabs, model toggle (Flux / Nova-3), mic or file capture, Request and Response cards, kept runs (last two side by side), call to action. Used when `kind` is unset |
 | `TtsShell` | `tts/TtsShell.tsx` | The text-to-speech page: type or pick a line, pick a voice, set the feature, Speak. Timings, spectrum, Replay, last two runs side by side. Speaks over REST, or over the socket with `cutIn`, `session`, or token modes |
 | `AgentShell` | `agent/AgentShell.tsx` | The voice agent page: listen model toggle, Start and talk, agent audio playback, timed event log, mid-call action buttons, last two conversations side by side |
-| `main.tsx` | `main.tsx` | Picks the page from the feature's `kind` (`'tts'`, `'agent'`, or none) |
+| `mount` | `main.tsx` | Renders a demo's page, picked by the feature's `kind` (`'tts'`, `'agent'`, or none). Each page's generated entry calls it |
+| `demo`, `setDemo` | `common/demo.ts` | Which demo this page is, set by its entry at run time: folder, `utm_source`, page path |
 
 ### Feature contracts
 
@@ -260,17 +259,21 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
 |---|---|---|
 | `dgLink`, `LINKS` | `common/links.ts` | Tags every Deepgram link with `utm_source=dg-devrel-<demo>`, `utm_medium=demo`, `utm_campaign=devrel-demos`, `utm_content=sam_gutentag_<placement>_<button>` |
 | `sttPrompt`, `agentPrompt`, `ttsPrompt` | `common/prompt.ts`, `tts/prompt.ts` | Generate `prompt.md` from the feature object; `pnpm test` fails on drift |
-| `server.js` | root | Mints 30-second tokens at `/api/token` (same-origin only, rate limited) and serves `dist/` |
+| `server.js` | root | Mints 30-second tokens at `/api/token?demo=<id>` (same-origin only, limited per address and per demo), mounts any `demos/<id>/server.js` routes at `/demos/<id>/api/`, and serves `dist/` |
 | Style packs | `styles/packs/` | `deepgram-2026.css` (active, light) and `flux-2026.css` (dark alternate). The only place literal colors and fonts may live |
 | `theme.css`, `app.css`, `tts.css`, `agent.css` | `styles/`, `tts/`, `agent/` | Tokens and the shared layout every demo uses, so they all look alike |
 | og card | `scripts/og/` | Renders the share card from brand fonts and art in `public/materials/` |
 
 ## How it fits together
 
-- `vite.config.ts` reads `FEATURE`, aliases `@feature` to `demos/<FEATURE>/`, fills
-  `index.html` from its `meta.json`, and ships its `og.png` and `prompt.md`. A bundle holds one demo.
-- `Dockerfile` takes `ARG FEATURE` and refuses to build without a valid one.
-- `fly.toml` has no `app` line; `scripts/deploy.sh` supplies it.
-- `tests/links.test.ts` checks that every folder's `meta.json` URL is `dg-devrel-<folder>.fly.dev`,
-  so the folder, URL, Fly app, and `utm_source` always agree.
-- CI runs `pnpm check`, `pnpm test`, and `scripts/build.sh --all` on every push.
+- `vite.config.ts` lists every folder under `demos/` with an `index.tsx` and builds one page per
+  folder: `dist/demos/<id>/index.html` from `shared/page.html`, filled from that folder's
+  `meta.json`, with its `og.png` and `prompt.md` beside it. The page's entry is generated too: it
+  imports the folder and calls `mount`. Shared code is split into common chunks, so each page loads
+  only its own demo. `index.html` at the root is the plain list.
+- `server.js` serves `dist/`, mints tokens for any demo in the build, and mounts per-demo routes
+  from `demos/<id>/server.js` (the Dockerfile copies only those files into the image).
+- `fly.toml` names the site app, `dg-devrel-demos`. `redirect/` holds the old apps' image.
+- `tests/links.test.ts` checks that every folder's `meta.json` URL is
+  `https://dg-devrel-demos.fly.dev/demos/<folder>/` and its `utm_source` is `dg-devrel-<folder>`.
+- CI runs `pnpm check`, `pnpm test`, and `pnpm build` on every push.

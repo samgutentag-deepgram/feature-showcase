@@ -2,7 +2,7 @@
 
 **Twenty five, or 25?** Read the phrase with numerals off, then on. Spoken numbers come back as digits, and nothing else about the transcript changes.
 
-- **Live:** https://dg-devrel-numerals.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/numerals/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/numerals
 

@@ -4,7 +4,7 @@
 Read out a test card number or a made-up Social Security number. Pick what to redact, and Deepgram masks it before the transcript reaches your app.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `redact` set as below. Live demo: https://dg-devrel-redact.fly.dev
+with `redact` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/redact/
 
 ## The request
 

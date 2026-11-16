@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # new.sh <demo> [stt|tts|agent]: starts a new demo folder at demos/<demo>/ from the smallest
 # example of its kind (smart-format, telephone-audio, barge-in), writes a README stub, points meta.json at
-# https://dg-devrel-<demo>.fly.dev, drops the copied prompt.md, and adds <demo> to sets/<kind>.txt.
+# https://dg-devrel-demos.fly.dev/demos/<demo>/, and drops the copied prompt.md. Nothing else to
+# register: the folder is the page, and --set <kind> finds it by its index.tsx.
 # The og.png is the example's card until you render a new one (pnpm og). Edit index.tsx next.
 set -euo pipefail
 . "$(dirname "$0")/lib.sh"
@@ -23,7 +24,7 @@ p, name = sys.argv[1], sys.argv[2]
 m = json.load(open(p))
 m['title'] = f"{name.replace('-', ' ').capitalize()} | Deepgram"
 m['description'] = 'TODO: one sentence on what the visitor does and sees.'
-m['url'] = f'https://dg-devrel-{name}.fly.dev'
+m['url'] = f'https://dg-devrel-demos.fly.dev/demos/{name}/'
 open(p, 'w').write(json.dumps(m, indent=2) + '\n')
 PY
 cat >"$dst/README.md" <<MD
@@ -31,7 +32,7 @@ cat >"$dst/README.md" <<MD
 
 **TODO headline.** TODO one paragraph: what the visitor does and what they see change.
 
-- **Live:** https://dg-devrel-$name.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/$name/
 
 ## Run it
 
@@ -45,6 +46,5 @@ FEATURE=$name pnpm dev
 
 TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
 MD
-echo "$name" >>"$ROOT/sets/$kind.txt"
-echo "demos/$name/ from $from; added to sets/$kind.txt"
+echo "demos/$name/ from $from"
 echo "next: edit index.tsx and meta.json, then FEATURE=$name pnpm dev"

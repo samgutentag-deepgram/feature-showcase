@@ -4,7 +4,7 @@
 Put a pause marker in the text and Flux leaves exactly that much silence, like a beat after reading out a confirmation number. Pick a length and hear the line again: the markers are right there in the text box, and the gap lands within about 100 ms.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
-plays the audio. Live demo: https://dg-devrel-tts-pause-markers.fly.dev
+plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-pause-markers/
 
 ## The request
 

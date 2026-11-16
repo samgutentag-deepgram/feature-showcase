@@ -3,7 +3,7 @@
 
 A voice agent speaks in turns. Press Speak and the page sends the reply one sentence per turn on a single Flux socket. Each turn comes back with its own speech_id, how long the audio ran, and how many characters were billed.
 
-Build a page that speaks a line over one Deepgram text-to-speech socket, a turn at a time, and lists what the server reports for each turn. Live demo: https://dg-devrel-flux-tts-turns.fly.dev
+Build a page that speaks a line over one Deepgram text-to-speech socket, a turn at a time, and lists what the server reports for each turn. Live demo: https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/
 
 ## The connection
 

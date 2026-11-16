@@ -4,7 +4,7 @@
 Read the phrase, mild language and all. Run it with profanity_filter off, then on, and watch the swear words come back starred.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `profanity_filter` set as below. Live demo: https://dg-devrel-profanity-filter.fly.dev
+with `profanity_filter` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/profanity-filter/
 
 ## The request
 

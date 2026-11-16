@@ -2,7 +2,7 @@
 
 **Cut in on your own agent.** Ask the agent for a story. While it is telling it, press Cut in: the agent drops the story and says your line at once. Say it next waits for the story to end. The timeline shows what the server did with each one.
 
-- **Live:** https://dg-devrel-inject-agent-message.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/inject-agent-message/
 - **Kind:** Voice agent
 - **Docs:** https://developers.deepgram.com/docs/voice-agent-inject-agent-message
 

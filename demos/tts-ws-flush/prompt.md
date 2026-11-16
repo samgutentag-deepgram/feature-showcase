@@ -4,7 +4,7 @@
 The reply below arrives a word at a time, the way an LLM streams it. Hear it three ways: wait for the whole reply first, send each token to Flux as it arrives, or stream the tokens but forget to Flush. Watch when the first audio plays, and how much was out before Flush.
 
 Build a page that speaks an LLM's reply over a Deepgram text-to-speech socket while the reply is
-still arriving, a token at a time. Live demo: https://dg-devrel-tts-ws-flush.fly.dev
+still arriving, a token at a time. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-ws-flush/
 
 ## The connection
 

@@ -4,7 +4,7 @@
 Send the earlier conversation in the Settings message and the agent starts the call already knowing you. Ask it about "my order" with the history on, then off.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-context-history.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/context-history/
 
 ## The connection
 

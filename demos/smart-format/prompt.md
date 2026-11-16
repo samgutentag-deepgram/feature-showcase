@@ -4,7 +4,7 @@
 Read out a phone number, a date, and a price. Run it with smart_format off, then on, and compare what Deepgram writes down.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `smart_format` set as below. Live demo: https://dg-devrel-smart-format.fly.dev
+with `smart_format` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/smart-format/
 
 ## The request
 

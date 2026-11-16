@@ -2,7 +2,7 @@
 
 **Hear every Flux voice.** 266 Flux voices in 47 languages, all on the same endpoint. Pick a language, then press any voice to hear the same line in it. The model name is the only thing that changes in the request.
 
-- **Live:** https://dg-devrel-flux-tts-voices.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/flux-tts/voices
 

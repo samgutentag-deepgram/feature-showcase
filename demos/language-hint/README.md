@@ -2,7 +2,7 @@
 
 **Which language was that?** Talk in more than one language, or upload a clip. Deepgram tags the language of what it hears, and a new row starts every time the speaker switches.
 
-- **Live:** https://dg-devrel-language-hint.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/language-hint/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/nova-3-language-prompting
 

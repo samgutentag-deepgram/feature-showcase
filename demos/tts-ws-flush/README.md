@@ -2,7 +2,7 @@
 
 **Start talking before the LLM finishes.** The reply below arrives a word at a time, the way an LLM streams it. Hear it three ways: wait for the whole reply first, send each token to Flux as it arrives, or stream the tokens but forget to Flush. Watch when the first audio plays, and how much was out before Flush.
 
-- **Live:** https://dg-devrel-tts-ws-flush.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-ws-flush/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/flux-tts/client-messages
 

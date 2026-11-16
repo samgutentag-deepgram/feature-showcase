@@ -2,7 +2,7 @@
 
 **Change the pace without hanging up.** Pick a speed and the line starts over at it. On the Flux socket, speed is a Configure message, not part of the URL: the page sends it before the first turn, and Flux confirms it with ConfigureSuccess. In a live conversation you send the same message between turns, with no reconnect.
 
-- **Live:** https://dg-devrel-flux-tts-configure.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/flux-tts-configure/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/flux-tts/client-messages
 

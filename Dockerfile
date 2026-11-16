@@ -4,10 +4,11 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
-# Which folder under demos/ this image serves. scripts/deploy.sh always passes it.
-ARG FEATURE
-RUN test -n "$FEATURE" && test -d "demos/$FEATURE" || { echo "FEATURE must name a folder under demos/" >&2; exit 1; }
-RUN FEATURE=$FEATURE pnpm build
+# Every folder under demos/ becomes a page at /demos/<id>/.
+RUN pnpm build
+# Demos with routes of their own (demos/<id>/server.js) need that file at run time, nothing else.
+RUN mkdir -p /routes/demos && for f in demos/*/server.js; do \
+      [ -f "$f" ] || continue; mkdir -p "/routes/$(dirname "$f")"; cp "$f" "/routes/$f"; done
 
 FROM node:22-slim
 WORKDIR /app
@@ -16,5 +17,6 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile --prod
 COPY server.js ./
+COPY --from=build /routes/demos ./demos
 COPY --from=build /app/dist ./dist
 CMD ["node", "server.js"]

@@ -4,7 +4,7 @@
 Deepgram streams the audio back as it is generated. Speak a long line both ways: wait for the whole file, or play the raw samples as each chunk arrives. Compare the first-audio time on each run.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
-plays the audio. Live demo: https://dg-devrel-tts-streaming.fly.dev
+plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-streaming/
 
 ## The request
 

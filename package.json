@@ -14,7 +14,7 @@
     "sample": "bash demos/${FEATURE:-language-hint}/make-sample.sh",
     "og": "bash scripts/og/render.sh",
     "verify:live": "LIVE=1 vitest run tests/live.test.ts",
-    "build:all": "bash scripts/build.sh --all",
+    "build:each": "bash scripts/build.sh --all",
     "new": "bash scripts/new.sh",
     "deploy": "bash scripts/deploy.sh",
     "checks": "bash scripts/check.sh"

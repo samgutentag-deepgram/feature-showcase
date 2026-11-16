@@ -2,7 +2,7 @@
 
 **Where is my order?** Ask the agent about an order. With the function on, it calls get_order_status in this page, gets an answer back, and says it out loud. Turn the function off and ask again: it has nothing to look it up with.
 
-- **Live:** https://dg-devrel-function-calling.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/function-calling/
 - **Kind:** Voice agent
 - **Docs:** https://developers.deepgram.com/docs/voice-agents-function-calling
 

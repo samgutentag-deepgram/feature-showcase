@@ -1,7 +1,9 @@
-// "Build this yourself": copies the feature's prompt.md, which vite.config.ts ships as /prompt.md.
+// "Build this yourself": copies the feature's prompt.md, which vite.config.ts ships next to the page
+// as /demos/<id>/prompt.md.
 // The prompt is generated from the feature and checked live (shared/common/prompt.ts), so what a
 // visitor pastes into their coding agent matches what this page sends.
 import { useState } from 'react'
+import { demo, demoPath } from './demo'
 
 function copyBySelection(text: string): boolean {
   const area = document.createElement('textarea')
@@ -22,11 +24,12 @@ function copyBySelection(text: string): boolean {
 
 export function TakeHome() {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle')
-  if (!__HAS_PROMPT__) return null
+  if (!demo.hasPrompt) return null
+  const href = `${demoPath()}prompt.md`
 
   const copy = async () => {
     try {
-      const res = await fetch('/prompt.md')
+      const res = await fetch(href)
       if (!res.ok) throw new Error(String(res.status))
       const text = await res.text()
       try {
@@ -50,7 +53,7 @@ export function TakeHome() {
         <button type="button" className="btn btn--light" onClick={copy}>
           {state === 'copied' ? 'Copied' : 'Copy the build prompt'}
         </button>
-        <a className="takehome__link" href="/prompt.md" target="_blank" rel="noopener">
+        <a className="takehome__link" href={href} target="_blank" rel="noopener">
           View it
         </a>
       </div>

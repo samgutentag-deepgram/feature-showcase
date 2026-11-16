@@ -4,7 +4,7 @@
 The agent opens with a long sales pitch. Talk over it. Deepgram sends UserStartedSpeaking the moment you start, and the page drops the audio it was about to play. Turn that off and hear what happens without it.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-barge-in.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/barge-in/
 
 ## The connection
 

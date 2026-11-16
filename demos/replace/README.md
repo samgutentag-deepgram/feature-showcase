@@ -2,7 +2,7 @@
 
 **Say Acme. Get ACME Corp.** Pick a word you will say and what it should come back as. Read the phrase with replace off, then on, and watch Deepgram swap it before the transcript reaches you.
 
-- **Live:** https://dg-devrel-replace.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/replace/
 - **Kind:** Speech-to-text (Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/find-and-replace
 

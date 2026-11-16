@@ -1,5 +1,5 @@
-# Shared by every demo. No app line: scripts/deploy.sh passes -a dg-devrel-<feature>
-# and --build-arg FEATURE=<feature>, so one file deploys any of them.
+# The one site that serves every demo at /demos/<id>/. scripts/deploy.sh site deploys it.
+app = "dg-devrel-demos"
 primary_region = "iad"
 
 [build]

@@ -1,10 +1,10 @@
 # Making a new one-feature demo
 
-Each demo is one small public site that shows one Deepgram API feature or setting, live, on a
-`dg-devrel-<name>.fly.dev` URL. The page, the token server, capture, the socket, the Request and
-Response cards, the clip limits, the brand styles, and the Fly config are **shared** (`shared/`) and stay
-put. A demo is one folder under `demos/`, in this one repo. Its folder name is its id, its
-Fly app (`dg-devrel-<id>`), and its URL.
+Each demo is one small public page that shows one Deepgram API feature or setting, live, at
+`https://dg-devrel-demos.fly.dev/demos/<name>/`. The page, the token server, capture, the socket,
+the Request and Response cards, the clip limits, the brand styles, and the Fly app are **shared**
+(`shared/`) and stay put. A demo is one folder under `demos/`, in this one repo. Its folder name is
+its id and its URL path. Adding the folder is all it takes: no app, no secret, no list to edit.
 
 There are three kinds of demo, one shared page each. A feature says which with `kind`, and `main.tsx`
 picks the page:
@@ -45,8 +45,8 @@ kind (`stt` copies smart-format, `tts` copies telephone-audio, `agent` copies ba
 bash scripts/new.sh <name> tts
 ```
 
-That copies the folder, points `meta.json` at `https://dg-devrel-<name>.fly.dev`, drops the
-copied `prompt.md`, and adds `<name>` to `sets/<kind>.txt`. The copied `og.png` stays until you
+That copies the folder, points `meta.json` at `https://dg-devrel-demos.fly.dev/demos/<name>/`, and
+drops the copied `prompt.md`. The copied `og.png` stays until you
 render a new one.
 
 ## 2. Write the feature folder
@@ -127,9 +127,9 @@ Every Deepgram link on the page is tagged by `shared/common/links.ts`, the same 
 | `utm_campaign` | `devrel-demos` | all one-feature demos, rolled up |
 | `utm_content` | `sam_gutentag_<placement>_<button>`, e.g. `sam_gutentag_header_signup` | who built it, where on the page, which button |
 
-The demo id is the first label of `meta.json`'s `url`, set at build time, so it always matches
-the Fly app. `tests/links.test.ts` fails if the feature folder, `meta.json`, and `fly.toml`
-disagree on the name.
+The demo id is `dg-devrel-<folder>`, set by the page's entry at run time (`shared/common/demo.ts`).
+It is the old per-demo app name, kept so reports carry one source per demo across the move to one
+site. `tests/links.test.ts` fails if the folder and `meta.json`'s URL disagree.
 
 ## Pre-deploy checks
 
@@ -149,7 +149,7 @@ Spot check each variant by hand; the rest is automated.
 | 9 | **Spot check each variant by hand**: `pnpm dev`, read the suggested phrase on each model with each setting (or press Speak on each setting, or have each conversation), and confirm the difference the page promises is visible or audible, the Response card shows real response fields, and the console is clean. Agent demos need a real mic and headphones | by hand, about 5 minutes |
 | 10 | The copy only claims what check 9 showed, and the "verified" comment at the top of `index.tsx` records the date and what was seen | by hand |
 | 11 | Mic only, unless uploads were asked about and agreed | by hand |
-| 12 | After deploy: page 200, `/api/token` 200 same-origin and 403 cross-site, and the share card renders | curl and a Slack DM to yourself |
+| 12 | After deploy: page 200, `og.png` 200, `/api/token?demo=<name>` 200 same-origin and 403 cross-site, and the share card renders | `bash scripts/probe.sh <name>` and a Slack DM to yourself |
 
 ### The build prompt
 
@@ -169,14 +169,19 @@ set `promptState` to pick the setting the prompt shows (the last variant otherwi
 
 ## 3. Point the build at it
 
-Nothing to edit. `FEATURE` picks the folder for every command:
+Nothing to edit. The build finds every folder with an `index.tsx`, and `FEATURE` opens yours:
 
 ```bash
 FEATURE=<name> pnpm dev
 ```
 
-`FEATURE=<name> pnpm build` builds it into `dist/`, and `scripts/deploy.sh` passes it to Docker as
-`--build-arg FEATURE=<name>`. A bare `pnpm dev` serves `language-hint`.
+`/` redirects to `/demos/<name>/`; every other demo is still served at its own path.
+`pnpm build` builds the whole site into `dist/`; `FEATURE=<name> pnpm build` builds only your page.
+
+A demo that needs server routes of its own (a webhook receiver, say) adds `demos/<name>/server.js`
+with a default export `(router, kit) => { ... }`. `server.js` mounts it at `/demos/<name>/api/`
+for that demo only; `kit` has `rateLimit`, `fromPage`, `publicUrl`, and `express`. Everything else
+stays on the shared token route.
 
 ## 4. Verify the request is real
 
@@ -198,41 +203,38 @@ pnpm check && pnpm test
 pnpm dev
 ```
 
-`tests/features.test.ts` checks every folder: meta fields, a 1200x630 `og.png`, a `fly.dev` URL,
+`tests/features.test.ts` checks every folder: meta fields, a 1200x630 `og.png`, its `/demos/<name>/` URL,
 and that the Request card is a prefix of what the socket sends for every model and mode.
 
 ## 5. Deploy
 
-Once per new demo, create the app and its secret. The API key needs a role that can create
-temporary tokens (Member or above).
+Nothing to create: the site app, `dg-devrel-demos`, and its key are shared by every demo. Commit,
+then hand Sam the deploy. The script runs the automated checks on every demo first, deploys only on
+a pass, and probes every page after (check 12).
 
 ```bash
-fly apps create dg-devrel-<name> --org deepgram
+bash scripts/deploy.sh site
 ```
 
-```bash
-fly secrets set DEEPGRAM_API_KEY=your-key -a dg-devrel-<name>
-```
-
-Then deploy. The script runs the automated checks first, deploys only on a pass, and probes the
-site after (check 12). The README covers deploying several, a named set, or all of them.
-
-```bash
-bash scripts/deploy.sh <name>
-```
-
-Then open `https://dg-devrel-<name>.fly.dev`, run a clip, and paste the URL into a Slack DM to
-yourself to check the share card.
+Then open `https://dg-devrel-demos.fly.dev/demos/<name>/`, run a clip, and paste the URL into a
+Slack DM to yourself to check the share card.
 
 ## Decisions made while building this
 
 - **Shared page and feature, no framework.** One `Feature<S>` object with three small components. No
-  registry, no plugin loading, no runtime switching: the feature is picked at build time by a Vite
-  alias (`@feature`), so a deployed bundle holds exactly one demo.
-- **One repo, one build per demo (2026-11-12).** The 30 labs were folded into this repo: one
+  registry, no plugin loading, no runtime switching: each demo's page has a generated entry that
+  imports its own folder, so a page loads exactly one demo.
+- **One repo, one build per demo (2026-11-12; replaced by the next entry).** The 30 labs were folded into this repo: one
   set of shared pages, many demo folders, one shared `fly.toml` with no `app` line, and a Dockerfile that
   takes `ARG FEATURE`. Each demo keeps its own Fly app and URL. `FEATURE` is an env var, not an
   edited line, so no build depends on which folder was last selected.
+- **One site, one page per demo (2026-11-16).** 78 more demos were coming, and one app each meant
+  78 more apps, secrets, and deploys. Now one Vite build makes a real HTML page per folder (its own
+  title, description, and share card, so link previews stay right; not a single-page app), one
+  server mints tokens for all of them, and one app, `dg-devrel-demos`, serves `/demos/<id>/`. The
+  token route takes the demo id and limits per demo as well as per address, so abuse of one demo
+  cannot drain the shared key. The 30 old apps run a Caddy redirect image (`redirect/`): 301 to the
+  new page, path and query kept. `utm_source` stays `dg-devrel-<id>` for continuity.
 - **The card is built from the sent params.** `shared/common/config.ts` assembles both the card and
   the socket query from `model.params` + `feature.params()`; `interim_results` (Nova), `hidden`
   params, `encoding` and `sample_rate` are appended after, never shown.

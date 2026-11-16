@@ -4,7 +4,7 @@
 Read the phrase with all its ums and uhs. Run it with filler_words off, then on, and see which hesitations Deepgram keeps.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `filler_words` set as below. Live demo: https://dg-devrel-filler-words.fly.dev
+with `filler_words` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/filler-words/
 
 ## The request
 

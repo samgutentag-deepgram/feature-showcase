@@ -4,7 +4,7 @@
 Ask the agent for a story. While it is telling it, press Cut in: the agent drops the story and says your line at once. Say it next waits for the story to end. The timeline shows what the server did with each one.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-inject-agent-message.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/inject-agent-message/
 
 ## The connection
 

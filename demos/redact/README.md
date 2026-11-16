@@ -2,7 +2,7 @@
 
 **Say the card number. Never store it.** Read out a test card number or a made-up Social Security number. Pick what to redact, and Deepgram masks it before the transcript reaches your app.
 
-- **Live:** https://dg-devrel-redact.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/redact/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/redaction
 

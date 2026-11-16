@@ -4,7 +4,7 @@
 Press Speak, then pick a quality any time: the line starts over in that format. Lowest is a phone line (mu-law at 8 kHz, what a call center or Twilio stream carries); Highest is 48 kHz. Listen, and watch the spectrum: the phone line stops at 4 kHz.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
-plays the audio. Live demo: https://dg-devrel-telephone-audio.fly.dev
+plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/telephone-audio/
 
 ## The request
 

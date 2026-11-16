@@ -2,7 +2,7 @@
 
 **Every turn, accounted for.** A voice agent speaks in turns. Press Speak and the page sends the reply one sentence per turn on a single Flux socket. Each turn comes back with its own speech_id, how long the audio ran, and how many characters were billed.
 
-- **Live:** https://dg-devrel-flux-tts-turns.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/flux-tts-turns/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/flux-tts/state
 

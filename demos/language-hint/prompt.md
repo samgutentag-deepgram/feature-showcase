@@ -4,7 +4,7 @@
 Talk in more than one language, or upload a clip. Deepgram tags the language of what it hears, and a new row starts every time the speaker switches.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `language_hint` set as below. Live demo: https://dg-devrel-language-hint.fly.dev
+with `language_hint` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/language-hint/
 
 ## The request
 

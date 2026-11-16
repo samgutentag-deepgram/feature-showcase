@@ -2,7 +2,7 @@
 
 **Say the drug name right.** Drug names, brands and surnames trip up any voice. Pick a word, then hear it as written and with an IPA override in the text: the override tells Flux exactly how to say it. Pronunciation on Flux is in Early Access, so play each one a few times.
 
-- **Live:** https://dg-devrel-tts-pronunciation.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-pronunciation/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/tts-voice-controls
 

@@ -3,10 +3,12 @@
 ## What this is
 
 Every one-feature Deepgram demo, in one private repo: one shared page per kind (speech-to-text,
-text-to-speech, voice agent) and one folder per demo under `demos/`. A build serves one
-demo, picked by `FEATURE`; each demo deploys to its own Fly app, `dg-devrel-<demo>`. See `README.md`
-for commands, deploy modes, and the template components list, and `TEMPLATE.md` for the rules a
-new demo follows. Each demo folder has its own README.
+text-to-speech, voice agent) and one folder per demo under `demos/`. One build makes one HTML page
+per folder, served by one Fly app at `https://dg-devrel-demos.fly.dev/demos/<demo>/`. A new demo is
+just a new folder. The 30 demos that predate the single site (2026-11-16) keep their old apps,
+`dg-devrel-<demo>`, as 301 redirects (`redirect/`). See `README.md` for commands, deploy modes, and
+the template components list, and `TEMPLATE.md` for the rules a new demo follows. Each demo folder
+has its own README.
 
 The browser holds the Deepgram socket through `@deepgram/sdk`; the server only mints tokens.
 
@@ -25,17 +27,22 @@ The browser holds the Deepgram socket through `@deepgram/sdk`; the server only m
 
 ## Commands
 
-`FEATURE=<demo> pnpm dev` (Vite on 8080, server on 8081, `/api` proxied), `FEATURE=<demo> pnpm build`,
-`pnpm start`, `pnpm check`, `pnpm test` (every folder at once), `ONLY=<demo> pnpm verify:live`,
+`FEATURE=<demo> pnpm dev` (Vite on 8080, server on 8081, `/api` proxied, `/` opens that demo),
+`pnpm build` (the whole site; `FEATURE=<demo>` builds one page), `pnpm start`, `pnpm check`, `pnpm test` (every folder at once), `ONLY=<demo> pnpm verify:live`,
 `FEATURE=<demo> pnpm sample` (macOS only, demos with a `make-sample.sh`). Scripts in `scripts/`:
-`new.sh`, `build.sh`, `check.sh`, `deploy.sh`, `probe.sh`. Sets of demos are `sets/*.txt`.
+`new.sh`, `build.sh`, `check.sh`, `deploy.sh` (`site` or `redirects`), `probe.sh`. Sets `stt`, `tts`,
+and `agent` come from each folder's `kind`; other sets are `sets/*.txt`.
 
 Never run `fly deploy` from an agent session; give Sam the `scripts/deploy.sh` command instead.
+Never press Speak, Replay, or Start in a browser check unless Sam asks: it plays audio out loud.
 
 ## Auth
 
-`server.js` mints a 30-second token at `GET /api/token` (same-origin only; 20 a minute and 120 an hour per address).
-The browser fetches a fresh token per session and opens the socket with it. `DEEPGRAM_API_KEY`
+`server.js` mints a 30-second token at `GET /api/token?demo=<id>` (same-origin only; an unknown id is
+a 404). Limits: 20 a minute and 120 an hour per address across every demo, and 120 a minute and 2000
+an hour per demo across every address (`DEMO_TOKENS_PER_MINUTE`, `DEMO_TOKENS_PER_HOUR`), so a run
+at one demo cannot use up the shared key for the rest. The browser fetches a fresh token per
+session and opens the socket with it. `DEEPGRAM_API_KEY`
 never reaches the browser. The key needs a role that can call `/v1/auth/grant`; a lower role gets
 a 403 from Deepgram, the server returns 500, and the page says it "could not start a session".
 
@@ -43,17 +50,20 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 
 | Path | What |
 |---|---|
-| `demos/<demo>/` | One demo: `index.tsx`, `meta.json`, `og.png`, `prompt.md`, optional `styles.css` |
-| `shared/common/` | Used by every kind: the contract types, request config, token fetch, mic capture, links, prompt builder |
+| `demos/<demo>/` | One demo: `index.tsx`, `meta.json`, `og.png`, `prompt.md`, optional `styles.css`, optional `server.js` (routes of its own) |
+| `shared/common/` | Used by every kind: the contract types, request config, token fetch, mic capture, links, prompt builder, `demo.ts` (which page this is) |
 | `shared/stt/` | Speech-to-text page, socket stream, transcript pieces |
 | `shared/tts/` | Text-to-speech page, speak/socket/session/token helpers, shared voice lineups |
 | `shared/agent/` | Voice agent page and contract |
-| `shared/main.tsx` | Picks the page from the feature's `kind` |
-| `vite.config.ts` | Reads `FEATURE`, aliases `@feature`, fills `index.html` from `meta.json` |
-| `server.js` | Token route and static serving, nothing else |
-| `Dockerfile`, `fly.toml` | Shared by every demo; `ARG FEATURE` picks the folder, `--app` the Fly app |
+| `shared/main.tsx` | `mount(feature, info)`: picks the page from the feature's `kind`; each page's generated entry calls it |
+| `shared/page.html` | The HTML every demo page is filled from |
+| `index.html` | The site root: a plain list of the demos, until devrel-demos-lab's index replaces it |
+| `vite.config.ts` | One page per `demos/<id>/`: fills `shared/page.html` from `meta.json`, generates the entry, ships `og.png` and `prompt.md` beside it |
+| `server.js` | Token route, per-demo routes from `demos/<id>/server.js` at `/demos/<id>/api/`, static serving |
+| `Dockerfile`, `fly.toml` | The site, app `dg-devrel-demos` |
+| `redirect/` | The old per-demo apps' image: Caddy, 301 to `/demos/<id>/`; `apps.txt` lists the 30 |
 | `scripts/` | `new`, `build`, `check`, `deploy`, `probe`, and `og/` for share cards |
-| `sets/` | Named sets of demos for build, check, and deploy |
+| `sets/` | Hand-picked sets of demos for build, check, and probe |
 | `tests/` | Shared tests over every folder, plus `<demo>.test.ts` for demos with their own |
 
 ## Safeguards

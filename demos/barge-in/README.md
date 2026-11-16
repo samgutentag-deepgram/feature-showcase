@@ -2,7 +2,7 @@
 
 **Interrupt it.** The agent opens with a long sales pitch. Talk over it. Deepgram sends UserStartedSpeaking the moment you start, and the page drops the audio it was about to play. Turn that off and hear what happens without it.
 
-- **Live:** https://dg-devrel-barge-in.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/barge-in/
 - **Kind:** Voice agent
 - **Docs:** https://developers.deepgram.com/docs/voice-agent
 

@@ -2,7 +2,7 @@
 
 **Did it cut you off?** Start a sentence, pause for a second in the middle, then finish it. Nova-3 ends a turn on silence. Flux listens to what you said, so a pause mid-sentence is not the end. Run it on both and compare.
 
-- **Live:** https://dg-devrel-turn-detection.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/turn-detection/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/flux/quickstart
 

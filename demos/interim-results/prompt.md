@@ -4,7 +4,7 @@
 Read the phrase at a normal pace. With interim_results on, words show up in gray while you talk and settle a moment later. With it off, nothing appears until a phrase is done.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `interim_results` set as below. Live demo: https://dg-devrel-interim-results.fly.dev
+with `interim_results` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/interim-results/
 
 ## The request
 

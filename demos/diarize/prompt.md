@@ -4,7 +4,7 @@
 Grab someone nearby and read the script together. Turn on diarization and every word comes back tagged with its speaker, live.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `diarize_model` set as below. Live demo: https://dg-devrel-diarize.fly.dev
+with `diarize_model` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/diarize/
 
 ## The request
 

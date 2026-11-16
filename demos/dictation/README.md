@@ -2,7 +2,7 @@
 
 **Say "comma." Get a comma.** Read the phrase, punctuation and all. Run it with dictation off, then on, and watch the spoken commands turn into punctuation and paragraphs.
 
-- **Live:** https://dg-devrel-dictation.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/dictation/
 - **Kind:** Speech-to-text (Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/dictation
 

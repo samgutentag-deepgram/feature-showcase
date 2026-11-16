@@ -4,7 +4,7 @@
 Read the phrase, punctuation and all. Run it with dictation off, then on, and watch the spoken commands turn into punctuation and paragraphs.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `dictation` set as below. Live demo: https://dg-devrel-dictation.fly.dev
+with `dictation` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/dictation/
 
 ## The request
 

@@ -2,7 +2,7 @@
 
 **Hear it before it finishes.** Deepgram streams the audio back as it is generated. Speak a long line both ways: wait for the whole file, or play the raw samples as each chunk arrives. Compare the first-audio time on each run.
 
-- **Live:** https://dg-devrel-tts-streaming.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-streaming/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/streaming-the-audio-output
 

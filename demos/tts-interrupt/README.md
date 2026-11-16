@@ -2,7 +2,7 @@
 
 **Let the caller cut in.** Press Speak, then talk over the agent while it is still talking, the way a caller would. Flux speech-to-text hears you start, the page cuts in, and the agent answers "Sure, go ahead." Try it with Interrupt, then with the audio stopped in the browser only, and compare how long the answer takes. Flux also says which words you heard.
 
-- **Live:** https://dg-devrel-tts-interrupt.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/tts-interrupt/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/flux-tts/interrupt-handling
 

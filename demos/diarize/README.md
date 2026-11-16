@@ -2,7 +2,7 @@
 
 **Who said that?** Grab someone nearby and read the script together. Turn on diarization and every word comes back tagged with its speaker, live.
 
-- **Live:** https://dg-devrel-diarize.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/diarize/
 - **Kind:** Speech-to-text (Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/diarization
 

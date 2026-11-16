@@ -4,7 +4,7 @@
 Read the phrase with measurements off, then on. Weights and lengths come back as numbers and units, the way a shipping label writes them.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `measurements` set as below. Live demo: https://dg-devrel-measurements.fly.dev
+with `measurements` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/measurements/
 
 ## The request
 

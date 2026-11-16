@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 # check.sh [--no-live] <demo>... | --set <name> | --all: the automated pre-deploy checks (1 to 8
 # in TEMPLATE.md). Types and unit tests run once for the whole repo (they cover every folder);
-# then each demo is built and, unless --no-live, checked live against the API with the key in .env.
+# then each demo's page is built on its own and, unless --no-live, checked live against the API with
+# the key in .env.
 # Prints one line per demo and exits 1 if any fails. PASSED_FILE, if set, gets the passing ids.
 set -uo pipefail
 . "$(dirname "$0")/lib.sh"
 live=1; [ "${1:-}" = --no-live ] && { live=0; shift; }
 list=$(targets "$@") || exit 1
 cd "$ROOT"
+builds=$(mktemp -d); trap 'rm -rf "$builds"' EXIT
 ok() { "$@" >/dev/null 2>&1 && echo ok || echo FAIL; }
 c=$(ok pnpm check); t=$(ok pnpm test)
 echo "repo: check $c  test $t"
 fail=0; [ "$c$t" = okok ] || fail=1
 for n in $list; do
-  b=$(ok env FEATURE="$n" pnpm exec vite build --outDir "dist/$n" --emptyOutDir)
+  b=$(ok env FEATURE="$n" pnpm exec vite build --outDir "$builds/$n" --emptyOutDir)
   l=skip; out=
   if [ $live = 1 ]; then
     out=$(ONLY=$n LIVE=1 pnpm exec vitest run tests/live.test.ts 2>&1); l=$([ $? -eq 0 ] && echo ok || echo FAIL)

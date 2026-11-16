@@ -2,7 +2,7 @@
 
 **Change its voice mid-call.** The agent starts as Alexis, a Flux voice. Press another voice and it answers in that voice straight away, Flux or Aura-2, without reconnecting.
 
-- **Live:** https://dg-devrel-update-speak.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/update-speak/
 - **Kind:** Voice agent
 - **Docs:** https://developers.deepgram.com/docs/voice-agent-update-speak
 

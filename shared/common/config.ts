@@ -1,6 +1,7 @@
 // Shell settings and the one place a request is assembled. The Request card and the socket both
 // build from requestParams, so the card can never show a param the socket does not send.
 import type { Model, Params } from './feature'
+import { demo } from './demo'
 
 // Audio the browser sends: 16 kHz mono 16-bit PCM, for mic and uploads alike.
 export const SAMPLE_RATE = 16_000
@@ -11,11 +12,12 @@ export const SAMPLE_RATE = 16_000
 export const MAX_SECONDS = 60
 export const MAX_UPLOAD_BYTES = 1024 * 1024
 
-// Short-lived token from server.js. Called fresh for every session.
+// Short-lived token from server.js. Called fresh for every session. The demo id lets the server
+// rate limit each demo on its own, so a run on one cannot use up the budget for the rest.
 export async function fetchToken(): Promise<string> {
   let res: Response
   try {
-    res = await fetch('/api/token')
+    res = await fetch(`/api/token?demo=${encodeURIComponent(demo.folder)}`)
   } catch {
     throw new Error('Could not reach the demo server. Check your connection and try again.')
   }

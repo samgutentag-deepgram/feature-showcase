@@ -2,7 +2,7 @@
 
 **Was that Kallistrum or Callistram?** Product names, people, and jargon trip up any model the first time. Read the phrase without keyterms, then send the words you expect and read it again.
 
-- **Live:** https://dg-devrel-keyterm.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/keyterm/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/keyterm
 

@@ -1,9 +1,12 @@
+import { demo, demoSource } from './demo'
+
 // Every outbound Deepgram link, tagged so a signup or docs visit is credited to the exact demo it
 // came from, to the demo family as a whole, and to the advocate who built it.
 //
 // The scheme, the same for every one-feature demo:
-//   utm_source    the demo's id: its Fly app name, e.g. dg-devrel-keyterm. Taken from meta.json's
-//                 url at build time (__DEMO_ID__), so it always matches where the page is hosted.
+//   utm_source    the demo's id, dg-devrel-<folder>, e.g. dg-devrel-keyterm. It was each demo's Fly
+//                 app name before the demos moved to one site, and stays the same so reports
+//                 keep one source per demo (shared/common/demo.ts).
 //   utm_medium    demo
 //   utm_campaign  devrel-demos, one campaign for the whole family so they roll up together
 //   utm_content   <advocate>_<placement>_<button>, e.g. sam_gutentag_header_signup: who built
@@ -30,7 +33,7 @@ const TAGGED_HOSTS = new Set([
   'playground.deepgram.com',
 ])
 
-export function dgLink(href: string, placement: Placement, button: Button, demo: string = __DEMO_ID__): string {
+export function dgLink(href: string, placement: Placement, button: Button, demo: string = demoSource()): string {
   const url = new URL(href)
   if (!TAGGED_HOSTS.has(url.hostname)) return href
   url.searchParams.set('utm_source', demo)
@@ -51,4 +54,4 @@ export const LINKS = {
 export const REPO = 'https://github.com/samgutentag-deepgram/feature-showcase'
 
 /** This demo's folder in the public repo, for the footer's View source link. */
-export const sourceLink = (folder: string = __DEMO_FOLDER__): string => `${REPO}/tree/main/demos/${folder}`
+export const sourceLink = (folder: string = demo.folder): string => `${REPO}/tree/main/demos/${folder}`

@@ -2,7 +2,7 @@
 
 **Watch it think out loud.** Read the phrase at a normal pace. With interim_results on, words show up in gray while you talk and settle a moment later. With it off, nothing appears until a phrase is done.
 
-- **Live:** https://dg-devrel-interim-results.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/interim-results/
 - **Kind:** Speech-to-text (Flux, Nova-3)
 - **Docs:** https://developers.deepgram.com/docs/interim-results
 

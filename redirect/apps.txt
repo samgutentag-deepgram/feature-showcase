@@ -1,0 +1,32 @@
+# The 30 demos that had their own Fly app, dg-devrel-<id>, before the move to one site (2026-11-16).
+# Each app now runs the redirect image (redirect/). Demos added after the move have no app: never add to this list.
+barge-in
+context-history
+diarize
+dictation
+filler-words
+flux-tts-configure
+flux-tts-turns
+flux-tts-voices
+function-calling
+inject-agent-message
+interim-results
+keyterm
+language-hint
+measurements
+numerals
+profanity-filter
+redact
+replace
+smart-format
+telephone-audio
+think-live
+tts-expressivity
+tts-interrupt
+tts-pause-markers
+tts-pronunciation
+tts-speed
+tts-streaming
+tts-ws-flush
+turn-detection
+update-speak

@@ -4,7 +4,7 @@
 Think Live adds a Deepgram model next to your LLM that handles the floor: a quick "mhmm" while you talk, and a check-in when you go quiet. Read the long line slowly, then say nothing. Turn it off and hear the dead air.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-think-live.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/think-live/
 
 ## The connection
 

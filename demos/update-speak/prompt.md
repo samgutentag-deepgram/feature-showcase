@@ -4,7 +4,7 @@
 The agent starts as Alexis, a Flux voice. Press another voice and it answers in that voice straight away, Flux or Aura-2, without reconnecting.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
-configured by the Settings message below. Live demo: https://dg-devrel-update-speak.fly.dev
+configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/update-speak/
 
 ## The connection
 

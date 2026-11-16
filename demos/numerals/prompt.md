@@ -4,7 +4,7 @@
 Read the phrase with numerals off, then on. Spoken numbers come back as digits, and nothing else about the transcript changes.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `numerals` set as below. Live demo: https://dg-devrel-numerals.fly.dev
+with `numerals` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/numerals/
 
 ## The request
 

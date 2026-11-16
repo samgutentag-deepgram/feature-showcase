@@ -4,7 +4,7 @@
 Pick a word you will say and what it should come back as. Read the phrase with replace off, then on, and watch Deepgram swap it before the transcript reaches you.
 
 Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
-with `replace` set as below. Live demo: https://dg-devrel-replace.fly.dev
+with `replace` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/replace/
 
 ## The request
 

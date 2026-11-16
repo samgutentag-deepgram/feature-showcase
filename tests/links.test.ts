@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { CAMPAIGN, LINKS, REPO, dgLink, sourceLink } from '../shared/common/links'
-import { FEATURE, demoId, readMeta } from '../vite.config'
+import { demoSource, setDemo } from '../shared/common/demo'
+import { SITE, demoUrl, listDemos, readMeta } from '../vite.config'
 
 const tags = (href: string) => Object.fromEntries(new URL(href).searchParams)
 
@@ -18,14 +19,16 @@ describe('outbound links', () => {
   })
 
   it('point View source at this demo\'s folder in the public repo', () => {
-    expect(sourceLink()).toBe(`${REPO}/tree/main/demos/${FEATURE}`)
+    setDemo({ folder: 'keyterm', hasPrompt: true })
+    expect(sourceLink()).toBe(`${REPO}/tree/main/demos/keyterm`)
     for (const folder of readdirSync('demos')) {
       expect(sourceLink(folder)).toBe(`https://github.com/samgutentag-deepgram/feature-showcase/tree/main/demos/${folder}`)
     }
   })
 
-  it('default the source to the demo this build serves', () => {
-    expect(tags(dgLink(LINKS.signup, 'header', 'signup')).utm_source).toBe(demoId(readMeta()))
+  it('default the source to the demo this page is', () => {
+    setDemo({ folder: 'smart-format', hasPrompt: true })
+    expect(tags(dgLink(LINKS.signup, 'header', 'signup')).utm_source).toBe('dg-devrel-smart-format')
     expect(CAMPAIGN).toBe('devrel-demos')
   })
 
@@ -47,21 +50,18 @@ describe('outbound links', () => {
 })
 
 describe('the demo id', () => {
-  // utm_source, the public URL, and the Fly app must agree, or traffic is credited to the wrong demo.
-  // The Fly app is dg-devrel-<folder> by construction (scripts/deploy.sh), so the folder is the check.
-  const names = readdirSync('demos', { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)
+  // utm_source and the public URL must agree with the folder, or traffic is credited to the wrong
+  // demo. utm_source keeps the old per-demo app name, dg-devrel-<folder>, so reports carry over.
+  const names = listDemos()
   it.each(names)('%s: matches the feature folder and the public URL', (name) => {
-    const meta = readMeta(name)
-    expect(demoId(meta)).toBe(`dg-devrel-${name}`)
-    expect(meta.url).toMatch(new RegExp(`^https://dg-devrel-${name}\\.fly\\.dev/?$`))
+    expect(demoSource(name)).toBe(`dg-devrel-${name}`)
+    expect(readMeta(name).url).toBe(demoUrl(name))
+    expect(demoUrl(name)).toBe(`${SITE}/demos/${name}/`)
   })
 
-  it('the build serves one of them', () => {
-    expect(names).toContain(FEATURE)
-  })
-
-  it('fly.toml names no app, so one config serves every demo', () => {
-    expect(readFileSync('fly.toml', 'utf8')).not.toMatch(/^app\s*=/m)
+  it('fly.toml names the one site', () => {
+    expect(readFileSync('fly.toml', 'utf8')).toMatch(/^app\s*=\s*"dg-devrel-demos"/m)
+    expect(SITE).toBe('https://dg-devrel-demos.fly.dev')
   })
 })
 

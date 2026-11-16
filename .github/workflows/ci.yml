@@ -11,5 +11,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - run: pnpm test
-      # Every demo must bundle on its own, not just the default one.
-      - run: bash scripts/build.sh --all
+      # The whole site: one page per demo folder.
+      - run: pnpm build

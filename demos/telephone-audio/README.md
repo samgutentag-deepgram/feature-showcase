@@ -2,7 +2,7 @@
 
 **Does it sound like a phone call?** Press Speak, then pick a quality any time: the line starts over in that format. Lowest is a phone line (mu-law at 8 kHz, what a call center or Twilio stream carries); Highest is 48 kHz. Listen, and watch the spectrum: the phone line stops at 4 kHz.
 
-- **Live:** https://dg-devrel-telephone-audio.fly.dev
+- **Live:** https://dg-devrel-demos.fly.dev/demos/telephone-audio/
 - **Kind:** Text-to-speech
 - **Docs:** https://developers.deepgram.com/docs/tts-media-output-settings
 

@@ -5,9 +5,9 @@ import { PLUMBING, describeRequest, requestParams, toQuery } from '../shared/com
 import type { Feature } from '../shared/common/feature'
 import type { TtsFeature } from '../shared/tts/feature'
 import { LISTEN_MODELS, settingsMessage, type AgentFeature } from '../shared/agent/feature'
-import { FEATURE, readMeta } from '../vite.config'
+import { FEATURE, demoUrl, listDemos, readMeta } from '../vite.config'
 
-// Every folder under demos/ must be a complete demo, deployable by changing FEATURE alone.
+// Every folder under demos/ must be a complete demo: one folder is one page on the site.
 const names = readdirSync('demos', { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
@@ -18,9 +18,10 @@ const kinds: Record<string, string> = Object.fromEntries(
 )
 const stt = (name: string) => kinds[name] === 'stt'
 
-describe('the active feature', () => {
-  it('is one of the feature folders', () => {
-    expect(names).toContain(FEATURE)
+describe('the demo list', () => {
+  it('is every folder under demos/, each with an index.tsx', () => {
+    expect(listDemos()).toEqual([...names].sort())
+    if (FEATURE) expect(names).toContain(FEATURE)
   })
 })
 
@@ -30,7 +31,7 @@ describe.each(names)('feature %s', (name) => {
     expect(meta.title).toMatch(/\| Deepgram$/)
     expect(meta.description.length).toBeGreaterThan(40)
     expect(meta.description.length).toBeLessThanOrEqual(160)
-    expect(meta.url).toBe(`https://dg-devrel-${name}.fly.dev`)
+    expect(meta.url).toBe(demoUrl(name))
   })
 
   it('has a 1200x630 og.png', () => {

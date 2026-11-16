@@ -4,7 +4,7 @@
 Press Speak, then pick a speed any time: the line starts over at that pace. Slow it down for a confirmation number someone has to write down, speed it up for the disclaimer nobody wants to sit through. Same voice, same words.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
-plays the audio. Live demo: https://dg-devrel-tts-speed.fly.dev
+plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/tts-speed/
 
 ## The request
 

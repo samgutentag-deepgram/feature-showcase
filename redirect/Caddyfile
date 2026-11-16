@@ -1,0 +1,10 @@
+# Every old per-demo app (dg-devrel-<id>.fly.dev) runs this: a permanent redirect to its page on the
+# one site, keeping the path and query. / goes to /demos/<id>/, /og.png to /demos/<id>/og.png.
+{
+	admin off
+	auto_https off
+}
+
+:8080 {
+	redir https://dg-devrel-demos.fly.dev/demos/{$DEMO}{uri} 301
+}
