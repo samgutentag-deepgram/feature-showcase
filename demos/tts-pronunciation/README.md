@@ -39,6 +39,10 @@ Fix how a word is said with an inline IPA override, on Flux (Early Access). Veri
   dg-pronunciations-applied: 1 (the same line without the override: 0).
   With speed=1.2 as well -> 400 CONTROL_COMBINATION_INVALID ("pronunciation and speed controls
   cannot be combined"), so this page sends no speed.
+  Verified live 2026-11-16: with a \{pause:1s\} marker in the same text -> 400
+  CONTROL_COMBINATION_INVALID ("The pause and pronunciation controls cannot be combined in a
+  single request"). An override shares a request with neither speed nor pause; pause plus speed
+  does combine (200, dg-breaks-applied: 1).
 IPA from the docs' own examples (docs/tts-voice-controls), in the broad American style Flux was
 trained on. Early Access: the docs say an override can come out differently from one generation
 to the next, so the page says to listen a few times. pnpm verify:live requests every term, both
