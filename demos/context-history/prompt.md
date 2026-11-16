@@ -49,12 +49,12 @@ API before this file ships and comes back `SettingsApplied`.
         {
           "type": "History",
           "role": "user",
-          "content": "Great. Can it be left at the side gate?"
+          "content": "Great. Can it be left at the side door?"
         },
         {
           "type": "History",
           "role": "assistant",
-          "content": "Done, I added a note to leave it at the side gate."
+          "content": "Done, I added a note to leave it at the side door."
         }
       ]
     },

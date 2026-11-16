@@ -11,8 +11,8 @@ interface State {
 export const HISTORY = [
   { type: 'History', role: 'user', content: 'Hi, this is Priya. I ordered a patio umbrella, order 4417.' },
   { type: 'History', role: 'assistant', content: 'Thanks Priya. Order 4417 shipped Monday and should arrive Thursday.' },
-  { type: 'History', role: 'user', content: 'Great. Can it be left at the side gate?' },
-  { type: 'History', role: 'assistant', content: 'Done, I added a note to leave it at the side gate.' },
+  { type: 'History', role: 'user', content: 'Great. Can it be left at the side door?' },
+  { type: 'History', role: 'assistant', content: 'Done, I added a note to leave it at the side door.' },
 ]
 
 export default defineAgentFeature<State>({

@@ -8,7 +8,7 @@
 
 ## What to try
 
-- **With history.** Press **Start talking** and ask about "my order". The agent answers with the order number, the arrival day and the side-gate note from the earlier turns.
+- **With history.** Press **Start talking** and ask about "my order". The agent answers with the order number, the arrival day and the side-door note from the earlier turns.
 - **Without it.** Untick the box and ask again. The agent asks who you are.
 
 ## How it works
