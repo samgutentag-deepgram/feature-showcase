@@ -75,6 +75,8 @@
 
 /* A voice browser: a language picker over a grid of voice cards. Pressing a card speaks with it. */
 .tts-browse { display: flex; flex-direction: column; gap: 12px; }
+.tts-browse__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; }
+.tts-voicecard--static { cursor: default; max-width: 420px; }
 .tts-voicegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
 .tts-voicecard { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px; text-align: left; font: inherit; cursor: pointer; color: var(--dg-text-body); background: var(--dg-bg-well); border: 2px solid transparent; border-radius: var(--dg-shape-control); }
 .tts-voicecard:hover { color: var(--dg-text-primary); }

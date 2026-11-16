@@ -24,7 +24,7 @@ export default defineTtsFeature<State>({
   kind: 'tts',
   copy: {
     headline: 'Hear every Aura-2 voice.',
-    lede: `${VOICES.length} Aura-2 voices in ${LANGS.length} languages, all on the same endpoint. Pick a language, then press any voice to hear the same line in it. The model name is the only thing that changes in the request.`,
+    lede: `Start with Flux voices: they are the ones to build on, and the Flux voices demo tours them. Aura-2 is the fallback, ${VOICES.length} voices in ${LANGS.length} languages on one endpoint. Pick a language and a voice to hear the same line; the model name is the only thing that changes in the request.`,
     ctaTitle: 'One endpoint, every Aura-2 voice.',
     ctaBody: (
       <>
@@ -53,44 +53,50 @@ export default defineTtsFeature<State>({
 
   Controls({ state, setState }) {
     const inLang = VOICES.filter((v) => v.lang === state.lang)
+    const on = byModel.get(state.voice)
     return (
       <div className="tts-browse">
-        <label className="tts-voice">
-          <span className="tts-text__label">Language</span>
-          <select
-            value={state.lang}
-            onChange={(e) => {
-              const first = VOICES.find((v) => v.lang === e.target.value)
-              if (first) setState({ lang: e.target.value, voice: first.model })
-            }}
-          >
-            {LANGS.map((l) => (
-              <option key={l.name} value={l.name}>
-                {l.name} ({VOICES.filter((v) => v.lang === l.name).length})
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="tts-voicegrid" role="radiogroup" aria-label={`${state.lang} voices`}>
-          {inLang.map((v) => (
-            <button
-              key={v.model}
-              role="radio"
-              aria-checked={v.model === state.voice}
-              className={v.model === state.voice ? 'tts-voicecard is-on' : 'tts-voicecard'}
-              onClick={() => setState({ lang: state.lang, voice: v.model })}
+        <div className="tts-browse__row">
+          <label className="tts-voice">
+            <span className="tts-text__label">Language</span>
+            <select
+              value={state.lang}
+              onChange={(e) => {
+                const first = VOICES.find((v) => v.lang === e.target.value)
+                if (first) setState({ lang: e.target.value, voice: first.model })
+              }}
             >
-              <span className="tts-voicecard__name">
-                {v.name}
-                {v.featured && <span className="tts-voicecard__tag">Featured</span>}
-              </span>
-              {detail(v) && <span className="tts-voicecard__detail">{detail(v)}</span>}
-              {v.character && <span className="tts-voicecard__character">{v.character}</span>}
-              {v.useCases && <span className="tts-voicecard__detail">For: {v.useCases}</span>}
-              <code className="tts-voicecard__model">{v.model}</code>
-            </button>
-          ))}
+              {LANGS.map((l) => (
+                <option key={l.name} value={l.name}>
+                  {l.name} ({VOICES.filter((v) => v.lang === l.name).length})
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="tts-voice">
+            <span className="tts-text__label">Voice</span>
+            <select value={state.voice} onChange={(e) => setState({ lang: state.lang, voice: e.target.value })}>
+              {inLang.map((v) => (
+                <option key={v.model} value={v.model}>
+                  {v.name}
+                  {v.featured ? ' (featured)' : ''}
+                  {detail(v) ? `, ${detail(v)}` : ''}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
+        {on && (
+          <div className="tts-voicecard is-on tts-voicecard--static">
+            <span className="tts-voicecard__name">
+              {on.name}
+              {on.featured && <span className="tts-voicecard__tag">Featured</span>}
+            </span>
+            {on.character && <span className="tts-voicecard__character">{on.character}</span>}
+            {on.useCases && <span className="tts-voicecard__detail">For: {on.useCases}</span>}
+            <code className="tts-voicecard__model">{on.model}</code>
+          </div>
+        )}
       </div>
     )
   },
