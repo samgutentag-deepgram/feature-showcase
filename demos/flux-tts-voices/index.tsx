@@ -22,7 +22,7 @@ export default defineTtsFeature<State>({
   kind: 'tts',
   copy: {
     headline: 'Hear every Flux voice.',
-    lede: `${VOICES.length} Flux voices in ${LANGS.length} languages, all on the same endpoint. Pick a language, then press any voice to hear the same line in it. The model name is the only thing that changes in the request.`,
+    lede: `${VOICES.length} Flux voices in ${LANGS.length} languages, all on the same endpoint. Pick a language and a voice to hear the same line in it. The model name is the only thing that changes in the request.`,
     ctaTitle: 'One endpoint, every voice.',
     ctaBody: (
       <>
@@ -50,48 +50,54 @@ export default defineTtsFeature<State>({
   Controls({ state, setState }) {
     const inLang = VOICES.filter((v) => v.lang === state.lang)
     const lang = LANGS.find((l) => l.name === state.lang)
+    const on = byModel.get(state.voice)
     return (
       <div className="tts-browse">
-        <label className="tts-voice">
-          <span className="tts-text__label">Language</span>
-          <select
-            value={state.lang}
-            onChange={(e) => {
-              const first = VOICES.find((v) => v.lang === e.target.value)
-              if (first) setState({ lang: e.target.value, voice: first.model })
-            }}
-          >
-            {[false, true].map((ea) => (
-              <optgroup key={String(ea)} label={ea ? 'Early Access' : 'Generally available'}>
-                {LANGS.filter((l) => l.earlyAccess === ea).map((l) => (
-                  <option key={l.name} value={l.name}>
-                    {l.name} ({VOICES.filter((v) => v.lang === l.name).length})
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </label>
-        {lang?.earlyAccess && <p className="hint">Early Access: numbers and dates are not expanded yet, so write them out in words.</p>}
-        <div className="tts-voicegrid" role="radiogroup" aria-label={`${state.lang} voices`}>
-          {inLang.map((v) => (
-            <button
-              key={v.model}
-              role="radio"
-              aria-checked={v.model === state.voice}
-              className={v.model === state.voice ? 'tts-voicecard is-on' : 'tts-voicecard'}
-              onClick={() => setState({ lang: state.lang, voice: v.model })}
+        <div className="tts-browse__row">
+          <label className="tts-voice">
+            <span className="tts-text__label">Language</span>
+            <select
+              value={state.lang}
+              onChange={(e) => {
+                const first = VOICES.find((v) => v.lang === e.target.value)
+                if (first) setState({ lang: e.target.value, voice: first.model })
+              }}
             >
-              <span className="tts-voicecard__name">
-                {v.name}
-                {v.featured && <span className="tts-voicecard__tag">Featured</span>}
-              </span>
-              {detail(v) && <span className="tts-voicecard__detail">{detail(v)}</span>}
-              {v.character && <span className="tts-voicecard__character">{v.character}</span>}
-              <code className="tts-voicecard__model">{v.model}</code>
-            </button>
-          ))}
+              {[false, true].map((ea) => (
+                <optgroup key={String(ea)} label={ea ? 'Early Access' : 'Generally available'}>
+                  {LANGS.filter((l) => l.earlyAccess === ea).map((l) => (
+                    <option key={l.name} value={l.name}>
+                      {l.name} ({VOICES.filter((v) => v.lang === l.name).length})
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </label>
+          <label className="tts-voice">
+            <span className="tts-text__label">Voice</span>
+            <select value={state.voice} onChange={(e) => setState({ lang: state.lang, voice: e.target.value })}>
+              {inLang.map((v) => (
+                <option key={v.model} value={v.model}>
+                  {v.name}
+                  {v.featured ? ' (featured)' : ''}
+                  {detail(v) ? `, ${detail(v)}` : ''}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
+        {lang?.earlyAccess && <p className="hint">Early Access: numbers and dates are not expanded yet, so write them out in words.</p>}
+        {on && (
+          <div className="tts-voicecard is-on tts-voicecard--static">
+            <span className="tts-voicecard__name">
+              {on.name}
+              {on.featured && <span className="tts-voicecard__tag">Featured</span>}
+            </span>
+            {on.character && <span className="tts-voicecard__character">{on.character}</span>}
+            <code className="tts-voicecard__model">{on.model}</code>
+          </div>
+        )}
       </div>
     )
   },

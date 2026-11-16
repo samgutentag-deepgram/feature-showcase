@@ -1,7 +1,7 @@
 <!-- Generated from the feature's index.tsx by shared/tts/prompt.ts. Do not edit by hand. -->
 # Add Flux voices to a web app with Deepgram
 
-266 Flux voices in 47 languages, all on the same endpoint. Pick a language, then press any voice to hear the same line in it. The model name is the only thing that changes in the request.
+266 Flux voices in 47 languages, all on the same endpoint. Pick a language and a voice to hear the same line in it. The model name is the only thing that changes in the request.
 
 Build a page with a text box and a Speak button that sends the text to Deepgram text-to-speech and
 plays the audio. Live demo: https://dg-devrel-demos.fly.dev/demos/flux-tts-voices/
