@@ -4,6 +4,7 @@
 // flux-wes-en is the default: the steadiest of 14 English Flux voices on 2026-11-11 (0.2 dB
 // loudness and 0.08 s duration spread, same line 3 times). Every voice is cleared for use; marcus
 // and brittany are listed like the rest, just not the default, since they drift between calls.
+// Verified live 2026-11-16: pnpm verify:live opened every request the page makes, and every docs link resolved.
 import { defineTtsFeature } from '../../shared/tts/feature'
 import { LANGS, VOICES } from './voices'
 

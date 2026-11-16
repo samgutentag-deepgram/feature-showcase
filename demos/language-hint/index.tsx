@@ -1,5 +1,6 @@
 // language_hint on Nova-3 multilingual (changelog 2026-10-23), with Flux multi for contrast.
 // Rows split wherever the detected language changes; the hints steer detection.
+// Verified live 2026-11-16: pnpm verify:live opened every request the page makes, and every docs link resolved.
 import { defineFeature, type Json, type Model, type Params } from '../../shared/common/feature'
 import { FLUX_LANGUAGES, NOVA3_LANGUAGES, phraseFor } from './languages'
 import { LanguagePicker } from './LanguagePicker'

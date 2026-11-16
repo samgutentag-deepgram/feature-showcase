@@ -71,4 +71,5 @@ From the top of `index.tsx`:
 ```text
 language_hint on Nova-3 multilingual (changelog 2026-10-23), with Flux multi for contrast.
 Rows split wherever the detected language changes; the hints steer detection.
+Verified live 2026-11-16: pnpm verify:live opened every request the page makes, and every docs link resolved.
 ```
