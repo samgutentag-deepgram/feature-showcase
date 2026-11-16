@@ -10,6 +10,38 @@ import { pcm16ToFloat, speakQuery, speakUrl, type SpeakStats } from './speak'
 
 const GAP_S = 0.4
 
+// One voice's audio as it streams in: the fetch pushes chunks, the player reads them in order.
+class Feed implements AsyncIterable<Uint8Array> {
+  private chunks: Uint8Array[] = []
+  private ended = false
+  private error: unknown = null
+  private wake: (() => void) | null = null
+  push(c: Uint8Array) {
+    this.chunks.push(c)
+    this.wake?.()
+  }
+  end() {
+    this.ended = true
+    this.wake?.()
+  }
+  fail(err: unknown) {
+    this.error = err
+    this.wake?.()
+  }
+  async *[Symbol.asyncIterator]() {
+    for (;;) {
+      if (this.chunks.length) {
+        yield this.chunks.shift()!
+        continue
+      }
+      if (this.error) throw this.error
+      if (this.ended) return
+      await new Promise<void>((r) => (this.wake = r))
+      this.wake = null
+    }
+  }
+}
+
 export interface LineupRow extends Partial<Loudness> {
   voice: string
   seconds?: number
@@ -63,7 +95,7 @@ export async function speakLineup(
       signal: controller.signal,
     })
 
-  const one = async (voice: string): Promise<Uint8Array> => {
+  const one = async (voice: string, feed: Feed): Promise<void> => {
     let res: Response
     try {
       res = await post(voice, token)
@@ -82,39 +114,74 @@ export async function speakLineup(
     }
     if (!firstByteMs) firstByteMs = performance.now() - t0
     contentType ||= res.headers.get('content-type') ?? ''
-    const body = new Uint8Array(await res.arrayBuffer())
-    bytes += body.byteLength
-    return body
+    const reader = res.body!.getReader()
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      bytes += value.byteLength
+      feed.push(value)
+    }
+    feed.end()
   }
 
   const done = (async (): Promise<LineupResult> => {
-    const pending = voices.map(one)
-    // Settle every request so one failure does not leave the others unhandled.
-    pending.forEach((p) => p.catch(() => undefined))
+    const feeds = voices.map(() => new Feed())
+    const pending = voices.map((v, i) => one(v, feeds[i]).catch((err) => feeds[i].fail(err)))
+    void pending
     const rate = Number(params.sample_rate ?? 24000)
     const buffers: AudioBuffer[] = []
     let firstAudioMs = 0
     let at = ctx.currentTime + 0.05
     const gap = ctx.createBuffer(1, Math.round(rate * GAP_S), rate)
     for (let i = 0; i < voices.length; i++) {
-      const raw = await pending[i]
-      const samples = pcm16ToFloat(raw.byteLength % 2 ? raw.slice(0, -1) : raw)
-      if (!samples.length) continue
-      const buffer = ctx.createBuffer(1, samples.length, rate)
-      buffer.copyToChannel(samples, 0)
-      const src = ctx.createBufferSource()
-      src.buffer = buffer
-      src.connect(out)
-      at = Math.max(at, ctx.currentTime + 0.02)
-      src.start(at)
-      sources.push(src)
-      if (!firstAudioMs) firstAudioMs = performance.now() - t0
-      rows[i] = { voice: voices[i], seconds: buffer.duration, ...loudness(samples, rate) }
-      const startsIn = (at - ctx.currentTime) * 1000
-      timers.push(setTimeout(() => onUpdate([...rows], i), startsIn))
+      // Play each voice's audio as it arrives, chunk by chunk, so the first voice starts within a
+      // moment of pressing Speak. The later voices are already downloading and wait their turn.
+      const parts: Float32Array[] = []
+      let carry: Uint8Array | null = null
+      let started = false
+      for await (const chunk of feeds[i]) {
+        let bytes = chunk
+        if (carry) {
+          bytes = new Uint8Array(carry.byteLength + chunk.byteLength)
+          bytes.set(carry)
+          bytes.set(chunk, carry.byteLength)
+          carry = null
+        }
+        if (bytes.byteLength % 2) {
+          carry = bytes.slice(-1)
+          bytes = bytes.slice(0, -1)
+        }
+        if (!bytes.byteLength) continue
+        const samples = pcm16ToFloat(bytes)
+        parts.push(samples)
+        const buffer = ctx.createBuffer(1, samples.length, rate)
+        buffer.copyToChannel(samples, 0)
+        const src = ctx.createBufferSource()
+        src.buffer = buffer
+        src.connect(out)
+        at = Math.max(at, ctx.currentTime + 0.02)
+        if (!started) {
+          started = true
+          if (!firstAudioMs) firstAudioMs = performance.now() - t0
+          timers.push(setTimeout(() => onUpdate([...rows], i), (at - ctx.currentTime) * 1000))
+        }
+        src.start(at)
+        sources.push(src)
+        at += buffer.duration
+      }
+      const total = parts.reduce((n, p) => n + p.length, 0)
+      if (!total) continue
+      const all = new Float32Array(total)
+      let off = 0
+      for (const p of parts) {
+        all.set(p, off)
+        off += p.length
+      }
+      const whole = ctx.createBuffer(1, all.length, rate)
+      whole.copyToChannel(all, 0)
+      rows[i] = { voice: voices[i], seconds: whole.duration, ...loudness(all, rate) }
       onUpdate([...rows])
-      at += buffer.duration
-      buffers.push(buffer)
+      buffers.push(whole)
       if (i < voices.length - 1) {
         buffers.push(gap)
         at += GAP_S
