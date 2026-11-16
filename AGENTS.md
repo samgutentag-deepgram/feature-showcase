@@ -4,10 +4,12 @@
 
 Every one-feature Deepgram demo, in one private repo: one shared page per kind (speech-to-text,
 text-to-speech, voice agent) and one folder per demo under `demos/`. One build makes one HTML page
-per folder, served by one Fly app at `https://dg-devrel-demos.fly.dev/demos/<demo>/`. A new demo is
-just a new folder. The 30 demos that predate the single site (2026-11-16) keep their old apps,
-`dg-devrel-<demo>`, as 301 redirects (`redirect/`). See `README.md` for commands, deploy modes, and
-the template components list, and `TEMPLATE.md` for the rules a new demo follows. Each demo folder
+per folder, served by one Fly app at `https://dg-devrel-demos.fly.dev/demos/<demo>/`, with the index
+at `/`. A new demo is a new folder plus its entry in `index/demos.json` (and `"built": true` on its
+card in `index/coming-soon.json`); `scripts/new.sh` adds both. The 30 demos that predate the single
+site (2026-11-16) keep their old apps, `dg-devrel-<demo>`, as 301 redirects (`redirect/`). See
+`README.md` for commands, deploy modes, and the template components list, and `TEMPLATE.md` for the
+rules a new demo follows. Each demo folder
 has its own README.
 
 The browser holds the Deepgram socket through `@deepgram/sdk`; the server only mints tokens.
@@ -57,7 +59,7 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 | `shared/agent/` | Voice agent page and contract |
 | `shared/main.tsx` | `mount(feature, info)`: picks the page from the feature's `kind`; each page's generated entry calls it |
 | `shared/page.html` | The HTML every demo page is filled from |
-| `index.html` | The site root: a plain list of the demos, until devrel-demos-lab's index replaces it |
+| `index.html`, `index/` | The site root: `index/render.ts` fills `index.html` from `index/demos.json` (live tiles, in order) and `index/coming-soon.json` (backlog cards); `index/main.ts` is the chip and search filter; styles in `shared/styles/index.css` |
 | `vite.config.ts` | One page per `demos/<id>/`: fills `shared/page.html` from `meta.json`, generates the entry, ships `og.png` and `prompt.md` beside it |
 | `server.js` | Token route, per-demo routes from `demos/<id>/server.js` at `/demos/<id>/api/`, static serving |
 | `Dockerfile`, `fly.toml` | The site, app `dg-devrel-demos` |

@@ -9,9 +9,10 @@
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["shared", "demos", "tests", "server.js", "vite.config.ts"]
+  "include": ["shared", "demos", "index", "tests", "server.js", "vite.config.ts"]
 }

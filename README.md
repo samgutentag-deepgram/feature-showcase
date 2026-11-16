@@ -2,7 +2,8 @@
 
 One small live page per Deepgram API feature. Each one shows a single feature or setting doing its
 thing, with the exact request on screen, at `https://dg-devrel-demos.fly.dev/demos/<demo>/`. The
-whole site is one Fly app, `dg-devrel-demos`; its root lists every demo.
+whole site is one Fly app, `dg-devrel-demos`; its root is the index: a tile per demo with product
+filters and search, plus cards for features whose demo page is still to come.
 
 Every demo is one folder under [`demos/`](demos), with its own README. Everything around it (the
 page, the token server, mic capture, the sockets, the Request and Response cards, the brand
@@ -30,7 +31,7 @@ FEATURE=keyterm pnpm dev
 ```
 
 Open <http://localhost:8080>; with `FEATURE` set, `/` goes straight to that demo. Every demo is
-served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the list at `/`.
+served either way, at `/demos/<id>/`. A bare `pnpm dev` shows the index at `/`.
 
 | Command | Does |
 |---|---|
@@ -115,14 +116,18 @@ Hand-picked sets are files in [`sets/`](sets), like `flux-tts` (the three Flux s
    `agent`.
 
 2. Start the folder from the smallest example of that kind (smart-format, telephone-audio, or
-   barge-in). Nothing else to register: the folder is the page.
+   barge-in). The script also adds the demo's tile to `index/demos.json` and sets `"built": true` on
+   its card in `index/coming-soon.json` when the ids match.
 
    ```bash
    bash scripts/new.sh <id> tts
    ```
 
 3. Fill in `demos/<id>/index.tsx` (the `Feature`, `TtsFeature`, or `AgentFeature`
-   object) and `meta.json` (title, description; the URL is already set). Reuse the template
+   object) and `meta.json` (title, description; the URL is already set). In `index/demos.json`,
+   replace the entry's TODO `headline` and `param`, set `flux` to its model badge (the keys of
+   `FLUX` in `index/render.ts`), and move it if it belongs elsewhere in the order. If its card in
+   `index/coming-soon.json` has a different id, set `"built": true` there by hand. Reuse the template
    components below before writing new ones. Feature-only styles go in a `styles.css` in the
    folder, `var(--dg-*)` only.
 
@@ -146,8 +151,8 @@ Hand-picked sets are files in [`sets/`](sets), like `flux-tts` (the three Flux s
    bash scripts/check.sh <id>
    ```
 
-6. Commit, deploy the site (next section), and add it to the index in `devrel-demos-lab/demos.json`.
-   No new app or secret: every demo shares the site's.
+6. Commit, including the `index/` changes, and deploy the site (next section). No new app or
+   secret: every demo shares the site's.
 
 ## Deploy
 
@@ -281,7 +286,12 @@ Everything a demo can reuse. Every path below is under `shared/`; a demo imports
   folder: `dist/demos/<id>/index.html` from `shared/page.html`, filled from that folder's
   `meta.json`, with its `og.png` and `prompt.md` beside it. The page's entry is generated too: it
   imports the folder and calls `mount`. Shared code is split into common chunks, so each page loads
-  only its own demo. `index.html` at the root is the plain list.
+  only its own demo.
+- `/` is `index.html` at the root, filled by `index/render.ts` from `index/demos.json` (the live
+  tiles, in page order, each linking to `/demos/<id>/` with its `og.png`) and
+  `index/coming-soon.json` (the backlog cards, linking to the docs). Titles and descriptions come
+  from each demo's `meta.json`. An entry with no folder yet is left out with a build warning;
+  `tests/index.test.ts` fails if a folder has no entry.
 - `server.js` serves `dist/`, mints tokens for any demo in the build, and mounts per-demo routes
   from `demos/<id>/server.js` (the Dockerfile copies only those files into the image).
 - `fly.toml` names the site app, `dg-devrel-demos`. `redirect/` holds the old apps' image.

@@ -1,20 +1,58 @@
 <!doctype html>
+<!-- The site root. index/render.ts fills the slots from index/demos.json and index/coming-soon.json. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <title>Deepgram feature demos</title>
-    <meta name="description" content="One small live page per Deepgram API feature, each showing the exact request it sends." />
-    <link rel="stylesheet" href="/shared/styles/list.css" />
+    <meta name="description" content="%COUNT% small live demos, one Deepgram feature each: speech-to-text, text-to-speech, and voice agents. Pick one and see what the setting does." />
+    <link rel="canonical" href="%URL%/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Deepgram" />
+    <meta property="og:title" content="Deepgram feature demos" />
+    <meta property="og:description" content="%COUNT% small live demos, one Deepgram feature each: speech-to-text, text-to-speech, and voice agents. Pick one and see what the setting does." />
+    <meta property="og:url" content="%URL%/" />
+    <meta property="og:image" content="%URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="/shared/styles/index.css" />
   </head>
   <body>
     <main class="page">
-      <h1>Deepgram feature demos</h1>
-      <p>One small live page per Deepgram API feature, each showing the exact request it sends.</p>
-      <ul class="demo-list">
-        <!--DEMOS-->
-      </ul>
+      <header class="masthead">
+        <img src="/deepgram-logo.svg" alt="Deepgram" />
+        <a class="btn btn--primary" href="https://console.deepgram.com/signup?utm_source=dg-devrel-demos&amp;utm_medium=demo&amp;utm_campaign=devrel-demos&amp;utm_content=sam_gutentag_header_signup">Free API key</a>
+      </header>
+      <section class="hero">
+        <h1>One feature. One page. Try it live.</h1>
+        <p>%COUNT% small demos, one Deepgram setting each, across speech-to-text, text-to-speech, and voice agents. Pick one, try it live, then flip the setting and try it again. The exact request is on every page.</p>
+      </section>
+      <section class="filters">
+        <div class="chips" role="group" aria-label="Filter by product">
+<!-- FILTERS -->
+        </div>
+        <input class="search" type="search" placeholder="Filter: keyterm, Flux, redact…" aria-label="Filter demos" />
+      </section>
+      <section class="grid" aria-label="Demos">
+<!-- TILES -->
+      </section>
+      <p class="empty" hidden>No live demo page matches that yet.</p>
+      <section class="soon" aria-labelledby="soon-title">
+        <div class="soon__head">
+          <h2 id="soon-title">Demo pages coming soon</h2>
+          <p><span class="soon-count">These %SOON% features already work</span> in the Deepgram API today. What is still on the way is a one-feature demo page for each. Every tile links to the docs so you can use the feature now.</p>
+        </div>
+        <div class="grid grid--soon">
+<!-- SOON -->
+        </div>
+      </section>
+      <footer class="foot">
+        <a href="https://developers.deepgram.com/?utm_source=dg-devrel-demos&amp;utm_medium=demo&amp;utm_campaign=devrel-demos&amp;utm_content=sam_gutentag_footer_docs">Docs</a>
+        <a href="https://dpgr.am/discord">Discord</a>
+      </footer>
     </main>
+    <script type="module" src="/index/main.ts"></script>
   </body>
 </html>

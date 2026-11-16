@@ -3,6 +3,7 @@ import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { renderIndex } from './index/render.ts'
 
 // One site, one page per demo: every folder under demos/ builds to dist/demos/<id>/index.html with
 // its own title, description, and og.png from its meta.json, served at SITE/demos/<id>/.
@@ -62,17 +63,9 @@ function entryCode(name: string): string {
   ].join('\n')
 }
 
-function listHtml(html: string, names: string[]): string {
-  const items = names.map((n) => {
-    const m = readMeta(n)
-    const title = m.title.replace(/\s*\|\s*Deepgram$/, '')
-    return `<li><a href="/demos/${n}/">${escape(title)}</a><p>${escape(m.description)}</p></li>`
-  })
-  return html.replace('<!--DEMOS-->', items.join('\n        '))
-}
-
 function demoPages(names: string[]): Plugin {
   const known = new Set(names)
+  let warn = (msg: string) => console.warn(msg)
   const match = (id: string) => {
     const m = id.split('?')[0].match(PAGE_RE)
     return m && known.has(m[1]) ? { name: m[1], file: m[2] } : null
@@ -100,9 +93,17 @@ function demoPages(names: string[]): Plugin {
       if (!hit) return null
       return hit.file === 'index.html' ? pageHtml(hit.name) : entryCode(hit.name)
     },
+    configResolved(config) {
+      warn = (msg) => config.logger.warn(msg)
+    },
+    // / is the index: tiles from index/demos.json, in that order, linking to /demos/<id>/. 'post', so
+    // Vite leaves the tile images alone: each is the og.png the demo's page already serves.
     transformIndexHtml: {
-      order: 'pre',
-      handler: (html, ctx) => (ctx.path === '/index.html' ? listHtml(html, names) : html),
+      order: 'post',
+      handler: (html, ctx) =>
+        ctx.path === '/index.html'
+          ? renderIndex(html, { built: names, demosOnDisk: listDemos(), readMeta, warn }).replaceAll('%URL%', SITE)
+          : html,
     },
     configureServer(server) {
       const send = (res: ServerResponse, type: string, body: string | Buffer) => {

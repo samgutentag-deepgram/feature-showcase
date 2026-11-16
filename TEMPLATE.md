@@ -4,7 +4,9 @@ Each demo is one small public page that shows one Deepgram API feature or settin
 `https://dg-devrel-demos.fly.dev/demos/<name>/`. The page, the token server, capture, the socket,
 the Request and Response cards, the clip limits, the brand styles, and the Fly app are **shared**
 (`shared/`) and stay put. A demo is one folder under `demos/`, in this one repo. Its folder name is
-its id and its URL path. Adding the folder is all it takes: no app, no secret, no list to edit.
+its id and its URL path. No app and no secret: the folder is the page. The one list is the index
+at `/`: the demo needs an entry in `index/demos.json`, and its card in `index/coming-soon.json`
+flipped to `"built": true`. `scripts/new.sh` does both.
 
 There are three kinds of demo, one shared page each. A feature says which with `kind`, and `main.tsx`
 picks the page:
@@ -45,8 +47,9 @@ kind (`stt` copies smart-format, `tts` copies telephone-audio, `agent` copies ba
 bash scripts/new.sh <name> tts
 ```
 
-That copies the folder, points `meta.json` at `https://dg-devrel-demos.fly.dev/demos/<name>/`, and
-drops the copied `prompt.md`. The copied `og.png` stays until you
+That copies the folder, points `meta.json` at `https://dg-devrel-demos.fly.dev/demos/<name>/`,
+drops the copied `prompt.md`, adds a tile entry to `index/demos.json` with a TODO headline and
+param, and sets `"built": true` on the demo's card in `index/coming-soon.json` when the ids match. The copied `og.png` stays until you
 render a new one.
 
 ## 2. Write the feature folder
@@ -169,7 +172,12 @@ set `promptState` to pick the setting the prompt shows (the last variant otherwi
 
 ## 3. Point the build at it
 
-Nothing to edit. The build finds every folder with an `index.tsx`, and `FEATURE` opens yours:
+The build finds every folder with an `index.tsx`. The index at `/` shows it once its
+`index/demos.json` entry is filled in: `headline` (the question or promise from the page),
+`param` (what the code chip shows), and `flux` (the model badge; the keys of `FLUX` in
+`index/render.ts`). Check its card in `index/coming-soon.json` says `"built": true`; backlog ids
+do not always match folder ids. `tests/index.test.ts` fails if a folder has no entry. `FEATURE`
+opens your page:
 
 ```bash
 FEATURE=<name> pnpm dev

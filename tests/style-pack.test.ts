@@ -15,7 +15,7 @@ function files(dir: string): string[] {
 
 describe('style pack', () => {
   it('keeps literal colors and fonts inside shared/styles/packs/', () => {
-    const leaks = [...files('shared'), ...files('demos')]
+    const leaks = [...files('shared'), ...files('demos'), ...files('index')]
       .filter((f) => !f.endsWith('.test.ts'))
       .filter((f) => !f.includes(path.join('styles', 'packs')))
       .flatMap((f) => readFileSync(f, 'utf8').split('\n').map((line, i) => ({ f, i, line })))

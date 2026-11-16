@@ -1,0 +1,272 @@
+{
+  "_comment": "One entry per one-feature demo, in page order. The index page at / (index/render.ts) reads each demo's title and description from demos/<id>/meta.json and its card from /demos/<id>/og.png. An entry whose folder does not exist yet is skipped with a build warning.",
+  "demos": [
+    {
+      "id": "language-hint",
+      "platform": "Speech-to-text",
+      "headline": "Which language was that?",
+      "param": "language_hint",
+      "flux": "works"
+    },
+    {
+      "id": "keyterm",
+      "platform": "Speech-to-text",
+      "headline": "Was that Kallistrum or Callistram?",
+      "param": "keyterm",
+      "flux": "works"
+    },
+    {
+      "id": "turn-detection",
+      "platform": "Speech-to-text",
+      "headline": "Did it cut you off?",
+      "param": "endpointing / eot_threshold",
+      "flux": "works"
+    },
+    {
+      "id": "smart-format",
+      "platform": "Speech-to-text",
+      "headline": "Four eight one five, or 4815?",
+      "param": "smart_format",
+      "flux": "nova-only"
+    },
+    {
+      "id": "redact",
+      "platform": "Speech-to-text",
+      "headline": "Say the card number. Never store it.",
+      "param": "redact",
+      "flux": "partial",
+      "flux_note": "numbers only"
+    },
+    {
+      "id": "diarize",
+      "platform": "Speech-to-text",
+      "headline": "Who said that?",
+      "param": "diarize_model",
+      "flux": "nova-only"
+    },
+    {
+      "id": "dictation",
+      "platform": "Speech-to-text",
+      "headline": "Say \"comma.\" Get a comma.",
+      "param": "dictation",
+      "flux": "nova-only"
+    },
+    {
+      "id": "filler-words",
+      "platform": "Speech-to-text",
+      "headline": "Um, did it hear that?",
+      "param": "filler_words",
+      "flux": "built-in"
+    },
+    {
+      "id": "interim-results",
+      "platform": "Speech-to-text",
+      "headline": "Watch it think out loud.",
+      "param": "interim_results",
+      "flux": "built-in"
+    },
+    {
+      "id": "profanity-filter",
+      "platform": "Speech-to-text",
+      "headline": "Keep it clean.",
+      "param": "profanity_filter",
+      "flux": "works"
+    },
+    {
+      "id": "numerals",
+      "platform": "Speech-to-text",
+      "headline": "Twenty five, or 25?",
+      "param": "numerals",
+      "flux": "works"
+    },
+    {
+      "id": "replace",
+      "platform": "Speech-to-text",
+      "headline": "Say Acme. Get ACME Corp.",
+      "param": "replace",
+      "flux": "nova-only"
+    },
+    {
+      "id": "measurements",
+      "platform": "Speech-to-text",
+      "headline": "Five kilograms, or 5 kg?",
+      "param": "measurements",
+      "flux": "nova-only"
+    },
+    {
+      "id": "telephone-audio",
+      "platform": "Text-to-speech",
+      "headline": "What does it sound like on a phone line?",
+      "param": "encoding=mulaw",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-sample-rate",
+      "platform": "Text-to-speech",
+      "headline": "How many kilohertz do you need?",
+      "param": "sample_rate",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-bit-rate",
+      "platform": "Text-to-speech",
+      "headline": "How small can the file get?",
+      "param": "bit_rate",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-streaming",
+      "platform": "Text-to-speech",
+      "headline": "Play it before it finishes.",
+      "param": "container=none",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-callback",
+      "platform": "Text-to-speech",
+      "headline": "Get the audio later, on your webhook.",
+      "param": "callback",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-speed",
+      "platform": "Text-to-speech",
+      "headline": "Slow down for the numbers.",
+      "param": "speed",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-normalize-volume",
+      "platform": "Text-to-speech",
+      "headline": "Every voice at the same volume.",
+      "param": "normalize_volume",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-interrupt",
+      "platform": "Text-to-speech",
+      "headline": "Let the caller cut in.",
+      "param": "Interrupt",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-expressivity",
+      "platform": "Text-to-speech",
+      "headline": "Calm for support, bright for good news.",
+      "param": "expressivity",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "flux-tts-voices",
+      "platform": "Text-to-speech",
+      "headline": "Hear every Flux voice.",
+      "param": "model (flux-{voice}-{lang})",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "aura-voice-picker",
+      "platform": "Text-to-speech",
+      "headline": "Hear every Aura-2 voice.",
+      "param": "model (aura-2-{voice}-{lang})",
+      "flux": "tts-aura"
+    },
+    {
+      "id": "flux-tts-configure",
+      "platform": "Text-to-speech",
+      "headline": "Change the pace without hanging up.",
+      "param": "Configure (speed)",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "flux-tts-turns",
+      "platform": "Text-to-speech",
+      "headline": "Every turn, accounted for.",
+      "param": "Flush + SpeechStarted + SpeechMetadata",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "flux-tts-session-metadata",
+      "platform": "Text-to-speech",
+      "headline": "One bill for the whole call.",
+      "param": "SessionMetadata",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-ws-flush",
+      "platform": "Text-to-speech",
+      "headline": "Start talking before the LLM finishes.",
+      "param": "Speak + Flush",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-ws-clear",
+      "platform": "Text-to-speech",
+      "headline": "Clear what the voice was about to say.",
+      "param": "Clear",
+      "flux": "tts-aura"
+    },
+    {
+      "id": "tts-ws-close",
+      "platform": "Text-to-speech",
+      "headline": "Hang up without cutting off the last line.",
+      "param": "Close",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-pause-markers",
+      "platform": "Text-to-speech",
+      "headline": "Give them time to write it down.",
+      "param": "{pause:1s}",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-pronunciation",
+      "platform": "Text-to-speech",
+      "headline": "Say the drug name right.",
+      "param": "inline IPA pronunciation",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "barge-in",
+      "platform": "Voice agent",
+      "headline": "Talk over it.",
+      "param": "UserStartedSpeaking",
+      "flux": "agent"
+    },
+    {
+      "id": "function-calling",
+      "platform": "Voice agent",
+      "headline": "Let it look things up.",
+      "param": "functions",
+      "flux": "agent"
+    },
+    {
+      "id": "think-live",
+      "platform": "Voice agent",
+      "headline": "It says mhmm.",
+      "param": "agent.think_live",
+      "flux": "agent"
+    },
+    {
+      "id": "context-history",
+      "platform": "Voice agent",
+      "headline": "Pick up where you left off.",
+      "param": "agent.context.messages",
+      "flux": "agent"
+    },
+    {
+      "id": "inject-agent-message",
+      "platform": "Voice agent",
+      "headline": "Cut in on your own agent.",
+      "param": "InjectAgentMessage",
+      "flux": "agent"
+    },
+    {
+      "id": "update-speak",
+      "platform": "Voice agent",
+      "headline": "Change its voice mid-call.",
+      "param": "UpdateSpeak",
+      "flux": "agent"
+    }
+  ]
+}

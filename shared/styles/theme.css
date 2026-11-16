@@ -41,6 +41,8 @@
   --dg-state-idle: var(--dg-grey-300);
   --dg-state-inactive: var(--dg-accent-dim);
   --dg-state-error: var(--dg-danger);
+  --dg-state-available: var(--dg-signal-ga);
+  --dg-state-early: var(--dg-signal-early);
   --dg-control-track: var(--dg-grey-500);
   --dg-control-thumb: var(--dg-grey-100);
   --dg-icon-default: var(--dg-grey-200);

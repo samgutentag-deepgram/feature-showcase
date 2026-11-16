@@ -59,6 +59,10 @@
   --dg-accent-3: #fa8100;
   --dg-danger: #eb2a2e;
 
+  /* ---- palette: availability marks on the index's coming-soon tiles ---- */
+  --dg-signal-ga: #13854b;
+  --dg-signal-early: #a15c00;
+
   /* ---- palette: code cards (the dark slate of the social cards) -------- */
   --dg-code-bg: #1d1d1d;
   --dg-code-ink: #fcfaf8;

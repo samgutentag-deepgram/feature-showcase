@@ -1,0 +1,1058 @@
+{
+  "_comment": "Backlog of one-feature demos not built yet, from a pass over developers.deepgram.com on 2026-11-11. The index page (index/render.ts) shows entries without built:true as grayed 'Coming soon' tiles that link to the docs. When a demo ships, add it to index/demos.json and set built:true here.",
+  "features": [
+    {
+      "id": "model-picker",
+      "platform": "Speech-to-text",
+      "param": "model",
+      "what": "Same clip through nova-3, nova-2, nova-3-medical and flux side by side.",
+      "models": "All STT models (nova-3, nova-2, nova, enhanced, base, flux-general-*)",
+      "docs": "https://developers.deepgram.com/docs/model",
+      "built": false
+    },
+    {
+      "id": "model-version-pin",
+      "platform": "Speech-to-text",
+      "param": "version",
+      "what": "Pin an older model version and diff it against latest.",
+      "models": "Nova and older (pre-recorded, streaming v1)",
+      "docs": "https://developers.deepgram.com/docs/version",
+      "built": false
+    },
+    {
+      "id": "language-select",
+      "platform": "Speech-to-text",
+      "param": "language",
+      "what": "Switch the transcription language and watch accuracy change on foreign audio.",
+      "models": "Nova-3, Nova-2 (v1 only)",
+      "docs": "https://developers.deepgram.com/docs/language",
+      "built": false
+    },
+    {
+      "id": "multilingual-code-switching",
+      "platform": "Speech-to-text",
+      "param": "language=multi",
+      "what": "Transcribe speech that switches languages mid-sentence, with per-word language tags.",
+      "models": "Nova-3, Nova-2, Nova-3 Medical, flux-general-multi",
+      "docs": "https://developers.deepgram.com/docs/multilingual-code-switching",
+      "built": false
+    },
+    {
+      "id": "language-hint",
+      "platform": "Speech-to-text",
+      "param": "language_hint",
+      "what": "Bias multilingual detection toward expected languages.",
+      "models": "Nova-3 multi and flux-general-multi only",
+      "docs": "https://developers.deepgram.com/docs/nova-3-language-prompting",
+      "built": true
+    },
+    {
+      "id": "detect-language",
+      "platform": "Speech-to-text",
+      "param": "detect_language",
+      "what": "Upload any clip and see the detected language code and confidence.",
+      "models": "Pre-recorded only, Nova-3 down to Base",
+      "docs": "https://developers.deepgram.com/docs/language-detection",
+      "built": false
+    },
+    {
+      "id": "keyterm",
+      "platform": "Speech-to-text",
+      "param": "keyterm",
+      "what": "Boost brand and jargon recognition with keyterm prompting.",
+      "models": "Nova-3 and Flux only",
+      "docs": "https://developers.deepgram.com/docs/keyterm",
+      "built": true
+    },
+    {
+      "id": "keywords-legacy",
+      "platform": "Speech-to-text",
+      "param": "keywords",
+      "what": "Boost or suppress words with weighted intensifiers on older models.",
+      "models": "Nova-2 and older only (not Nova-3; use keyterm)",
+      "docs": "https://developers.deepgram.com/docs/keywords",
+      "built": false
+    },
+    {
+      "id": "smart-format",
+      "platform": "Speech-to-text",
+      "param": "smart_format",
+      "what": "Toggle readable formatting of dates, currency, and numbers.",
+      "models": "Nova (pre-recorded, streaming v1)",
+      "docs": "https://developers.deepgram.com/docs/smart-format",
+      "built": true
+    },
+    {
+      "id": "punctuate",
+      "platform": "Speech-to-text",
+      "param": "punctuate",
+      "what": "Raw lowercase transcript versus punctuated, capitalized output.",
+      "models": "Nova (pre-recorded, streaming v1)",
+      "docs": "https://developers.deepgram.com/docs/punctuation",
+      "built": false
+    },
+    {
+      "id": "paragraphs",
+      "platform": "Speech-to-text",
+      "param": "paragraphs",
+      "what": "Break a long transcript into readable paragraphs.",
+      "models": "Pre-recorded only",
+      "docs": "https://developers.deepgram.com/docs/paragraphs",
+      "built": false
+    },
+    {
+      "id": "utterances",
+      "platform": "Speech-to-text",
+      "param": "utterances + utt_split",
+      "what": "Segment audio into utterances and slide the pause length that splits them.",
+      "models": "Pre-recorded only",
+      "docs": "https://developers.deepgram.com/docs/utterances",
+      "built": false
+    },
+    {
+      "id": "diarize",
+      "platform": "Speech-to-text",
+      "param": "diarize_model (diarize is deprecated)",
+      "what": "Label who spoke each word in a multi-speaker clip.",
+      "models": "All models; diarize=true is deprecated, use diarize_model",
+      "docs": "https://developers.deepgram.com/docs/diarization",
+      "built": true
+    },
+    {
+      "id": "diarize-model-v2",
+      "platform": "Speech-to-text",
+      "param": "diarize_model=v1|v2|latest",
+      "what": "Compare v1 and v2 diarizer speaker labels on the same recording.",
+      "models": "Pre-recorded for v2; streaming supports v1/latest",
+      "docs": "https://developers.deepgram.com/docs/diarization",
+      "built": false
+    },
+    {
+      "id": "multichannel",
+      "platform": "Speech-to-text",
+      "param": "multichannel",
+      "what": "Transcribe each stereo channel separately, like agent and caller.",
+      "models": "Pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/multichannel",
+      "built": false
+    },
+    {
+      "id": "dictation",
+      "platform": "Speech-to-text",
+      "param": "dictation",
+      "what": "Spoken \"comma\" and \"new paragraph\" become punctuation.",
+      "models": "English, pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/dictation",
+      "built": true
+    },
+    {
+      "id": "filler-words",
+      "platform": "Speech-to-text",
+      "param": "filler_words",
+      "what": "Keep or drop \"uh\" and \"um\" in the transcript.",
+      "models": "English, pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/filler-words",
+      "built": true
+    },
+    {
+      "id": "numerals",
+      "platform": "Speech-to-text",
+      "param": "numerals",
+      "what": "Spoken numbers become digits.",
+      "models": "Nova and Flux",
+      "docs": "https://developers.deepgram.com/docs/numerals",
+      "built": true
+    },
+    {
+      "id": "measurements",
+      "platform": "Speech-to-text",
+      "param": "measurements",
+      "what": "Spoken units become abbreviations like \"5 km\".",
+      "models": "English, pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/measurements",
+      "built": true
+    },
+    {
+      "id": "profanity-filter",
+      "platform": "Speech-to-text",
+      "param": "profanity_filter",
+      "what": "Mask profanity in the transcript.",
+      "models": "Nova and Flux",
+      "docs": "https://developers.deepgram.com/docs/profanity-filter",
+      "built": true
+    },
+    {
+      "id": "redact",
+      "platform": "Speech-to-text",
+      "param": "redact",
+      "what": "Redact PCI, SSN, and numbers from the transcript.",
+      "models": "Nova (pci, ssn, numbers...); Flux supports numbers and aggressive_numbers only",
+      "docs": "https://developers.deepgram.com/docs/redaction",
+      "built": true
+    },
+    {
+      "id": "find-and-replace",
+      "platform": "Speech-to-text",
+      "param": "replace",
+      "what": "Swap a misheard term for the right one in output.",
+      "models": "Nova (pre-recorded, streaming v1)",
+      "docs": "https://developers.deepgram.com/docs/find-and-replace",
+      "built": true
+    },
+    {
+      "id": "search",
+      "platform": "Speech-to-text",
+      "param": "search",
+      "what": "Find where a phrase was spoken using acoustic matching, with timestamps.",
+      "models": "Nova (pre-recorded, streaming v1)",
+      "docs": "https://developers.deepgram.com/docs/search",
+      "built": false
+    },
+    {
+      "id": "detect-entities",
+      "platform": "Speech-to-text",
+      "param": "detect_entities",
+      "what": "Highlight names, emails, and phone numbers found in speech.",
+      "models": "English; pre-recorded all models, streaming Nova only (not Flux)",
+      "docs": "https://developers.deepgram.com/docs/detect-entities",
+      "built": false
+    },
+    {
+      "id": "raw-audio-format",
+      "platform": "Speech-to-text",
+      "param": "encoding + sample_rate + channels",
+      "what": "Stream raw PCM or mulaw and see what wrong settings do to accuracy.",
+      "models": "Nova and Flux (Flux: linear16, linear32, mulaw, alaw, opus, ogg-opus)",
+      "docs": "https://developers.deepgram.com/docs/encoding",
+      "built": false
+    },
+    {
+      "id": "callback",
+      "platform": "Speech-to-text",
+      "param": "callback + callback_method",
+      "what": "Submit audio, close the tab, receive the transcript on a webhook later.",
+      "models": "Pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/callback",
+      "built": false
+    },
+    {
+      "id": "tag-usage",
+      "platform": "Speech-to-text",
+      "param": "tag",
+      "what": "Label requests and filter them in the usage dashboard. Also on TTS, agent, read.",
+      "models": "All endpoints",
+      "docs": "https://developers.deepgram.com/docs/stt-tagging",
+      "built": false
+    },
+    {
+      "id": "extra-metadata",
+      "platform": "Speech-to-text",
+      "param": "extra",
+      "what": "Attach key-value pairs that come back in the response metadata.",
+      "models": "Pre-recorded and streaming v1",
+      "docs": "https://developers.deepgram.com/docs/extra-metadata",
+      "built": false
+    },
+    {
+      "id": "redact-usage",
+      "platform": "Speech-to-text",
+      "param": "redact_usage",
+      "what": "Keyterms and replace strings show as [REDACTED] in usage logs.",
+      "models": "Nova and Flux",
+      "docs": "https://developers.deepgram.com/docs/redact-usage",
+      "built": false
+    },
+    {
+      "id": "mip-opt-out",
+      "platform": "Speech-to-text",
+      "param": "mip_opt_out",
+      "what": "Opt a request out of the Model Improvement Program. Also on TTS, agent, LLM.",
+      "models": "All endpoints (pricing impact)",
+      "docs": "https://developers.deepgram.com/docs/the-deepgram-model-improvement-partnership-program",
+      "built": false
+    },
+    {
+      "id": "turn-detection",
+      "platform": "Speech-to-text",
+      "param": "endpointing / eot_threshold",
+      "what": "Tune how fast a turn ends after the speaker stops.",
+      "models": "endpointing: Nova streaming; eot_threshold: Flux only",
+      "docs": "https://developers.deepgram.com/docs/endpointing",
+      "built": true
+    },
+    {
+      "id": "interim-results",
+      "platform": "Speech-to-text",
+      "param": "interim_results",
+      "what": "Show words appear live, then lock in as final.",
+      "models": "Nova streaming only",
+      "docs": "https://developers.deepgram.com/docs/interim-results",
+      "built": true
+    },
+    {
+      "id": "utterance-end",
+      "platform": "Speech-to-text",
+      "param": "utterance_end_ms + UtteranceEnd",
+      "what": "Detect end of utterance from word timing gaps, robust to background noise.",
+      "models": "Nova streaming only (needs interim_results)",
+      "docs": "https://developers.deepgram.com/docs/utterance-end",
+      "built": false
+    },
+    {
+      "id": "speech-started",
+      "platform": "Speech-to-text",
+      "param": "vad_events + SpeechStarted",
+      "what": "Flash an indicator the moment voice activity starts.",
+      "models": "Nova streaming only",
+      "docs": "https://developers.deepgram.com/docs/speech-started",
+      "built": false
+    },
+    {
+      "id": "stt-keepalive",
+      "platform": "Speech-to-text",
+      "param": "KeepAlive",
+      "what": "Keep a silent stream open past the 10 second timeout.",
+      "models": "Nova streaming only",
+      "docs": "https://developers.deepgram.com/docs/audio-keep-alive",
+      "built": false
+    },
+    {
+      "id": "finalize",
+      "platform": "Speech-to-text",
+      "param": "Finalize (from_finalize)",
+      "what": "Force final results now, like on a push-to-talk release.",
+      "models": "Nova streaming only",
+      "docs": "https://developers.deepgram.com/docs/finalize",
+      "built": false
+    },
+    {
+      "id": "close-stream",
+      "platform": "Speech-to-text",
+      "param": "CloseStream",
+      "what": "Close cleanly and receive the final Metadata summary.",
+      "models": "Nova and Flux streaming",
+      "docs": "https://developers.deepgram.com/docs/close-stream",
+      "built": false
+    },
+    {
+      "id": "stt-configure-midstream",
+      "platform": "Speech-to-text",
+      "param": "Configure (keyterms, features) + ConfigureSuccess/Failure",
+      "what": "Swap keyterms or turn numerals on mid-call without reconnecting.",
+      "models": "Nova-3 streaming for keyterms; v1 streaming",
+      "docs": "https://developers.deepgram.com/docs/configure",
+      "built": false
+    },
+    {
+      "id": "flux-configure-midstream",
+      "platform": "Speech-to-text",
+      "param": "Configure (thresholds, keyterms, language_hints, numerals)",
+      "what": "Retune turn thresholds and vocabulary on a live Flux stream.",
+      "models": "Flux only",
+      "docs": "https://developers.deepgram.com/docs/flux/configure",
+      "built": false
+    },
+    {
+      "id": "flux-turn-events",
+      "platform": "Speech-to-text",
+      "param": "TurnInfo (StartOfTurn, Update, EndOfTurn)",
+      "what": "Visualize the Flux turn state machine as you talk.",
+      "models": "Flux only",
+      "docs": "https://developers.deepgram.com/docs/flux/state",
+      "built": false
+    },
+    {
+      "id": "flux-eager-eot",
+      "platform": "Speech-to-text",
+      "param": "eager_eot_threshold + EagerEndOfTurn / TurnResumed",
+      "what": "Start the LLM early on EagerEndOfTurn and cancel on TurnResumed.",
+      "models": "Flux only",
+      "docs": "https://developers.deepgram.com/docs/flux/voice-agent-eager-eot",
+      "built": false
+    },
+    {
+      "id": "flux-eot-timeout",
+      "platform": "Speech-to-text",
+      "param": "eot_timeout_ms",
+      "what": "Cap how long silence can last before a turn is forced to end.",
+      "models": "Flux only",
+      "docs": "https://developers.deepgram.com/docs/flux/configuration",
+      "built": false
+    },
+    {
+      "id": "flux-force-end-turn",
+      "platform": "Speech-to-text",
+      "param": "ForceEndTurn + eot_threshold=1.0",
+      "what": "Bring your own turn detection with a push-to-talk button.",
+      "models": "Flux only",
+      "docs": "https://developers.deepgram.com/docs/flux/own-turn-detection",
+      "built": false
+    },
+    {
+      "id": "aura-voice-picker",
+      "platform": "Text-to-speech",
+      "param": "model (aura-2-*)",
+      "what": "Hear the same line across Aura-2 voices and languages.",
+      "models": "Aura, Aura-2 (/v1/speak)",
+      "docs": "https://developers.deepgram.com/docs/tts-models",
+      "built": true
+    },
+    {
+      "id": "flux-tts-voices",
+      "platform": "Text-to-speech",
+      "param": "model (flux-{voice}-{lang})",
+      "what": "Browse Flux TTS voices across 40+ languages on /v2/speak.",
+      "models": "Flux TTS only (/v2/speak)",
+      "docs": "https://developers.deepgram.com/docs/flux-tts/voices",
+      "built": true
+    },
+    {
+      "id": "tts-telephone-audio",
+      "platform": "Text-to-speech",
+      "param": "encoding=mulaw",
+      "what": "Generate 8 kHz mulaw audio for phone lines.",
+      "models": "Aura-2 and Flux TTS",
+      "docs": "https://developers.deepgram.com/docs/tts-encoding",
+      "built": true
+    },
+    {
+      "id": "tts-streaming-container",
+      "platform": "Text-to-speech",
+      "param": "container=none",
+      "what": "Stream raw audio without a WAV header for instant playback.",
+      "models": "Aura-2 and Flux TTS",
+      "docs": "https://developers.deepgram.com/docs/tts-container",
+      "built": true
+    },
+    {
+      "id": "tts-sample-rate",
+      "platform": "Text-to-speech",
+      "param": "encoding + sample_rate",
+      "what": "Compare linear16 at 8, 16, 24, and 48 kHz by ear and file size.",
+      "models": "Aura-2 and Flux TTS",
+      "docs": "https://developers.deepgram.com/docs/tts-sample-rate",
+      "built": true
+    },
+    {
+      "id": "tts-bit-rate",
+      "platform": "Text-to-speech",
+      "param": "encoding + bit_rate",
+      "what": "Trade mp3 and opus bit rate against file size and quality.",
+      "models": "Aura-2 REST and Flux TTS batch",
+      "docs": "https://developers.deepgram.com/docs/tts-bit-rate",
+      "built": true
+    },
+    {
+      "id": "tts-callback",
+      "platform": "Text-to-speech",
+      "param": "callback + callback_method + priority",
+      "what": "Generate audio asynchronously and receive it on a webhook.",
+      "models": "Aura REST; Flux TTS batch (priority=Low is Flux batch only)",
+      "docs": "https://developers.deepgram.com/docs/tts-callback",
+      "built": true
+    },
+    {
+      "id": "tts-speed",
+      "platform": "Text-to-speech",
+      "param": "speed",
+      "what": "Slow down or speed up speech while keeping it natural.",
+      "models": "Aura-2 (0.7 to 1.5) and Flux TTS (0.5 to 1.5)",
+      "docs": "https://developers.deepgram.com/docs/tts-voice-controls",
+      "built": true
+    },
+    {
+      "id": "tts-expressivity",
+      "platform": "Text-to-speech",
+      "param": "expressivity",
+      "what": "Dial a voice from calm to animated, -2 to 2.",
+      "models": "Flux TTS only (beta)",
+      "docs": "https://developers.deepgram.com/docs/tts-expressivity",
+      "built": true
+    },
+    {
+      "id": "tts-normalize-volume",
+      "platform": "Text-to-speech",
+      "param": "normalize_volume",
+      "what": "Toggle loudness normalization across voices and requests.",
+      "models": "Flux TTS only",
+      "docs": "https://developers.deepgram.com/reference/speak/v-2/audio/generate",
+      "built": true
+    },
+    {
+      "id": "tts-pause-markers",
+      "platform": "Text-to-speech",
+      "param": "{pause:1s} inline marker",
+      "what": "Insert exact silences, like after reading a confirmation number.",
+      "models": "Flux TTS batch only",
+      "docs": "https://developers.deepgram.com/docs/tts-voice-controls",
+      "built": true
+    },
+    {
+      "id": "tts-pronunciation",
+      "platform": "Text-to-speech",
+      "param": "inline IPA pronunciation",
+      "what": "Fix how drug names or brands are pronounced with IPA overrides.",
+      "models": "Aura-2; Flux TTS (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/tts-voice-controls",
+      "built": true
+    },
+    {
+      "id": "tts-ws-flush",
+      "platform": "Text-to-speech",
+      "param": "Speak + Flush + Flushed",
+      "what": "Stream LLM tokens and flush to force audio for partial text.",
+      "models": "Aura WebSocket (/v1/speak)",
+      "docs": "https://developers.deepgram.com/docs/tts-ws-flush",
+      "built": true
+    },
+    {
+      "id": "tts-ws-clear",
+      "platform": "Text-to-speech",
+      "param": "Clear + Cleared",
+      "what": "Cut off speech mid-sentence when the user interrupts.",
+      "models": "Aura WebSocket (/v1/speak)",
+      "docs": "https://developers.deepgram.com/docs/tts-ws-clear",
+      "built": true
+    },
+    {
+      "id": "tts-ws-close",
+      "platform": "Text-to-speech",
+      "param": "Close",
+      "what": "Close gracefully so buffered text still finishes playing.",
+      "models": "Aura and Flux TTS WebSocket",
+      "docs": "https://developers.deepgram.com/docs/tts-ws-close",
+      "built": true
+    },
+    {
+      "id": "flux-tts-turns",
+      "platform": "Text-to-speech",
+      "param": "Flush + SpeechStarted + SpeechMetadata",
+      "what": "Show per-turn speech_id, duration, and billable characters.",
+      "models": "Flux TTS only",
+      "docs": "https://developers.deepgram.com/docs/flux-tts/state",
+      "built": true
+    },
+    {
+      "id": "flux-tts-interrupt",
+      "platform": "Text-to-speech",
+      "param": "Interrupt + SpeechInterrupted",
+      "what": "Barge in and get back exactly what text the listener heard.",
+      "models": "Flux TTS only",
+      "docs": "https://developers.deepgram.com/docs/flux-tts/interrupt-handling",
+      "built": true
+    },
+    {
+      "id": "flux-tts-configure",
+      "platform": "Text-to-speech",
+      "param": "Configure (speed) + ConfigureSuccess/Failure",
+      "what": "Change speaking speed mid-session without reconnecting.",
+      "models": "Flux TTS only",
+      "docs": "https://developers.deepgram.com/docs/flux-tts/client-messages",
+      "built": true
+    },
+    {
+      "id": "flux-tts-session-metadata",
+      "platform": "Text-to-speech",
+      "param": "SessionMetadata",
+      "what": "Show cumulative session audio and billable characters on close.",
+      "models": "Flux TTS only",
+      "docs": "https://developers.deepgram.com/docs/flux-tts/server-messages",
+      "built": true
+    },
+    {
+      "id": "agent-audio-io",
+      "platform": "Voice agent",
+      "param": "audio.input + audio.output (encoding, sample_rate, container, bitrate)",
+      "what": "Run an agent over mulaw 8 kHz phone audio versus browser linear16.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-media-inputs-outputs",
+      "built": false
+    },
+    {
+      "id": "agent-listen-model",
+      "platform": "Voice agent",
+      "param": "agent.listen.provider (version, model, smart_format)",
+      "what": "Swap the agent ear between Nova-3 (v1) and Flux (v2).",
+      "models": "Nova-3 and Flux",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-stt-models",
+      "built": false
+    },
+    {
+      "id": "agent-keyterms",
+      "platform": "Voice agent",
+      "param": "agent.listen.provider.keyterms",
+      "what": "Make the agent hear product names correctly.",
+      "models": "Nova-3 and Flux",
+      "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-flux-turn-tuning",
+      "platform": "Voice agent",
+      "param": "agent.listen.provider.eot_threshold + eot_timeout_ms",
+      "what": "Make the agent wait longer or reply sooner after you stop.",
+      "models": "Flux listen only",
+      "docs": "https://developers.deepgram.com/docs/flux/agent",
+      "built": false
+    },
+    {
+      "id": "agent-speculative-replies",
+      "platform": "Voice agent",
+      "param": "agent.listen.provider.eager_eot_threshold",
+      "what": "Start the LLM before the turn is confirmed and watch latency drop.",
+      "models": "Flux listen only",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-speculative-replies",
+      "built": false
+    },
+    {
+      "id": "agent-multilingual",
+      "platform": "Voice agent",
+      "param": "agent.listen.provider.language_hints / language",
+      "what": "An agent that hears and answers in the caller language.",
+      "models": "flux-general-multi or Nova-3 multi",
+      "docs": "https://developers.deepgram.com/docs/multilingual-voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-llm-picker",
+      "platform": "Voice agent",
+      "param": "agent.think.provider (type, model)",
+      "what": "Swap the agent brain between OpenAI, Anthropic, Google, Groq, Bedrock, Deepgram.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-llm-models",
+      "built": false
+    },
+    {
+      "id": "agent-think-controls",
+      "platform": "Voice agent",
+      "param": "agent.think.provider.temperature + reasoning_mode",
+      "what": "Hear how temperature and reasoning effort change replies and latency.",
+      "models": "Provider dependent",
+      "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-byo-llm",
+      "platform": "Voice agent",
+      "param": "agent.think.endpoint",
+      "what": "Point the agent at your own OpenAI-compatible LLM endpoint.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-llm-models",
+      "built": false
+    },
+    {
+      "id": "agent-think-fallback",
+      "platform": "Voice agent",
+      "param": "agent.think as an array",
+      "what": "Ordered LLM fallback chain that survives a dead primary provider.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-llm-models",
+      "built": false
+    },
+    {
+      "id": "agent-context-length",
+      "platform": "Voice agent",
+      "param": "agent.think.context_length",
+      "what": "Limit how much conversation a custom LLM keeps in context.",
+      "models": "Custom think endpoint only",
+      "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-functions",
+      "platform": "Voice agent",
+      "param": "agent.think.functions",
+      "what": "The agent calls your client-side function mid-conversation.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agents-function-calling",
+      "built": true
+    },
+    {
+      "id": "agent-server-functions",
+      "platform": "Voice agent",
+      "param": "agent.think.functions[].endpoint",
+      "what": "Deepgram calls your HTTP endpoint for a function, no client code.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agents-function-calling",
+      "built": false
+    },
+    {
+      "id": "agent-defer-until-eot",
+      "platform": "Voice agent",
+      "param": "defer_until_eot + FunctionCallCancelled",
+      "what": "Show speculative function calls getting cancelled when the user keeps talking.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-function-call-cancelled",
+      "built": false
+    },
+    {
+      "id": "agent-backchannel",
+      "platform": "Voice agent",
+      "param": "agent.think_live.provider.agent_backchannel_sensitivity",
+      "what": "Agent says \"mhmm\" while you talk; slide how often.",
+      "models": "Think Live (requires think_live)",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
+      "built": true
+    },
+    {
+      "id": "agent-presence-check",
+      "platform": "Voice agent",
+      "param": "presence_check_max_count + presence_check_interval_ms",
+      "what": "Go silent and the agent asks if you are still there.",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
+      "built": true
+    },
+    {
+      "id": "agent-frustration",
+      "platform": "Voice agent",
+      "param": "frustration_max_count + FrustrationDetected",
+      "what": "Sound annoyed and watch the escalation counter trip.",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
+      "built": false
+    },
+    {
+      "id": "agent-restricted-terms",
+      "platform": "Voice agent",
+      "param": "agent.think_live.provider.restricted_terms",
+      "what": "Block words the agent must never say.",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
+      "built": false
+    },
+    {
+      "id": "agent-function-filler",
+      "platform": "Voice agent",
+      "param": "initial_agent_filler + agent_filler_max_count + agent_filler_interval_ms",
+      "what": "Agent covers a slow function call with \"let me check that\".",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
+      "built": false
+    },
+    {
+      "id": "agent-dynamic-inject",
+      "platform": "Voice agent",
+      "param": "InjectAgentMessage is_dynamic",
+      "what": "Let Think Live word its own filler line on demand.",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-inject-agent-message",
+      "built": false
+    },
+    {
+      "id": "agent-update-think-live",
+      "platform": "Voice agent",
+      "param": "UpdateThinkLive + ThinkLiveUpdated",
+      "what": "Turn backchannel and presence settings up or down mid-call.",
+      "models": "Think Live",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-acknowledgements",
+      "built": false
+    },
+    {
+      "id": "agent-voice-picker",
+      "platform": "Voice agent",
+      "param": "agent.speak.provider (Deepgram, ElevenLabs, Cartesia, OpenAI, Polly) + endpoint",
+      "what": "Same agent, swappable voice providers.",
+      "models": "Aura, Aura-2, Flux TTS, third-party",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-tts-models",
+      "built": false
+    },
+    {
+      "id": "agent-speak-controls",
+      "platform": "Voice agent",
+      "param": "agent.speak.provider.speed + expressivity",
+      "what": "Tune agent speaking speed and delivery register.",
+      "models": "speed: Aura and Flux TTS; expressivity: Flux TTS only",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-tts-controls",
+      "built": false
+    },
+    {
+      "id": "agent-speak-fallback",
+      "platform": "Voice agent",
+      "param": "agent.speak as an array",
+      "what": "Ordered TTS fallback chain across providers.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-tts-models",
+      "built": false
+    },
+    {
+      "id": "agent-greeting",
+      "platform": "Voice agent",
+      "param": "agent.greeting",
+      "what": "The agent speaks first with a configured greeting.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-history-restore",
+      "platform": "Voice agent",
+      "param": "agent.context.messages",
+      "what": "Resume a past call with prior turns and function calls preloaded.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-history",
+      "built": true
+    },
+    {
+      "id": "agent-history-events",
+      "platform": "Voice agent",
+      "param": "History + flags.history",
+      "what": "Stream conversation and function-call history events as they happen.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-history",
+      "built": false
+    },
+    {
+      "id": "agent-reusable-config",
+      "platform": "Voice agent",
+      "param": "agent as UUID + agent variables (REST)",
+      "what": "Store the agent config server-side and connect by ID.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/reusable-agent-configurations",
+      "built": false
+    },
+    {
+      "id": "agent-update-prompt",
+      "platform": "Voice agent",
+      "param": "UpdatePrompt + PromptUpdated",
+      "what": "Change agent instructions mid-conversation.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-update-prompt",
+      "built": false
+    },
+    {
+      "id": "agent-update-speak",
+      "platform": "Voice agent",
+      "param": "UpdateSpeak + SpeakUpdated",
+      "what": "Switch the agent voice mid-call.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-update-speak",
+      "built": true
+    },
+    {
+      "id": "agent-update-listen",
+      "platform": "Voice agent",
+      "param": "UpdateListen + ListenUpdated",
+      "what": "Swap STT model, language, or keyterms mid-call.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-update-listen",
+      "built": false
+    },
+    {
+      "id": "agent-update-think",
+      "platform": "Voice agent",
+      "param": "UpdateThink + ThinkUpdated",
+      "what": "Swap the LLM, prompt, and functions mid-call.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-update-think",
+      "built": false
+    },
+    {
+      "id": "agent-inject-message",
+      "platform": "Voice agent",
+      "param": "InjectAgentMessage (behavior) + InjectionRefused",
+      "what": "Make the agent say a line now, queued, or interrupting.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-inject-agent-message",
+      "built": true
+    },
+    {
+      "id": "agent-inject-user-message",
+      "platform": "Voice agent",
+      "param": "InjectUserMessage",
+      "what": "Type to the agent instead of speaking.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-inject-user-message",
+      "built": false
+    },
+    {
+      "id": "agent-keepalive",
+      "platform": "Voice agent",
+      "param": "KeepAlive",
+      "what": "Keep an agent session alive while the mic is muted.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/agent-keep-alive",
+      "built": false
+    },
+    {
+      "id": "agent-force-end-turn",
+      "platform": "Voice agent",
+      "param": "ForceEndTurn",
+      "what": "Push-to-talk agent: release the button to end your turn.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-force-end-turn",
+      "built": false
+    },
+    {
+      "id": "agent-barge-in",
+      "platform": "Voice agent",
+      "param": "UserStartedSpeaking",
+      "what": "Stop agent playback the moment the user talks over it.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-user-started-speaking",
+      "built": true
+    },
+    {
+      "id": "agent-state-indicator",
+      "platform": "Voice agent",
+      "param": "AgentThinking + AgentStartedSpeaking + AgentAudioDone",
+      "what": "Live status light: listening, thinking, speaking, done.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-outputs",
+      "built": false
+    },
+    {
+      "id": "agent-live-transcript",
+      "platform": "Voice agent",
+      "param": "ConversationText",
+      "what": "Live chat log of both sides, tagged with conversational behavior.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-conversation-text",
+      "built": false
+    },
+    {
+      "id": "agent-latency-report",
+      "platform": "Voice agent",
+      "param": "LatencyReport",
+      "what": "Per-turn waterfall of STT, LLM, tool, and TTS latency.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-latency-report",
+      "built": false
+    },
+    {
+      "id": "agent-handshake",
+      "platform": "Voice agent",
+      "param": "Welcome + SettingsApplied",
+      "what": "Show the session request_id and when settings land.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-welcome-message",
+      "built": false
+    },
+    {
+      "id": "agent-errors-warnings",
+      "platform": "Voice agent",
+      "param": "Error + Warning",
+      "what": "Trigger bad settings and render the agent error and warning codes.",
+      "models": "n/a",
+      "docs": "https://developers.deepgram.com/docs/voice-agent-errors-warnings",
+      "built": false
+    },
+    {
+      "id": "agent-custom-think-passthrough",
+      "platform": "Voice agent",
+      "param": "CustomToThinkProvider + CustomFromThinkProvider",
+      "what": "Pass arbitrary JSON to and from a wss custom LLM.",
+      "models": "Experimental, wss custom think endpoint only",
+      "docs": "https://developers.deepgram.com/reference/voice-agent/voice-agent",
+      "built": false
+    },
+    {
+      "id": "agent-voice-prompt-opt-out",
+      "platform": "Voice agent",
+      "param": "agent.think.provider.voice_prompt_opt_out",
+      "what": "Compare Think-Fast replies with and without Deepgram voice-style instructions.",
+      "models": "Deepgram think-fast only (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/llm/voice-agent",
+      "built": false
+    },
+    {
+      "id": "summarize",
+      "platform": "LLM",
+      "param": "summarize",
+      "what": "One-paragraph summary of a call or a block of text.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/summarization",
+      "built": false
+    },
+    {
+      "id": "topics",
+      "platform": "LLM",
+      "param": "topics",
+      "what": "Tag detected topics with confidence per segment.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/topic-detection",
+      "built": false
+    },
+    {
+      "id": "custom-topics",
+      "platform": "LLM",
+      "param": "custom_topic + custom_topic_mode",
+      "what": "Supply your own topics; strict versus extended changes what comes back.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/topic-detection",
+      "built": false
+    },
+    {
+      "id": "intents",
+      "platform": "LLM",
+      "param": "intents",
+      "what": "Detect what the speaker wants, per segment.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/intent-recognition",
+      "built": false
+    },
+    {
+      "id": "custom-intents",
+      "platform": "LLM",
+      "param": "custom_intent + custom_intent_mode",
+      "what": "Supply your own intents; strict versus extended changes results.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/intent-recognition",
+      "built": false
+    },
+    {
+      "id": "sentiment",
+      "platform": "LLM",
+      "param": "sentiment",
+      "what": "Color a transcript by positive, neutral, or negative sentiment.",
+      "models": "English; /v1/listen pre-recorded and /v1/read",
+      "docs": "https://developers.deepgram.com/docs/sentiment-analysis",
+      "built": false
+    },
+    {
+      "id": "read-callback",
+      "platform": "LLM",
+      "param": "/v1/read callback + callback_method",
+      "what": "Analyze long text asynchronously and get results on a webhook.",
+      "models": "/v1/read",
+      "docs": "https://developers.deepgram.com/docs/text-intelligence-callback",
+      "built": false
+    },
+    {
+      "id": "think-model-compare",
+      "platform": "LLM",
+      "param": "/v1/think model",
+      "what": "Same prompt through think-fast and phonellm-mini, compare speed and style.",
+      "models": "think-fast, phonellm-mini-alpha-2-fp8 (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/llm/models",
+      "built": false
+    },
+    {
+      "id": "think-streaming",
+      "platform": "LLM",
+      "param": "/v1/think stream + stream_options",
+      "what": "Stream tokens as server-sent events and show time to first token.",
+      "models": "think-fast, phonellm-mini (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/llm/request-response-format",
+      "built": false
+    },
+    {
+      "id": "think-tools",
+      "platform": "LLM",
+      "param": "/v1/think tools",
+      "what": "Function calling with tool calls and tool results across turns.",
+      "models": "think-fast, phonellm-mini (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/llm/request-response-format",
+      "built": false
+    },
+    {
+      "id": "think-generation-controls",
+      "platform": "LLM",
+      "param": "/v1/think temperature + reasoning_effort",
+      "what": "Show how temperature and reasoning effort change replies and token usage.",
+      "models": "think-fast, phonellm-mini (Early Access)",
+      "docs": "https://developers.deepgram.com/docs/llm/request-response-format",
+      "built": false
+    }
+  ]
+}

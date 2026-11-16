@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # new.sh <demo> [stt|tts|agent]: starts a new demo folder at demos/<demo>/ from the smallest
 # example of its kind (smart-format, telephone-audio, barge-in), writes a README stub, points meta.json at
-# https://dg-devrel-demos.fly.dev/demos/<demo>/, and drops the copied prompt.md. Nothing else to
-# register: the folder is the page, and --set <kind> finds it by its index.tsx.
+# https://dg-devrel-demos.fly.dev/demos/<demo>/, and drops the copied prompt.md. It also adds the
+# demo's tile to index/demos.json (after the last demo of its product, headline and param TODO) and
+# sets built:true on its card in index/coming-soon.json if it has one. --set <kind> finds the
+# folder by its index.tsx.
 # The og.png is the example's card until you render a new one (pnpm og). Edit index.tsx next.
 set -euo pipefail
 . "$(dirname "$0")/lib.sh"
@@ -27,6 +29,26 @@ m['description'] = 'TODO: one sentence on what the visitor does and sees.'
 m['url'] = f'https://dg-devrel-demos.fly.dev/demos/{name}/'
 open(p, 'w').write(json.dumps(m, indent=2) + '\n')
 PY
+python3 - "$ROOT/index" "$name" "$kind" <<'PY'
+import json, sys
+index, name, kind = sys.argv[1:]
+platform, flux = {'stt': ('Speech-to-text', 'works'), 'tts': ('Text-to-speech', 'tts'), 'agent': ('Voice agent', 'agent')}[kind]
+p = f'{index}/demos.json'
+d = json.load(open(p))
+added = not any(e['id'] == name for e in d['demos'])
+if added:
+    at = max((i + 1 for i, e in enumerate(d['demos']) if e['platform'] == platform), default=len(d['demos']))
+    d['demos'].insert(at, {'id': name, 'platform': platform, 'headline': 'TODO headline', 'param': 'TODO param', 'flux': flux})
+    open(p, 'w').write(json.dumps(d, indent=2, ensure_ascii=False) + '\n')
+p = f'{index}/coming-soon.json'
+s = json.load(open(p))
+hit = [f for f in s['features'] if f['id'] == name]
+for f in hit:
+    f['built'] = True
+if hit:
+    open(p, 'w').write(json.dumps(s, indent=2, ensure_ascii=False) + '\n')
+print(f"index/demos.json: {'added' if added else 'already has'} {name}" + (", coming-soon card set to built" if hit else "; no coming-soon card has this id, so flip its card by hand if it has another"))
+PY
 cat >"$dst/README.md" <<MD
 # $name
 
@@ -47,4 +69,4 @@ FEATURE=$name pnpm dev
 TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
 MD
 echo "demos/$name/ from $from"
-echo "next: edit index.tsx and meta.json, then FEATURE=$name pnpm dev"
+echo "next: edit index.tsx and meta.json, fill the headline, param and flux of its index/demos.json entry, then FEATURE=$name pnpm dev"
