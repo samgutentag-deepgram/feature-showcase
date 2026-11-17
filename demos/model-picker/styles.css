@@ -1,0 +1,4 @@
+/* The Nova model picker. var() only: literals live in styles/packs/. */
+.model-field { gap: 10px; }
+.model-field__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.model-field .segmented { align-self: flex-start; flex-wrap: wrap; }
