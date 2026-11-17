@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "speech-started",
+      "platform": "Speech-to-text",
+      "headline": "Know they started talking before the first word.",
+      "param": "vad_events",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",

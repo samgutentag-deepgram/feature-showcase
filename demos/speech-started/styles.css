@@ -1,0 +1,5 @@
+/* The lead line above the transcript. var() only: literals live in styles/packs/. */
+.lead { margin: 0 0 12px; font-family: var(--dg-font-code); font-size: 14px; color: var(--dg-text-body); }
+.lead__mark { color: var(--dg-text-primary); background: var(--dg-accent-dim); border-radius: var(--dg-shape-control); padding: 0 6px; }
+.lead__none { color: var(--dg-text-label); }
+.lead__gap { color: var(--dg-text-primary); }

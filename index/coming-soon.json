@@ -305,7 +305,7 @@
       "what": "Flash an indicator the moment voice activity starts.",
       "models": "Nova streaming only",
       "docs": "https://developers.deepgram.com/docs/speech-started",
-      "built": false
+      "built": true
     },
     {
       "id": "stt-keepalive",
