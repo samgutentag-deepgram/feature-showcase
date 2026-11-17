@@ -6,6 +6,7 @@
 //   speaking with a customer service agent here to assist you." and AgentAudioDone 2.2 s in.
 //   An unknown id came back Error INTERNAL_SERVER_ERROR "Internal Server Error resolving agent ID."
 //   right after Welcome. This page never creates, changes or deletes a stored config.
+// Verified live 2026-11-16: ONLY=agent-reusable-config pnpm verify:live passed; Settings with the stored id came back SettingsApplied and the unknown id came back Error INTERNAL_SERVER_ERROR, as expected; a probe call with the stored id answered an InjectUserMessage with ConversationText assistant "You're speaking with a customer service agent here to assist you." and AgentAudioDone.
 import type { AgentPanelProps } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'

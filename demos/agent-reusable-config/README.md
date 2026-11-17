@@ -65,4 +65,16 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Reusable agent configurations: the agent block is stored once with the REST API and Settings
+carries only its id. Checked live 2026-11-16 on the Agent API:
+  GET /v1/projects/{project_id}/agents/377c136a-... returned the stored config below (as a JSON
+  string in "config", metadata name customer-service-agent). Settings with "agent": that id came
+  back Welcome, SettingsApplied; an InjectUserMessage then got ConversationText assistant "You're
+  speaking with a customer service agent here to assist you." and AgentAudioDone 2.2 s in.
+  An unknown id came back Error INTERNAL_SERVER_ERROR "Internal Server Error resolving agent ID."
+  right after Welcome. This page never creates, changes or deletes a stored config.
+Verified live 2026-11-16: ONLY=agent-reusable-config pnpm verify:live passed; Settings with the stored id came back SettingsApplied and the unknown id came back Error INTERNAL_SERVER_ERROR, as expected; a probe call with the stored id answered an InjectUserMessage with ConversationText assistant "You're speaking with a customer service agent here to assist you." and AgentAudioDone.
+```
