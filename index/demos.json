@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "detect-entities",
+      "platform": "Speech-to-text",
+      "headline": "Who, where, when, and how much?",
+      "param": "detect_entities",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",

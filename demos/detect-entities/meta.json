@@ -1,0 +1,5 @@
+{
+  "title": "Detect entities | Deepgram",
+  "description": "Read out a name, a phone number, an email, a date, an address, and an amount, and see Nova-3 label each entity and its word span as you speak.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/detect-entities/"
+}
