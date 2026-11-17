@@ -773,7 +773,7 @@
       "what": "Tune agent speaking speed and delivery register.",
       "models": "speed: Aura and Flux TTS; expressivity: Flux TTS only",
       "docs": "https://developers.deepgram.com/docs/voice-agent-tts-controls",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-speak-fallback",

@@ -1,0 +1,27 @@
+/* The speak controls panel: its buttons and the per-reply timings. var() only: literals live in styles/packs/. */
+.asc { display: flex; flex-direction: column; gap: 10px; padding: 14px 0 0; border-top: 1px solid var(--dg-border); }
+.asc__buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.asc__head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.asc__title { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.asc__meta { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.asc__empty { margin: 0; font-size: 14px; color: var(--dg-text-label); }
+.asc__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.asc__table th {
+  text-align: left;
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  font-weight: var(--dg-weight-medium);
+  letter-spacing: var(--dg-type-label-tracking);
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+  padding: 4px 10px 6px 0;
+  border-bottom: 1px solid var(--dg-border);
+}
+.asc__table td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--dg-border); vertical-align: top; color: var(--dg-text-body); }
+.asc__table tr.is-other td { color: var(--dg-text-label); }
+.asc__setting { font-family: var(--dg-font-code); color: var(--dg-text-primary); white-space: nowrap; }
+.asc__secs { font-family: var(--dg-font-code); color: var(--dg-text-primary); min-width: 120px; width: 35%; }
+.asc__of { display: block; font-size: 11px; color: var(--dg-text-label); }
+.asc__bar { display: block; height: 6px; margin-top: 4px; border-radius: var(--dg-shape-control); background: var(--dg-accent); }
+.asc__wide { width: 40%; }
+.asc__line { overflow-wrap: anywhere; }
