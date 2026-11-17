@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "language-select",
+      "platform": "Speech-to-text",
+      "headline": "What happens when you pick the wrong language?",
+      "param": "language=es",
+      "flux": "nova-only"
+    },
+    {
       "id": "multilingual-code-switching",
       "platform": "Speech-to-text",
       "headline": "Two languages, one sentence?",

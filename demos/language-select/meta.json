@@ -1,0 +1,5 @@
+{
+  "title": "Language | Deepgram",
+  "description": "Read one line with Nova-3 set to your language, then to a wrong one, and see what the language param keeps and drops.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/language-select/"
+}
