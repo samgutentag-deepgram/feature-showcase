@@ -6,6 +6,9 @@
 // ("Unknown query parameters: version"). 2025-02-22.5738 and 2026-01-27.9249 are 400s for English
 // ("No such model/language/version/tier combination").
 // Pre-recorded also takes it: version=2024-12-20.0 ran general-nova-3 2024-12-20.0.
+// Verified live 2026-11-16: pnpm verify:live opened /v1/listen?model=nova-3&version=latest and
+// &version=2025-01-09.0 and the prompt URL, all accepted; by hand, latest reported general-nova-3
+// 2025-04-17.21547 and the pin reported 2025-01-09.0 (uuid bf05427e-a1f1-4ced-a976-38b2f3533d8d).
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'
