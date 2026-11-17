@@ -1,6 +1,7 @@
 // Tool calling on /v1/think: the request declares two tools, the model asks for one (or both), this
 // page answers with fake data, and the model replies from it. Each round is shown as sent.
 // Early Access: the key's project must be enrolled.
+// Verified live 2026-11-16: verify:live passed on think-fast and phonellm-mini-alpha-2-fp8; both call get_store_hours({"city":"Austin","day":"Saturday"}) with finish_reason tool_calls, then reply from the tool result (Think-Fast spells times out: "nine in the morning to eight at night"). On the two-tool question Think-Fast returns both calls in one response; phoneLLM mini asks one per request (3 requests). "Hi, what can you help me with?" calls no tool on either.
 import { THINK_MODELS, defineLlmFeature, type ChatMessage, type Json, type LlmRun, type ThinkTool } from '../../shared/llm/feature'
 import './styles.css'
 
@@ -169,7 +170,7 @@ export default defineLlmFeature<State>({
         </div>
         <p className="note">
           Early Access. The tool results are fake data made up by this page: any city, day, or order number gets an answer.
-          The last suggestion needs no tool, so the model replies straight away.
+          The last suggestion needs no tool, so the model replies straight away. Think-Fast asks for both tools at once on the two-part question; phoneLLM mini asks one at a time.
         </p>
       </>
     )

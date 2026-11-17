@@ -20,4 +20,4 @@ FEATURE=think-tools pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: verify:live passed on think-fast and phonellm-mini-alpha-2-fp8; both call get_store_hours({"city":"Austin","day":"Saturday"}) with finish_reason tool_calls, then reply from the tool result (Think-Fast spells times out: "nine in the morning to eight at night"). On the two-tool question Think-Fast returns both calls in one response; phoneLLM mini asks one per request (3 requests). "Hi, what can you help me with?" calls no tool on either.
