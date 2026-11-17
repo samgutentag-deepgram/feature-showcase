@@ -233,7 +233,7 @@
       "what": "Stream raw PCM or mulaw and see what wrong settings do to accuracy.",
       "models": "Nova and Flux (Flux: linear16, linear32, mulaw, alaw, opus, ogg-opus)",
       "docs": "https://developers.deepgram.com/docs/encoding",
-      "built": false
+      "built": true
     },
     {
       "id": "callback",

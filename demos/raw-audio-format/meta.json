@@ -1,0 +1,5 @@
+{
+  "title": "Raw audio format | Deepgram",
+  "description": "Stream your mic as linear16, mulaw, or alaw, name it with encoding and sample_rate, and see what a mismatched format gets back, on Flux and Nova-3.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/raw-audio-format/"
+}
