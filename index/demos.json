@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-server-functions",
+      "platform": "Voice agent",
+      "headline": "Let Deepgram call your server.",
+      "param": "agent.think.functions[].endpoint",
+      "flux": "agent"
+    },
+    {
       "id": "agent-think-controls",
       "platform": "Voice agent",
       "headline": "Same question, new settings.",

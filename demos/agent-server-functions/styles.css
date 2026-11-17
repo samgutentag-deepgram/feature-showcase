@@ -1,0 +1,14 @@
+/* The function call log. var() only: literals live in styles/packs/. */
+.asf { display: grid; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.asf__call {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--dg-line-hairline);
+  border-radius: var(--dg-radius-md);
+  background: var(--dg-surface-raised);
+}
+.asf__ms { font-family: var(--dg-font-mono); color: var(--dg-ink-muted); }
+.asf__flag { font-weight: var(--dg-weight-bold); }
+.asf__flag--server { color: var(--dg-accent); }
+.asf__what { font-size: 14px; color: var(--dg-ink-secondary); overflow-wrap: anywhere; }
