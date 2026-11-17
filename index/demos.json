@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-voice-prompt-opt-out",
+      "platform": "Voice agent",
+      "headline": "Send your prompt as written",
+      "param": "agent.think.provider.voice_prompt_opt_out",
+      "flux": "agent"
     }
   ]
 }
