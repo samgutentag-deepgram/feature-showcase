@@ -241,3 +241,143 @@ describe('agent prompt with the optional hooks', () => {
     expect(md).not.toContain('Nova-3')
   })
 })
+
+// ---- Speech-to-text extensions (2026-11-16) -----------------------------------------------------
+import { describeRequest } from '../shared/common/config'
+import { aLaw, declaredFormat, muLaw, transcode, wav } from '../shared/stt/audio'
+import { eventDetail, eventName, matches } from '../shared/stt/events'
+import { parseBatch, unreachable } from '../shared/stt/batch'
+import { sttPrompt } from '../shared/common/prompt'
+import type { Feature } from '../shared/common/feature'
+
+describe('event names', () => {
+  it('names Flux turns by event and Nova results by kind', () => {
+    expect(eventName({ type: 'TurnInfo', event: 'EagerEndOfTurn' })).toBe('EagerEndOfTurn')
+    expect(eventName({ type: 'Results', is_final: false })).toBe('Results interim')
+    expect(eventName({ type: 'Results', is_final: true })).toBe('Results is_final')
+    expect(eventName({ type: 'Results', is_final: true, speech_final: true })).toBe('Results speech_final')
+    expect(eventName({ type: 'Results', is_final: true, speech_final: true, from_finalize: true })).toBe('Results from_finalize')
+    expect(eventName({ type: 'UtteranceEnd', last_word_end: 6.91 })).toBe('UtteranceEnd')
+  })
+
+  it('matches by whole name or by prefix word', () => {
+    expect(matches('Results from_finalize', ['Results'])).toBe(true)
+    expect(matches('Results is_final', ['Results from_finalize'])).toBe(false)
+    expect(matches('EndOfTurn', ['EndOfTurn'])).toBe(true)
+    expect(matches('EagerEndOfTurn', ['EndOfTurn'])).toBe(false)
+  })
+
+  it('details the fields that matter', () => {
+    expect(eventDetail({ type: 'SpeechStarted', timestamp: 0.17 })).toBe('timestamp 0.17')
+    expect(eventDetail({ type: 'Metadata', duration: 2, channels: 1, extra: { k: 'v' }, tags: ['demo'], sha256: 'x' })).toBe('{"duration":2,"channels":1,"extra":{"k":"v"},"tags":["demo"]}')
+    expect(eventDetail({ type: 'ConfigureSuccess', request_id: 'r', keyterms: ['a'] })).toBe('{"keyterms":["a"]}')
+  })
+})
+
+describe('audio formats', () => {
+  it('reads the declared format from the params, linear16 at 16 kHz by default', () => {
+    expect(declaredFormat({})).toEqual({ encoding: 'linear16', sample_rate: 16000 })
+    expect(declaredFormat({ encoding: 'mulaw', sample_rate: '8000' })).toEqual({ encoding: 'mulaw', sample_rate: 8000 })
+  })
+
+  it('passes 16 kHz linear16 through and halves the rate for 8 kHz', () => {
+    const pcm = Int16Array.from([100, 300, -100, -300]).buffer
+    expect(transcode(pcm, { encoding: 'linear16', sample_rate: 16000 })).toBe(pcm)
+    expect([...new Int16Array(transcode(pcm, { encoding: 'linear16', sample_rate: 8000 }))]).toEqual([200, -200])
+    expect(new Uint8Array(transcode(pcm, { encoding: 'mulaw', sample_rate: 16000 })).length).toBe(4)
+  })
+
+  it('encodes G.711 like the reference tables', () => {
+    expect(muLaw(0)).toBe(0xff)
+    expect(muLaw(-1)).toBe(0x7f)
+    expect(muLaw(32767)).toBe(0x80)
+    expect(aLaw(0)).toBe(0xd5)
+    expect(aLaw(-1)).toBe(0x55)
+  })
+
+  it('refuses a format the page cannot make', () => {
+    expect(() => transcode(new ArrayBuffer(4), { encoding: 'opus' as never, sample_rate: 16000 })).toThrow(/cannot send/)
+  })
+
+  it('wraps PCM in a 44-byte WAV header', async () => {
+    const blob = wav([new ArrayBuffer(320), new ArrayBuffer(320)])
+    const head = new DataView(await blob.slice(0, 44).arrayBuffer())
+    expect(blob.size).toBe(684)
+    expect(blob.type).toBe('audio/wav')
+    expect(head.getUint32(24, true)).toBe(16000)
+    expect(head.getUint32(40, true)).toBe(640)
+  })
+})
+
+describe('batch and declared formats on the Request card', () => {
+  const nova = { id: 'nova-3', label: 'Nova-3', endpoint: 'v1' as const, params: { model: 'nova-3' } }
+  const batch = { id: 'rec', label: 'Record', source: 'mic' as const, batch: true }
+  it('sends a batch POST exactly as shown, with no streaming plumbing', () => {
+    expect(describeRequest(nova, { detect_language: 'true' }, batch)).toBe('POST /v1/listen?model=nova-3&detect_language=true')
+    expect(requestParams(nova, { detect_language: 'true' }, batch)).toEqual({ model: 'nova-3', detect_language: 'true' })
+  })
+  it('keeps a declared encoding and rate instead of the defaults', () => {
+    const p = requestParams(nova, { encoding: 'mulaw', sample_rate: '8000' })
+    expect([p.encoding, p.sample_rate]).toEqual(['mulaw', '8000'])
+    expect(requestParams(nova, {})).toMatchObject({ encoding: 'linear16', sample_rate: '16000' })
+  })
+})
+
+describe('parseBatch', () => {
+  it('reads speakers, and channels when there is more than one', () => {
+    const json = {
+      results: {
+        channels: [
+          { alternatives: [{ words: [{ word: 'hi', punctuated_word: 'Hi', speaker: 0 }, { word: 'there', speaker: 1 }] }] },
+          { detected_language: 'en', alternatives: [{ words: [{ word: 'yo' }] }] },
+        ],
+      },
+    }
+    expect(parseBatch(json)).toEqual([
+      { text: 'Hi', lang: '', speaker: 0, channel: 0 },
+      { text: 'there', lang: '', speaker: 1, channel: 0 },
+      { text: 'yo', lang: 'en', channel: 1 },
+    ])
+    expect(parseBatch({ results: { channels: [json.results.channels[0]] } })[0]).toEqual({ text: 'Hi', lang: '', speaker: 0 })
+  })
+  it('knows Deepgram cannot reach a callback on this machine', () => {
+    expect(unreachable('http://localhost:8111/demos/callback/api/callback/1')).toBe(true)
+    expect(unreachable('https://dg-devrel-demos.fly.dev/demos/callback/api/callback/1')).toBe(false)
+  })
+})
+
+describe('the prompt for the extensions', () => {
+  const base = {
+    copy: { headline: 'h', lede: 'Lede.', ctaTitle: 't', ctaBody: 'b' },
+    links: { docs: 'https://developers.deepgram.com/docs/x' },
+    initialState: {},
+    highlight: ['detect_language'],
+    runLabel: () => 'x',
+    Controls: () => null,
+    Response: () => null,
+    Result: () => null,
+  }
+  const meta = { title: 'X | Deepgram', url: 'https://dg-devrel-demos.fly.dev/demos/x/' }
+  it('shows a batch feature as one POST the live check can find', () => {
+    const f = { ...base, models: [{ id: 'nova-3', label: 'Nova-3', endpoint: 'v1', params: { model: 'nova-3' } }], modes: [{ id: 'rec', label: 'Record', source: 'mic', batch: true }], params: () => ({ detect_language: 'true' }) } as unknown as Feature<object>
+    const md = sttPrompt(f, meta)
+    expect(promptRequests(md).listenPosts).toEqual(['https://api.deepgram.com/v1/listen?model=nova-3&detect_language=true'])
+    expect(md).toContain('send it as `Authorization: Bearer <token>`')
+    expect(md).not.toContain('wss://')
+  })
+  it('lists mid-stream messages with what answers them, from promptState when set', () => {
+    const f = {
+      ...base,
+      models: [{ id: 'nova-3', label: 'Nova-3', endpoint: 'v1', params: { model: 'nova-3' } }],
+      modes: [{ id: 'mic', label: 'Mic', source: 'mic' }],
+      variants: [{ n: 'aaaaaaaa' }, { n: 'b' }],
+      promptState: { n: 'b' },
+      params: (s: { n: string }) => ({ keyterm: s.n }),
+      actions: () => [{ label: 'Finalize', message: { type: 'Finalize' }, ack: ['Results from_finalize'] }],
+    } as unknown as Feature<{ n: string }>
+    const md = sttPrompt(f, meta)
+    expect(md).toContain('keyterm=b&')
+    expect(md).toContain('## Mid-stream messages')
+    expect(md).toContain('Comes back: `Results from_finalize`.')
+  })
+})

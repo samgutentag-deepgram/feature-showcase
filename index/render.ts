@@ -42,6 +42,7 @@ export const FLUX: Record<string, [string, string]> = {
   'tts-flux': ['Flux TTS only', 'Flux voices only: Aura-2 does not take this.'],
   'tts-aura': ['Aura-2 only', 'Aura-2 voices only: Flux does not take this.'],
   agent: ['Flux or Nova-3 listening', 'Voice agent; pick the speech-to-text model it listens with.'],
+  'nova-2': ['Nova-2 only', 'Older models only; Nova-3 and Flux use keyterm.'],
 }
 
 // Run from the repo root, as vite.config.ts and vitest are.

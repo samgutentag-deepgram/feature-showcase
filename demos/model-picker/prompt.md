@@ -77,12 +77,12 @@ header, which is why the request names `encoding=linear16` and `sample_rate=1600
 ## Read the transcript
 
 - Flux (`/v2/listen`): a message with `"type": "TurnInfo"` and `"event": "EndOfTurn"` carries the finished turn in `transcript`.
-- Nova-3 (`/v1/listen`): a message with `"type": "Results"` and `"is_final": true` carries it in `channel.alternatives[0].transcript`.
+- Nova (`/v1/listen`): a message with `"type": "Results"` and `"is_final": true` carries it in `channel.alternatives[0].transcript`.
 
 ## Stop without losing the last words
 
 - Flux: send `{"type": "ForceEndTurn"}` as a text frame, wait for the `EndOfTurn` it produces, then send `{"type": "CloseStream"}`. `CloseStream` alone closes at once and drops a turn still in progress.
-- Nova-3: send `{"type": "CloseStream"}` as a text frame and wait for the socket to close; the last final results arrive first.
+- Nova: send `{"type": "CloseStream"}` as a text frame and wait for the socket to close; the last final results arrive first.
 
 ## Try it
 

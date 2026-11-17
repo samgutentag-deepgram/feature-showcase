@@ -145,6 +145,43 @@ the server sends `EndOfTurn` (Flux, and after `InjectUserMessage`) but never `Ag
 `LatencyReport` carries one field, and Flux sends an `stt_latency` one about every 250 ms of audio.
 `agent.language` must be left out with `flux-general-multi` or with `listen.provider.language`.
 
+### Speech-to-text extensions (2026-11-16)
+
+All optional on `Feature<S>`; a demo that sets none behaves exactly as before. Checked live
+2026-11-16 (see the comments in `shared/stt/events.ts` and `shared/stt/batch.ts`).
+
+- `actions(state, ctx): SttAction[]`: one button per mid-stream message, live while the socket is
+  open. `SttAction` is `{ label, message?, ack?, audio?: 'pause' | 'resume', every?, ends?, primary? }`.
+  `message` is sent as a text frame and listed on the Request card; `ack` names the events that
+  answer it (the button shows which and how fast); `audio: 'pause'` stops sending mic audio;
+  `every` resends the message every N ms (KeepAlive); `ends` stops the run after it (CloseStream).
+  `pnpm verify:live` streams the phrase and sends every action live, then waits for its ack (no
+  ack: the socket must stay open with no Error, 12 s for an `every` action).
+- `timeline: { mark, quiet? }`: a timed event list under each run. Names come from `eventName`
+  in `shared/stt/events.ts`: Flux `TurnInfo` by event (`StartOfTurn`, `EagerEndOfTurn`,
+  `TurnResumed`, `EndOfTurn`, `Update`), Nova `Results interim | is_final | speech_final |
+  from_finalize`, and every other message by type (`SpeechStarted`, `UtteranceEnd`, `Metadata`,
+  `ConfigureSuccess`, `ConfigureFailure`, `Connected`). Sent messages show with an arrow. With a
+  timeline, `echo()` also sees every non-transcript message (Metadata for `tag` and `extra`).
+  `run.events` holds the list for a custom `Result`.
+- `Mode.batch: true`: pre-recorded. One POST to `/v1/listen` with a granted token as
+  `Authorization: Bearer` (Deepgram answers CORS). `source: 'mic'` records up to
+  `BATCH_MAX_SECONDS` (30 s, under 1 MB as WAV); `'file'` posts the upload; `'sample'` posts
+  `Mode.sample` (`{ url, name }`, `import clip from './clip.mp3'`, 1 MB max). The Request card shows
+  `POST /v1/listen?...`, exactly what is sent. `run.committed` gets every word with `speaker`
+  (diarize) and `channel` (multichannel); `echo(json)` gets the whole response. v1 models only.
+- `audio(state, ctx): { encoding: 'linear16' | 'mulaw' | 'alaw', sample_rate: 8000 | 16000 }`: the
+  audio actually streamed. A feature may also put `encoding` and `sample_rate` in its own params
+  (then they are shown and sent as given); without `audio()` the page sends what they declare.
+- `callback: true` (batch only): params carry `callback: CALLBACK_SHOWN` from `shared/stt/batch.ts`.
+  The page asks `demos/<id>/server.js` for a slot (routes listed in `batch.ts`, modeled on
+  `demos/tts-callback/server.js`), POSTs with the slot URL, and polls it. Deepgram refuses a
+  localhost callback (400 "Invalid callback URL"), so locally the page says so and stops;
+  `verify:live` checks the POST against `https://example.com` and the round trip needs a deploy.
+- `promptState`: the setting `prompt.md` shows, instead of the variant that sends the most.
+- A legacy page may be Nova-2 only: its note starts `Nova-2 only. Nova-3 and Flux ` and its
+  `index/demos.json` `flux` is `nova-2`.
+
 ## Link tags
 
 Every Deepgram link on the page is tagged by `shared/common/links.ts`, the same way in every demo:

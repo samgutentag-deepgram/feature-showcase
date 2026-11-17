@@ -2,8 +2,9 @@
 // someone else's app. Every request in it comes from the feature object itself, so the prompt says
 // exactly what the page sends. tests/prompt.test.ts fails when a committed prompt.md drifts from
 // this output, and tests/live.test.ts opens every URL and Settings message the prompt shows.
-import { requestParams, SAMPLE_RATE, shownParams, toQuery } from './config'
-import type { Feature, Json, Model, Params } from './feature'
+import { BATCH_MAX_SECONDS, requestParams, SAMPLE_RATE, shownParams, toQuery } from './config'
+import type { Feature, Json, Model, Params, SttAction } from './feature'
+import { LISTEN_REST } from '../stt/batch'
 import { AGENT_URL, INPUT_RATE, LISTEN_MODELS, OUTPUT_RATE, audioOf, settingsMessage, type AgentAction, type AgentFeature } from '../agent/feature'
 
 export const TOKEN_TTL_SECONDS = 30
@@ -59,7 +60,7 @@ export function sttPrompt<S>(feature: Feature<S>, meta: PromptMeta): string {
   const first = feature.models[0]
   // Prefer a setting with the feature switched on: a highlighted param sent as 'false' is the off state.
   const isOff = (p: Params) => feature.highlight.some((h) => p[h] === 'false')
-  const on = richest(variants, (s) => {
+  const on = feature.promptState ?? richest(variants, (s) => {
     const p = feature.params(s, ctx(feature.models.find((m) => m.endpoint === 'v1') ?? first))
     return (isOff(p) ? 0 : 1e6) + JSON.stringify(p).length
   })
@@ -70,6 +71,7 @@ export function sttPrompt<S>(feature: Feature<S>, meta: PromptMeta): string {
   const marked = feature.highlight.map((h) => `\`${h}\``).join(', ')
   const name = meta.title.replace(/ \| Deepgram$/, '')
 
+  if (mode.batch) return sttBatchPrompt(feature, meta, on)
   const models = feature.models.map((m, i) => {
     const params = feature.params(on, ctx(m))
     const shown = `/${m.endpoint}/listen?${toQuery(shownParams(m, params))}`
@@ -88,9 +90,11 @@ export function sttPrompt<S>(feature: Feature<S>, meta: PromptMeta): string {
   const phrase = feature.phrases?.(on, ctx(first)) ?? []
   const v2 = feature.models.some((m) => m.endpoint === 'v2')
   const v1 = feature.models.some((m) => m.endpoint === 'v1')
+  // The v1 model's own label: Nova-3 for most, Nova-2 for a legacy page.
+  const v1Label = feature.models.find((m) => m.endpoint === 'v1')?.label ?? 'Nova-3'
   const results = [
     v2 ? '- Flux (`/v2/listen`): a message with `"type": "TurnInfo"` and `"event": "EndOfTurn"` carries the finished turn in `transcript`.' : '',
-    v1 ? '- Nova-3 (`/v1/listen`): a message with `"type": "Results"` and `"is_final": true` carries it in `channel.alternatives[0].transcript`.' : '',
+    v1 ? `- ${v1Label} (\`/v1/listen\`): a message with \`"type": "Results"\` and \`"is_final": true\` carries it in \`channel.alternatives[0].transcript\`.` : '',
   ].filter(Boolean)
 
   return `<!-- Generated from the feature's index.tsx by shared/common/prompt.ts. Do not edit by hand. -->
@@ -122,12 +126,12 @@ ${results.join('\n')}
 
 ${[
     v2 ? '- Flux: send `{"type": "ForceEndTurn"}` as a text frame, wait for the `EndOfTurn` it produces, then send `{"type": "CloseStream"}`. `CloseStream` alone closes at once and drops a turn still in progress.' : '',
-    v1 ? '- Nova-3: send `{"type": "CloseStream"}` as a text frame and wait for the socket to close; the last final results arrive first.' : '',
+    v1 ? `- ${v1Label}: send \`{"type": "CloseStream"}\` as a text frame and wait for the socket to close; the last final results arrive first.` : '',
   ]
     .filter(Boolean)
     .join('\n')}
 
-## Try it
+${sttActionsSection(feature.actions?.(on, ctx(first)) ?? [])}## Try it
 
 Read this aloud${off ? ` twice: once without ${marked}, once with` : ''}:
 
@@ -269,13 +273,114 @@ const actionNote = (a: AgentAction) =>
     a.repeatMs ? `, and send it again every ${a.repeatMs / 1000} s while the mic is off` : '',
   ].join('')
 
-// Everything the live check has to prove for a prompt: each wss:// URL opens, each Settings applies.
-export function promptRequests(md: string): { urls: string[]; settings: Json[] } {
+// Everything the live check has to prove for a prompt: each wss:// URL opens, each Settings applies,
+// each pre-recorded POST to /v1/listen comes back 200 (listenPosts).
+export function promptRequests(md: string): { urls: string[]; settings: Json[]; listenPosts: string[] } {
   const blocks = [...md.matchAll(/```(\w*)\n([\s\S]*?)\n```/g)].map((m) => ({ lang: m[1], body: m[2] }))
   const urls = blocks.map((b) => b.body.trim()).filter((b) => b.startsWith('wss://api.deepgram.com/'))
   const settings = blocks
     .filter((b) => b.lang === 'json')
     .map((b) => JSON.parse(b.body) as Json)
     .filter((j) => j.type === 'Settings')
-  return { urls, settings }
+  const listenPosts = blocks
+    .filter((b) => b.lang === 'http' && b.body.startsWith(`POST ${LISTEN_REST}?`))
+    .map((b) => b.body.split('\n')[0].replace(/^POST /, ''))
+  return { urls, settings, listenPosts }
+}
+
+// ---- Speech-to-text extensions (2026-11-16) -------------------------------------------------------
+
+// Mid-stream messages, one per button. tests/live.test.ts sends each from the feature itself and
+// waits for its ack, so the prompt only repeats them.
+function sttActionsSection(actions: SttAction[]): string {
+  const sent = actions.filter((a) => a.message)
+  if (!sent.length) return ''
+  return `## Mid-stream messages
+
+While the socket is open, these go on it as text frames, one per button. Each is sent live before
+this file ships.
+
+${sent
+  .map((a) => {
+    const how = [
+      a.audio === 'pause' ? 'Stop sending mic audio first; keep the socket open.' : '',
+      a.every ? `Send it again every ${a.every / 1000} s while the audio is paused.` : '',
+      a.ends ? 'After this, stop the mic and wait for the socket to close.' : '',
+      a.ack?.length ? `Comes back: ${a.ack.map((t) => `\`${t}\``).join(' or ')}.` : 'Nothing comes back; the socket stays open.',
+    ].filter(Boolean)
+    return `**${a.label}**\n\n${fence('json', JSON.stringify(a.message, null, 2))}\n\n${how.join(' ')}`
+  })
+  .join('\n\n')}
+
+`
+}
+
+// A batch (pre-recorded) feature: record or pick a clip, POST it once, read the JSON.
+function sttBatchPrompt<S>(feature: Feature<S>, meta: PromptMeta, on: S): string {
+  const mode = feature.modes[0]
+  const model = feature.models[0]
+  const ctx = { model, mode, busy: false }
+  const params = feature.params(on, ctx)
+  const marked = feature.highlight.map((h) => `\`${h}\``).join(', ')
+  const name = meta.title.replace(/ \| Deepgram$/, '')
+  const url = `${LISTEN_REST}?${toQuery(requestParams(model, params, mode))}`
+  const phrase = mode.source === 'mic' ? feature.phrases?.(on, ctx) ?? [] : []
+  const callback = feature.callback
+    ? `
+
+## Receive the callback
+
+With \`callback\`, Deepgram answers the POST at once with only \`{"request_id": ...}\` and later
+POSTs the full transcript JSON to that URL. It must be a public HTTPS URL on your server (a
+localhost URL is refused with a 400, "Invalid callback URL"). Store the JSON by job id and let the
+page poll for it.`
+    : ''
+  return `<!-- Generated from the feature's index.tsx by shared/common/prompt.ts. Do not edit by hand. -->
+# Add ${name} to a web app with Deepgram
+
+${feature.copy.lede}
+
+Build a page that ${mode.source === 'mic' ? 'records a few seconds from the mic' : 'takes a short audio clip'} and sends it
+to Deepgram's pre-recorded endpoint with ${marked} set as below. Live demo: ${meta.url}
+
+## The request
+
+${model.note ? `${model.note}\n\n` : ''}This param works on pre-recorded audio only, so the clip goes in one POST. The request is sent
+against the live API before this file ships.
+
+${fence('http', `POST ${url}
+Authorization: Bearer <token from /api/token>
+Content-Type: audio/wav
+
+<the audio bytes>`)}
+
+${tokenSection.replace(" and open the socket with it as a\nsubprotocol: \`new WebSocket(url, ['bearer', token])\`.", ' and send it as `Authorization: Bearer <token>`. Deepgram answers CORS\nfor browser requests.')}
+${mode.source === 'mic' ? `
+## Record the mic
+
+Capture the mic at ${SAMPLE_RATE / 1000} kHz mono, 16-bit PCM, keep the chunks until the visitor stops
+(cap it at ${BATCH_MAX_SECONDS} s), and wrap them in a 44-byte WAV header. With the header, the POST needs no
+\`encoding\` or \`sample_rate\`.
+` : ''}
+## Read the result
+
+The response is JSON. The transcript is in \`results.channels[0].alternatives[0].transcript\`, with
+one entry per word in \`words\` (\`speaker\` on each when diarizing, one channel per entry in
+\`channels\` with \`multichannel=true\`).${callback}
+${phrase.length ? `
+## Try it
+
+Read this aloud:
+
+> ${phrase.join('\n> ')}
+` : ''}
+${doneSection([
+  `The page POSTs the clip to the URL above, with ${marked} exactly as shown.`,
+  '`DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.',
+  'The result shows the fields the feature adds.',
+  'Errors show a sentence that says what to do next, not a stack trace.',
+])}
+
+Docs: ${feature.links.docs}
+`
 }

@@ -54,7 +54,7 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 |---|---|
 | `demos/<demo>/` | One demo: `index.tsx`, `meta.json`, `og.png`, `prompt.md`, optional `styles.css`, optional `server.js` (routes of its own) |
 | `shared/common/` | Used by every kind: the contract types, request config, token fetch, mic capture, links, prompt builder, `demo.ts` (which page this is) |
-| `shared/stt/` | Speech-to-text page, socket stream, transcript pieces |
+| `shared/stt/` | Speech-to-text page, socket stream, transcript pieces; `events.ts` (timeline names), `batch.ts` (pre-recorded POST, callback slot client), `audio.ts` (mulaw/alaw/8 kHz, WAV) |
 | `shared/tts/` | Text-to-speech page, speak/socket/session/token helpers, shared voice lineups |
 | `shared/agent/` | Voice agent page and contract; `codec.ts` (mu-law and A-law for phone audio) |
 | `shared/main.tsx` | `mount(feature, info)`: picks the page from the feature's `kind`; each page's generated entry calls it |
