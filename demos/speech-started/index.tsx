@@ -6,6 +6,7 @@
 //   vad_events=false  no SpeechStarted; the same first Results at 2.59 s
 //   Flux              /v2/listen answers vad_events with a 400 (INVALID_QUERY_PARAMETER). Its
 //                     StartOfTurn came 2.97 s in, carrying the first words, so it is not earlier.
+// Verified live 2026-11-16: ONLY=speech-started pnpm verify:live passed (vad_events=false and =true accepted on nova-3, docs link resolves); in real time, 2 s of silence then the phrase, SpeechStarted (timestamp 2.09) arrived 0.52 s before the first word ("hey", start 1.84).
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

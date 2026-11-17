@@ -57,4 +57,8 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=speech-started pnpm verify:live passed (vad_events=false and =true accepted on nova-3, docs link resolves); in real time, 2 s of silence then the phrase, SpeechStarted (timestamp 2.09) arrived 0.52 s before the first word ("hey", start 1.84).
+```
