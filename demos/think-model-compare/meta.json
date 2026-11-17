@@ -1,0 +1,5 @@
+{
+  "title": "Think model compare | Deepgram",
+  "description": "Send one caller line to Think-Fast and phoneLLM mini at once and compare each reply, its time to first token, total time, and tokens.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/think-model-compare/"
+}

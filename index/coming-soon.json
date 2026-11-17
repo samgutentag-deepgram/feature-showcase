@@ -1034,7 +1034,7 @@
       "what": "Same prompt through think-fast and phonellm-mini, compare speed and style.",
       "models": "think-fast, phonellm-mini-alpha-2-fp8 (Early Access)",
       "docs": "https://developers.deepgram.com/docs/llm/models",
-      "built": false
+      "built": true
     },
     {
       "id": "think-streaming",

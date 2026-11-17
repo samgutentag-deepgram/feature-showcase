@@ -409,6 +409,13 @@
       "flux": "agent"
     },
     {
+      "id": "think-model-compare",
+      "platform": "LLM",
+      "headline": "Which LLM should answer the phone?",
+      "param": "/v1/think model",
+      "flux": "think"
+    },
+    {
       "id": "sentiment",
       "platform": "LLM",
       "headline": "Did the call end better than it started?",
