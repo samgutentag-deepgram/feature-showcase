@@ -6,6 +6,7 @@
 // snippet "colistrum"}; search=Trellisync gave {confidence 1, start 3.62, end 4.45}. Every final
 // Results message carries channel.search for that segment. Flux refuses it: /v2/listen answers
 // search with a 400, "Unknown query parameters: search".
+// Verified live 2026-11-16: pnpm verify:live opened /v1/listen?model=nova-3&search=Kallistrum&search=Trellisync on the socket and it was accepted; a streamed macOS clip of the suggested phrase came back with channel.search on each final, Kallistrum at confidence 0.965 (snippet "colistrum", 1.22 to 2.04 s) and Trellisync at 1.0 (3.62 to 4.45 s). Flux /v2/listen refused search with a 400.
 import { defineFeature, type Json, type Params, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

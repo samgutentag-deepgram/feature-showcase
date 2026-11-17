@@ -16,4 +16,4 @@ FEATURE=search pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: pnpm verify:live opened /v1/listen?model=nova-3&search=Kallistrum&search=Trellisync on the socket and it was accepted; a streamed macOS clip of the suggested phrase came back with channel.search on each final, Kallistrum at confidence 0.965 (snippet "colistrum", 1.22 to 2.04 s) and Trellisync at 1.0 (3.62 to 4.45 s). Flux /v2/listen refused search with a 400.
