@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-defer-until-eot",
+      "platform": "Voice agent",
+      "headline": "Cancel the right order.",
+      "param": "defer_until_eot",
+      "flux": "agent"
     }
   ]
 }

@@ -683,7 +683,7 @@
       "what": "Show speculative function calls getting cancelled when the user keeps talking.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-function-call-cancelled",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-backchannel",
