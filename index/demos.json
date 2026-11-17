@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "think-streaming",
+      "platform": "LLM",
+      "headline": "Read the first word before the reply is done.",
+      "param": "stream + stream_options",
+      "flux": "think"
     }
   ]
 }

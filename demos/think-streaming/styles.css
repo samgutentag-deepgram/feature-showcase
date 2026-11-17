@@ -1,0 +1,14 @@
+/* think-streaming: the two lanes on one time scale. var() only. */
+.ts-pieces { display: block; }
+.ts-piece { border-bottom: 2px solid var(--dg-border); }
+.ts-piece:nth-child(even) { border-bottom-color: var(--dg-accent); }
+
+.ts-timeline { display: flex; flex-direction: column; gap: 8px; }
+.ts-row { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 10px; }
+.ts-row__label, .ts-row__ms { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.ts-track { position: relative; height: 14px; background: var(--dg-bg-well); border-radius: var(--dg-shape-pill); overflow: hidden; }
+.ts-wait { position: absolute; left: 0; top: 0; bottom: 0; background: var(--dg-border); }
+.ts-flow { position: absolute; top: 0; bottom: 0; background: var(--dg-accent); opacity: 0.35; }
+.ts-tick { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--dg-accent); }
+.ts-tick--whole { width: 4px; }
+.ts-legend { margin: 0; font-size: 13px; color: var(--dg-text-label); }
