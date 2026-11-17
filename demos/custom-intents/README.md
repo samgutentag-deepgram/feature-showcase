@@ -17,4 +17,4 @@ FEATURE=custom-intents pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: pnpm verify:live sent both modes on /v1/read and /v1/listen (Aura-2 audio), all 200 with intents. By curl, the default text and list: strict returned only "update payment method" (0.74, 0.21); extended returned it plus Deepgram's own package intent ("Request information about package location" and similar, three of three). "speak to a manager", absent from the text, never came back. Unlike custom topics, strict was not empty for a text with none of the listed intents: it named "update payment method" at 0.20.

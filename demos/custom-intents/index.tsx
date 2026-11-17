@@ -1,11 +1,7 @@
 // Custom intents: the visitor types intents of their own and picks custom_intent_mode. strict returns
 // only intents from that list; extended adds intents Deepgram names itself. The same params go to
 // /v1/read (typed text) and /v1/listen (the mic, recorded then sent once).
-// Checked live 2026-11-16 on /v1/read and /v1/listen (Nova-3), with the default list and text: strict
-// returned only "update payment method" (twice); extended returned it plus an intent of Deepgram's
-// own about the package (three of three, worded differently each time). "speak to a manager", which
-// the text never asks for, did not come back. Unlike custom topics, strict did not come back empty
-// for a text with none of the listed intents: it named "update payment method" at 0.20.
+// Verified live 2026-11-16: pnpm verify:live sent both modes on /v1/read and /v1/listen (Aura-2 audio), all 200 with intents. By curl, the default text and list: strict returned only "update payment method" (0.74, 0.21); extended returned it plus Deepgram's own package intent ("Request information about package location" and similar, three of three). "speak to a manager", absent from the text, never came back. Unlike custom topics, strict was not empty for a text with none of the listed intents: it named "update payment method" at 0.20.
 import { analysis, type Segment } from '../../shared/llm/request'
 import type { LlmRun } from '../../shared/llm/feature'
 import { defineLlmFeature } from '../../shared/llm/feature'
