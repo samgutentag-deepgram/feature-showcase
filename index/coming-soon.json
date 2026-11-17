@@ -350,7 +350,7 @@
       "what": "Swap keyterms or turn numerals on mid-call without reconnecting.",
       "models": "Nova-3 streaming for keyterms; v1 streaming",
       "docs": "https://developers.deepgram.com/docs/configure",
-      "built": false
+      "built": true
     },
     {
       "id": "flux-configure-midstream",

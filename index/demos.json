@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "stt-configure-midstream",
+      "platform": "Speech-to-text",
+      "headline": "New keyterms, same socket",
+      "param": "{\"type\": \"Configure\", \"keyterms\": [...]}",
+      "flux": "nova-only"
+    },
+    {
       "id": "callback",
       "platform": "Speech-to-text",
       "headline": "Send the audio. Get the transcript later.",

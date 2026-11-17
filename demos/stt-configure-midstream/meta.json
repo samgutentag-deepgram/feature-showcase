@@ -1,0 +1,5 @@
+{
+  "title": "Configure mid-stream on Nova-3 | Deepgram",
+  "description": "Read a line, send a Configure with new keyterms on the open Nova-3 socket, read it again, and see before and after in one run.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/stt-configure-midstream/"
+}
