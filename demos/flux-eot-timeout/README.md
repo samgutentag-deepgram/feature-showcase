@@ -60,4 +60,21 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO
+From the top of `index.tsx`:
+
+```text
+eot_timeout_ms on Flux: the most silence Flux waits before it forces EndOfTurn, even when the
+model is not sure the turn is over. Every EndOfTurn says why it ended in `trigger`: "model" (Flux
+decided) or "timeout" (eot_timeout_ms ran out). The eot_threshold dial is the turn-detection demo.
+Checked live 2026-11-16 in real time on "So I was thinking that maybe we could..." (macOS voice
+Samantha, last word ends at 2.00 s) then 6 s of silence, /v2/listen?model=flux-general-en.
+Silence = audio_window_end minus the last word's end:
+  eot_threshold=1.0  eot_timeout_ms=1000   EndOfTurn after 1.36 s of silence, trigger "timeout"
+  eot_threshold=1.0  eot_timeout_ms=3000   EndOfTurn after 3.28 s, trigger "timeout"
+  eot_threshold=1.0  eot_timeout_ms=5000   EndOfTurn after 5.20 s, trigger "timeout"
+  eot_threshold=0.7  any of the three      EndOfTurn after 1.04 s, trigger "model" (confidence 0.73)
+  eot_threshold=0.9  eot_timeout_ms=1000   trigger "timeout" at 1.36 s; at 3000 and 5000, "model" at 1.68 s
+  eot_timeout_ms=499 and 60001 are a 400 at the handshake: INVALID_QUERY_PARAMETER
+  "eot_timeout_ms must be between 500 and 60000, inclusive."
+Verified live 2026-11-16: ONLY=flux-eot-timeout pnpm verify:live passed (3 tests): every variant's /v2/listen URL opened, the docs link resolved, and the prompt.md URL (eot_threshold=0.7&eot_timeout_ms=3000) worked with a granted token.
+```

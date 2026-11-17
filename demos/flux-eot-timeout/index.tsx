@@ -11,6 +11,7 @@
 //   eot_threshold=0.9  eot_timeout_ms=1000   trigger "timeout" at 1.36 s; at 3000 and 5000, "model" at 1.68 s
 //   eot_timeout_ms=499 and 60001 are a 400 at the handshake: INVALID_QUERY_PARAMETER
 //   "eot_timeout_ms must be between 500 and 60000, inclusive."
+// Verified live 2026-11-16: ONLY=flux-eot-timeout pnpm verify:live passed (3 tests): every variant's /v2/listen URL opened, the docs link resolved, and the prompt.md URL (eot_threshold=0.7&eot_timeout_ms=3000) worked with a granted token.
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
