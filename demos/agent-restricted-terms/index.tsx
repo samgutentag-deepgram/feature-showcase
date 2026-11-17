@@ -9,6 +9,7 @@
 //   The reasoning LLM is not bound, as the docs say: restricted ["refund"], InjectUserMessage "Can I
 //   get a refund on my order?", reply "...assist you with the refund process."
 //   restricted_terms [] applied fine. A string instead of an array: Error UNPARSABLE_CLIENT_MESSAGE.
+// Verified live 2026-11-16: verify:live sent both Settings variants (restricted_terms ["still", "there"] and left out) with Flux and Nova-3 listen, all came back SettingsApplied; prompt.md requests worked with a granted token; docs links resolved.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'

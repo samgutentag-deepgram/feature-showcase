@@ -51,4 +51,19 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Think Live restricted_terms: words the Think Live model will not say in its own lines.
+Probed live 2026-11-16 on the Agent API, gpt-4o-mini thinking, silent mic audio, presence checks
+every 3 s (count 3):
+  Default list (field left out), Flux listening, 3 runs: 8 presence checks, every one used "still"
+  or "there" ("Still on the line?", "Hello? Are you still there?", "Are you still with me?").
+  restricted_terms ["still", "there"], Flux 3 runs and Nova-3 1 run: 8 presence checks, none used
+  either word ("I'm here whenever you're ready.", "Did you need anything else?").
+  No Warning or other message says a term was held back; only the wording changes.
+  The reasoning LLM is not bound, as the docs say: restricted ["refund"], InjectUserMessage "Can I
+  get a refund on my order?", reply "...assist you with the refund process."
+  restricted_terms [] applied fine. A string instead of an array: Error UNPARSABLE_CLIENT_MESSAGE.
+Verified live 2026-11-16: verify:live sent both Settings variants (restricted_terms ["still", "there"] and left out) with Flux and Nova-3 listen, all came back SettingsApplied; prompt.md requests worked with a granted token; docs links resolved.
+```
