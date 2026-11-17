@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-reusable-config",
+      "platform": "Voice agent",
+      "headline": "Send an id, not the whole agent.",
+      "param": "agent as a stored config id",
+      "flux": "agent"
     }
   ]
 }

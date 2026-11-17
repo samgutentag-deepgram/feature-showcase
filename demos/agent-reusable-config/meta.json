@@ -1,0 +1,5 @@
+{
+  "title": "Agent reusable config | Deepgram",
+  "description": "Talk to a voice agent whose prompt, models and voice are stored with the Deepgram REST API and sent in Settings as a single id.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-reusable-config/"
+}

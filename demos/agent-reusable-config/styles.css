@@ -1,0 +1,5 @@
+/* Stored-config panel spacing. var() only: literals live in styles/packs/. */
+
+.rc-panel { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+.rc-panel .agent-json { margin: 0; }
+.rc-error code { color: var(--dg-text-primary); }
