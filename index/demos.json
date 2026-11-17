@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-errors-warnings",
+      "platform": "Voice agent",
+      "headline": "Break the agent on purpose.",
+      "param": "Error + Warning",
+      "flux": "agent"
+    },
+    {
       "id": "agent-live-transcript",
       "platform": "Voice agent",
       "headline": "Read the call as it happens.",
