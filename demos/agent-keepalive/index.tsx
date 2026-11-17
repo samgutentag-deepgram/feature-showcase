@@ -10,6 +10,7 @@
 //   back for a KeepAlive.
 // So the page listens with Nova-3 only: Flux's 60 s limit is as long as this page's one-minute call,
 // so the drop could never show here. KeepAlive holds both.
+// Verified live 2026-11-16: verify:live sent both Settings variants with Nova-3 listen (SettingsApplied each), then Mute and Unmute KeepAlive with no Error or Warning in 3 s; prompt.md requests and docs links passed.
 import { useEffect, useRef, useState } from 'react'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'

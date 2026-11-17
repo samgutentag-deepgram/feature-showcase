@@ -58,4 +58,20 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+KeepAlive: mute the mic without losing the call. Checked live 2026-11-16 on the Agent API, Settings
+applied, then no audio at all:
+  Nova-3 listen: Error CLIENT_MESSAGE_TIMEOUT ("We did not receive audio within our timeout...")
+                 12.0 s after the last thing sent, then the socket closed with no close code (1005).
+                 Same 12.0 s after a spoken turn, and 12.0 s after one lone KeepAlive.
+  Flux listen:   the same Error code ("Client did not send any messages within our timeout") after
+                 60.0 s, then 1005. No Warning came first on either model.
+  KeepAlive every 8 s held Nova-3 for 35 s and Flux for 75 s of no audio; the next spoken turn was
+  transcribed and answered on the same call. KeepAlive every 2 s held Nova-3 too. Nothing comes
+  back for a KeepAlive.
+So the page listens with Nova-3 only: Flux's 60 s limit is as long as this page's one-minute call,
+so the drop could never show here. KeepAlive holds both.
+Verified live 2026-11-16: verify:live sent both Settings variants with Nova-3 listen (SettingsApplied each), then Mute and Unmute KeepAlive with no Error or Warning in 3 s; prompt.md requests and docs links passed.
+```
