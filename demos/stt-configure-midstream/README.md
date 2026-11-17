@@ -66,4 +66,6 @@ FEATURE=stt-configure-midstream pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=stt-configure-midstream pnpm verify:live passed: /v1/listen?model=nova-3&punctuate=true opened, and each of the three Configure messages (keyterms Kallistrum, Vexmoor; features numerals true; keyterms []) came back ConfigureSuccess mid-stream with no Error, plus the prompt URL and docs link.
+```

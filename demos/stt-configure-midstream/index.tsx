@@ -9,6 +9,7 @@
 // ("keyterm") is an Error (SchemaError, which lists features, processors, keyterms, language_hints)
 // and the socket stays open; Nova-2 answers keyterms with ConfigureFailure
 // CONFIGURE_KEYTERMS_NOT_SUPPORTED.
+// Verified live 2026-11-16: ONLY=stt-configure-midstream pnpm verify:live passed: /v1/listen?model=nova-3&punctuate=true opened, and each of the three Configure messages (keyterms Kallistrum, Vexmoor; features numerals true; keyterms []) came back ConfigureSuccess mid-stream with no Error, plus the prompt URL and docs link.
 import { defineFeature, type Json, type Params, type SttEvent, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
