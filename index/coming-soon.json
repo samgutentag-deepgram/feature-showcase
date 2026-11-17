@@ -143,7 +143,7 @@
       "what": "Transcribe each stereo channel separately, like agent and caller.",
       "models": "Pre-recorded and streaming v1",
       "docs": "https://developers.deepgram.com/docs/multichannel",
-      "built": false
+      "built": true
     },
     {
       "id": "dictation",

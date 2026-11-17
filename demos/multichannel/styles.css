@@ -1,0 +1,44 @@
+/* Mixed: one block. Multichannel: one column per channel, a row per line, in time order. var() only. */
+
+.mc-count { margin: 0 0 8px; }
+
+.mc-head {
+  justify-self: start;
+  background: var(--dg-text-disabled);
+  color: var(--dg-text-on-accent);
+  border-radius: var(--dg-shape-pill);
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: var(--dg-weight-medium);
+  white-space: nowrap;
+}
+.mc-head[data-ch='0'] { background: var(--dg-voice-1); }
+.mc-head[data-ch='1'] { background: var(--dg-voice-2); }
+
+.mc-grid { display: grid; column-gap: 24px; row-gap: 10px; align-items: start; }
+
+.mc-line,
+.mc-words {
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid var(--dg-text-disabled);
+  font-size: 20px;
+  line-height: 1.45;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+.mc-line[data-ch='0'] { border-left-color: var(--dg-voice-1); }
+.mc-line[data-ch='1'] { border-left-color: var(--dg-voice-2); }
+
+.mc-mixed { display: grid; gap: 10px; }
+.mc-mixed .mc-words { font-size: 22px; }
+
+.runs--compare .mc-line,
+.runs--compare .mc-words { font-size: 17px; }
+.runs--compare .mc-head { white-space: normal; }
+
+@media (max-width: 760px) {
+  .mc-grid { column-gap: 12px; }
+  .mc-line, .mc-words { font-size: 17px; }
+  .mc-head { white-space: normal; }
+}

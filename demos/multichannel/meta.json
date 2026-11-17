@@ -1,0 +1,5 @@
+{
+  "title": "Multichannel | Deepgram",
+  "description": "Send one stereo support call with multichannel off and on, and see the agent and customer come back as two separate transcripts.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/multichannel/"
+}
