@@ -629,7 +629,7 @@
       "what": "Swap the agent brain between OpenAI, Anthropic, Google, Groq, Bedrock, Deepgram.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-llm-models",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-think-controls",

@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-llm-picker",
+      "platform": "Voice agent",
+      "headline": "Pick the brain behind your voice agent.",
+      "param": "agent.think.provider (type, model)",
+      "flux": "agent"
+    },
+    {
       "id": "agent-update-think",
       "platform": "Voice agent",
       "headline": "Swap its brain mid-call.",
