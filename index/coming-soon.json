@@ -269,7 +269,7 @@
       "what": "Keyterms and replace strings show as [REDACTED] in usage logs.",
       "models": "Nova and Flux",
       "docs": "https://developers.deepgram.com/docs/redact-usage",
-      "built": false
+      "built": true
     },
     {
       "id": "mip-opt-out",

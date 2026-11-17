@@ -1,0 +1,5 @@
+{
+  "title": "Redact usage | Deepgram",
+  "description": "Send keyterms with redact_usage on Flux or Nova-3, get the same transcript, and see that the usage record stores [REDACTED] in their place.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/redact-usage/"
+}

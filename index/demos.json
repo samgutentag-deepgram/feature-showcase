@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "redact-usage",
+      "platform": "Speech-to-text",
+      "headline": "Keep keyterms out of your usage logs.",
+      "param": "redact_usage=true",
+      "flux": "works"
+    },
+    {
       "id": "finalize",
       "platform": "Speech-to-text",
       "headline": "Done talking? Say so.",
