@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-update-think-live",
+      "platform": "Voice agent",
+      "headline": "Hush the small talk mid-call.",
+      "param": "UpdateThink_Live + ThinkLiveUpdated",
+      "flux": "agent"
+    },
+    {
       "id": "agent-force-end-turn",
       "platform": "Voice agent",
       "headline": "Let go to end your turn.",

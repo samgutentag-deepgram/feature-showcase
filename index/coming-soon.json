@@ -755,7 +755,7 @@
       "what": "Turn backchannel and presence settings up or down mid-call.",
       "models": "Think Live",
       "docs": "https://developers.deepgram.com/docs/voice-agent-acknowledgements",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-voice-picker",
