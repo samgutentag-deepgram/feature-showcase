@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-think-fallback",
+      "platform": "Voice agent",
+      "headline": "Break the first LLM. The agent still answers.",
+      "param": "agent.think as an array",
+      "flux": "agent"
+    },
+    {
       "id": "agent-speak-controls",
       "platform": "Voice agent",
       "headline": "Set how fast it talks, and how lively.",
