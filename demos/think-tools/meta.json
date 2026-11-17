@@ -1,0 +1,5 @@
+{
+  "title": "Tool calling on /v1/think | Deepgram",
+  "description": "Ask about store hours or an order and watch a Deepgram LLM call a tool, read the fake result this page sends back, and reply.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/think-tools/"
+}

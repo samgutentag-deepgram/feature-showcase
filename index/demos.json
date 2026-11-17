@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "think-tools",
+      "platform": "LLM",
+      "headline": "Let the model call your functions.",
+      "param": "tools",
+      "flux": "think"
     }
   ]
 }
