@@ -62,4 +62,8 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=agent-speak-fallback pnpm verify:live passed. All four Settings variants (Flux or Aura-2 first, broken or not) came back SettingsApplied on Flux and Nova-3 listening, each broken one also got Warning SPEAK_REQUEST_FAILED, and the docs link resolved.
+```

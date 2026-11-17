@@ -15,6 +15,9 @@
 //   After the first failure the session stays on the fallback: a later InjectAgentMessage line and
 //   an LLM reply to InjectUserMessage were spoken by the fallback with no new warnings. The docs
 //   say each new utterance starts again from the first provider.
+// Verified live 2026-11-16: ONLY=agent-speak-fallback pnpm verify:live passed. All four Settings
+// variants (Flux or Aura-2 first, broken or not) came back SettingsApplied on Flux and Nova-3
+// listening, each broken one also got Warning SPEAK_REQUEST_FAILED, and the docs link resolved.
 import { useEffect, useRef, useState } from 'react'
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
