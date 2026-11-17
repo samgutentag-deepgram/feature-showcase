@@ -59,4 +59,8 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: verify:live opened /v2/listen?model=flux-general-en and /v1/listen?model=nova-3&punctuate=false|true, all accepted; streamed the phrase: Nova-3 off gave lowercase with no marks, on gave "Did you get my message?" and "Tuesday.", Flux punctuated with nothing set.
+```

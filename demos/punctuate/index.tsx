@@ -5,6 +5,7 @@
 //   punctuate=true   "Did you get my message?" / "I left it on Tuesday." / "Call me back when you can."
 //   Flux             punctuates on its own; /v2/listen answers punctuate with a 400
 //                    (INVALID_QUERY_PARAMETER, "Unknown query parameters: punctuate").
+// Verified live 2026-11-16: verify:live opened /v2/listen?model=flux-general-en and /v1/listen?model=nova-3&punctuate=false|true, all accepted; streamed the phrase: Nova-3 off gave lowercase with no marks, on gave "Did you get my message?" and "Tuesday.", Flux punctuated with nothing set.
 // smart_format is never sent here: it turns punctuation on by itself (see demos/smart-format).
 import { defineFeature, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
