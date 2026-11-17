@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-server-functions",
+      "platform": "Voice agent",
+      "headline": "Let Deepgram call your server.",
+      "param": "agent.think.functions[].endpoint",
+      "flux": "agent"
     }
   ]
 }

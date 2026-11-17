@@ -1,0 +1,5 @@
+{
+  "title": "Server-side functions | Deepgram",
+  "description": "Ask a Deepgram voice agent when the store is open and watch Deepgram call this site's server for the hours, with nothing sent back from the page.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-server-functions/"
+}

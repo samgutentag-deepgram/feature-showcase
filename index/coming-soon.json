@@ -674,7 +674,7 @@
       "what": "Deepgram calls your HTTP endpoint for a function, no client code.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agents-function-calling",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-defer-until-eot",
