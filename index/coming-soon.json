@@ -917,7 +917,7 @@
       "what": "Live chat log of both sides, tagged with conversational behavior.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-conversation-text",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-latency-report",
