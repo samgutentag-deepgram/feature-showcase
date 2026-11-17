@@ -1,0 +1,28 @@
+/* Keywords input, intensifier row, and marked terms. var() only: literals live in styles/packs/. */
+
+.keywords-field { gap: 10px; }
+.keywords-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.keywords-input:disabled { color: var(--dg-text-label); border-left-color: var(--dg-border-hover); }
+
+.keywords-boost { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.keywords-boost .segmented__opt { font-family: var(--dg-font-code); }
+
+/* A whole sentence, so it wraps between words. */
+.keywords-echo { white-space: normal; }
+
+.keywords-text mark {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}

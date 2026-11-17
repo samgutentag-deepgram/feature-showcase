@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "keywords-legacy",
+      "platform": "Speech-to-text",
+      "headline": "Still on Nova-2? Boost your words with keywords.",
+      "param": "keywords",
+      "flux": "nova-2"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
