@@ -1,0 +1,5 @@
+{
+  "title": "Speech started | Deepgram",
+  "description": "Stay quiet, then speak: with vad_events on, Nova-3 sends SpeechStarted before the first transcript, and the timeline shows how much sooner.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/speech-started/"
+}
