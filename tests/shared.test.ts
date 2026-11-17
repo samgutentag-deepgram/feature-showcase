@@ -3,6 +3,9 @@ import { fetchToken, requestParams } from '../shared/common/config'
 import { closeMessage, finalTranscript, parseFlux, parseNova } from '../shared/stt/stream'
 import { loudness } from '../shared/tts/loudness'
 import { spread } from '../shared/tts/lineup'
+import { defineAgentFeature, listenIdsOf, settingsMessage } from '../shared/agent/feature'
+import { agentPrompt, promptRequests } from '../shared/common/prompt'
+import { alawToLinear, decodeAgent, encodeMic, linearToAlaw, linearToMulaw, mulawToLinear } from '../shared/agent/codec'
 
 // What a stranger sees when something breaks: a sentence that says what to do, no status codes
 // on their own and no upstream detail.
@@ -132,5 +135,109 @@ describe('loudness', () => {
   it('says how far apart the loudest and quietest voices are', () => {
     expect(spread([{ voice: 'a', speechDb: -16 }, { voice: 'b', speechDb: -19.5 }, { voice: 'c' }])).toBeCloseTo(3.5)
     expect(spread([{ voice: 'a', speechDb: -16 }])).toBeUndefined()
+  })
+})
+
+// Voice agent hooks added 2026-11-16 (listenModels, listen, settings, audio, string agent): a feature
+// that sets none of them sends exactly the Settings message the shell sent before.
+describe('agent Settings message', () => {
+  const base = defineAgentFeature<{ on: boolean }>({
+    kind: 'agent',
+    copy: { headline: '', lede: '', ctaTitle: '', ctaBody: '' },
+    links: { docs: '' },
+    initialState: { on: true },
+    variants: [{ on: true }],
+    agent: () => ({ think: { provider: { type: 'open_ai', model: 'gpt-4o-mini' } }, speak: { provider: { type: 'deepgram', model: 'aura-2-thalia-en' } } }),
+    highlight: [],
+    events: [],
+    flushOnUserSpeech: () => true,
+    runLabel: () => '',
+    phrases: () => [],
+    Controls: () => null,
+  })
+
+  it('is unchanged for a feature without the new hooks', () => {
+    const s = settingsMessage(base, { on: true }, 'flux-general-en')
+    expect(JSON.stringify(s)).toBe(
+      JSON.stringify({
+        type: 'Settings',
+        audio: { input: { encoding: 'linear16', sample_rate: 16000 }, output: { encoding: 'linear16', sample_rate: 24000, container: 'none' } },
+        agent: { ...(base.agent({ on: true }) as object), listen: { provider: { type: 'deepgram', model: 'flux-general-en' } } },
+      }),
+    )
+    expect(listenIdsOf(base)).toEqual(['flux-general-en', 'nova-3'])
+  })
+
+  it('adds listen fields, top-level fields, and audio formats from the hooks', () => {
+    const f = {
+      ...base,
+      listenModels: [{ id: 'flux-general-en', label: 'Flux' }],
+      listen: () => ({ version: 'v2', keyterms: ['Deepgram'] }),
+      settings: () => ({ tags: ['demo'], flags: { history: false } }),
+      audio: () => ({ input: { encoding: 'mulaw', sample_rate: 8000 }, output: { encoding: 'mulaw', sample_rate: 8000, container: 'none' } }) as const,
+    }
+    const s = settingsMessage(f, { on: true }, 'flux-general-en') as { agent: { listen: unknown }; tags: string[]; audio: { input: { encoding: string } } }
+    expect(Object.keys(s)).toEqual(['type', 'tags', 'flags', 'audio', 'agent'])
+    expect(s.agent.listen).toEqual({ provider: { type: 'deepgram', model: 'flux-general-en', version: 'v2', keyterms: ['Deepgram'] } })
+    expect(s.audio.input.encoding).toBe('mulaw')
+  })
+
+  it('sends a stored agent config id as the whole agent, and no listen block with listenModels []', () => {
+    const id = '377c136a-5516-4824-8f54-0220d5ce2920'
+    expect(settingsMessage({ ...base, listenModels: [], agent: () => id }, { on: true }, '')).toMatchObject({ agent: id })
+    const own = settingsMessage({ ...base, listenModels: [] }, { on: true }, '') as { agent: Record<string, unknown> }
+    expect(own.agent.listen).toBeUndefined()
+    expect(listenIdsOf({ ...base, listenModels: [] })).toEqual([''])
+  })
+})
+
+describe('agent G.711 codec', () => {
+  it.each([0, 1, -1, 100, -100, 1000, -1000, 8000, -8000, 30000, -30000])('round-trips %i through mu-law and A-law within a step', (x) => {
+    const tolerance = Math.max(16, Math.abs(x) / 16)
+    expect(Math.abs(mulawToLinear(linearToMulaw(x)) - x)).toBeLessThanOrEqual(tolerance)
+    expect(Math.abs(alawToLinear(linearToAlaw(x)) - x)).toBeLessThanOrEqual(tolerance)
+  })
+
+  it('halves 16 kHz linear16 to 8 kHz, one byte a sample for G.711', () => {
+    const pcm = new Int16Array(1600).fill(1000).buffer
+    expect(encodeMic(pcm, { encoding: 'linear16', sample_rate: 16000 })).toBe(pcm)
+    expect(encodeMic(pcm, { encoding: 'mulaw', sample_rate: 8000 }).byteLength).toBe(800)
+    expect(encodeMic(pcm, { encoding: 'linear16', sample_rate: 8000 }).byteLength).toBe(1600)
+    expect(decodeAgent(new Uint8Array(encodeMic(pcm, { encoding: 'alaw', sample_rate: 8000 })), 'alaw')[0]).toBeCloseTo(1000 / 32768, 2)
+  })
+})
+
+describe('agent prompt with the optional hooks', () => {
+  const f = defineAgentFeature<{ bad: boolean }>({
+    kind: 'agent',
+    copy: { headline: '', lede: 'Lede.', ctaTitle: '', ctaBody: '' },
+    links: { docs: 'https://developers.deepgram.com/docs/agent-keep-alive' },
+    initialState: { bad: false },
+    variants: [{ bad: false }, { bad: true }],
+    listenModels: [{ id: 'flux-general-en', label: 'Flux' }],
+    listen: () => ({ version: 'v2', keyterms: ['Deepgram'] }),
+    audio: () => ({ input: { encoding: 'mulaw', sample_rate: 8000 }, output: { encoding: 'mulaw', sample_rate: 8000, container: 'none' } }),
+    expects: ({ bad }) => (bad ? { error: 'UNPARSABLE_CLIENT_MESSAGE' } : { warning: 'VOICE_PROMPT_ADDED' }),
+    agent: ({ bad }) => ({ think: { provider: { type: 'deepgram', model: 'think-fast' } }, speak: { provider: { type: 'deepgram', model: 'aura-2-thalia-en', ...(bad ? { language: 'en', padding: 'x'.repeat(200) } : {}) } } }),
+    actions: () => [{ label: 'Mute', message: { type: 'KeepAlive' }, ack: [], mic: 'off', repeatMs: 8000 }],
+    highlight: [],
+    events: [],
+    flushOnUserSpeech: () => true,
+    runLabel: () => '',
+    phrases: () => ['Hello.'],
+    Controls: () => null,
+  })
+  const md = agentPrompt(f, { title: 'Keep alive | Deepgram', url: 'https://example.com' })
+
+  it('shows the working variant, its listen fields, phone audio, and the silent action', () => {
+    const { settings } = promptRequests(md)
+    expect(settings).toHaveLength(1)
+    expect(JSON.stringify(settings[0])).not.toContain('padding')
+    expect(JSON.stringify(settings[0])).toContain('"keyterms":["Deepgram"]')
+    expect(md).toContain('8 kHz mono 8-bit mu-law')
+    expect(md).toContain('`Warning` whose code is `VOICE_PROMPT_ADDED`')
+    expect(md).toContain('then stop sending mic audio, and send it again every 8 s while the mic is off')
+    expect(md).toContain('Nothing comes back')
+    expect(md).not.toContain('Nova-3')
   })
 })

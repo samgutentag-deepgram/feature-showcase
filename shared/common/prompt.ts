@@ -4,7 +4,7 @@
 // this output, and tests/live.test.ts opens every URL and Settings message the prompt shows.
 import { requestParams, SAMPLE_RATE, shownParams, toQuery } from './config'
 import type { Feature, Json, Model, Params } from './feature'
-import { AGENT_URL, INPUT_RATE, LISTEN_MODELS, OUTPUT_RATE, settingsMessage, type AgentFeature } from '../agent/feature'
+import { AGENT_URL, INPUT_RATE, LISTEN_MODELS, OUTPUT_RATE, audioOf, settingsMessage, type AgentAction, type AgentFeature } from '../agent/feature'
 
 export const TOKEN_TTL_SECONDS = 30
 
@@ -145,10 +145,12 @@ Docs: ${feature.links.docs}
 }
 
 export function agentPrompt<S>(feature: AgentFeature<S>, meta: PromptMeta): string {
-  const on = richest(feature.variants, (s) => JSON.stringify(feature.agent(s)).length)
-  const listen = LISTEN_MODELS[0]
-  const settings = settingsMessage(feature, on, listen.id)
-  const others = LISTEN_MODELS.slice(1).map((m) => `\`${m.id}\``).join(', ')
+  // A variant meant to fail (expects.error) is never the one the prompt shows.
+  const working = feature.variants.filter((s) => !feature.expects?.(s)?.error)
+  const on = richest(working.length ? working : feature.variants, (s) => JSON.stringify(feature.agent(s)).length)
+  const x = agentPromptExtras(feature, on)
+  const listen = x.listen
+  const settings = settingsMessage(feature, on, listen?.id ?? '')
   const name = meta.title.replace(/ \| Deepgram$/, '')
   const ex = feature.functionExample
   const acts = feature.actions?.(on) ?? []
@@ -158,11 +160,11 @@ export function agentPrompt<S>(feature: AgentFeature<S>, meta: PromptMeta): stri
 Once \`SettingsApplied\` has arrived, these go on the same socket as text frames, one per button.
 Each is sent live before this file ships and comes back with the message named under it.
 
-${acts.map((a) => `**${a.label}**${a.flush ? ' (also drop the agent audio still queued on the page)' : ''}
+${acts.map((a) => `**${a.label}**${a.flush ? ' (also drop the agent audio still queued on the page)' : ''}${actionNote(a)}
 
 ${fence('json', JSON.stringify(a.message, null, 2))}
 
-Comes back: ${a.ack.map((t) => `\`${t}\``).join(' or ')}.${a.then ? `
+${a.ack.length ? `Comes back: ${a.ack.map((t) => `\`${t}\``).join(' or ')}.` : 'Nothing comes back; the session just carries on.'}${a.then ? `
 
 Once it does, send this too${a.then.behavior === 'interrupt' ? ' (and drop the queued agent audio)' : ''}:
 
@@ -196,21 +198,21 @@ configured by the Settings message below. Live demo: ${meta.url}
 ## The connection
 
 Open \`${AGENT_URL}\` and send this Settings message first, as a text frame. It is sent to the live
-API before this file ships and comes back \`SettingsApplied\`.
+API before this file ships and comes back \`SettingsApplied\`${x.warning}.
 
 ${fence('json', JSON.stringify(settings, null, 2))}
 
-\`listen\` uses ${listen.label} (\`${listen.id}\`), built for turn-taking. ${others} also works as the listen model.
+${x.listenLine}
 
 ${tokenSection}
 
-${micSection(INPUT_RATE)}
+${x.mic}
 
 Start sending mic audio only after \`SettingsApplied\` arrives.
 
 ## Play the agent
 
-Binary frames from the agent are ${OUTPUT_RATE / 1000} kHz mono 16-bit PCM with no container. Queue them
+Binary frames from the agent are ${x.output} with no container. Queue them
 on an AudioContext so they play back to back.${feature.flushOnUserSpeech(on) ? ` When \`UserStartedSpeaking\` arrives, stop and drop everything still queued, so the user can interrupt.` : ''}
 
 ${calls}${midCall}## Try it
@@ -229,6 +231,43 @@ ${doneSection([
 Docs: ${feature.links.docs}
 `
 }
+
+// The parts of an agent prompt the optional feature hooks change. With none of them set, these are
+// the sentences every agent prompt had before the hooks existed.
+function agentPromptExtras<S>(feature: AgentFeature<S>, on: S) {
+  const models = feature.listenModels
+  const listen = (models ?? LISTEN_MODELS)[0]
+  const audio = audioOf(feature, on)
+  const stored = typeof feature.agent(on) === 'string'
+  const warning = feature.expects?.(on)?.warning
+  const others = (models ?? LISTEN_MODELS).slice(1).map((m) => `\`${m.id}\``).join(', ')
+  const listenLine = stored
+    ? '`agent` is the id of an agent configuration stored with the Deepgram REST API (`POST /v1/projects/{project_id}/agents`), sent in place of the whole agent block. Its listen, think, and speak come from the stored config.'
+    : !listen
+      ? 'The `agent` block carries its own `listen` settings.'
+      : !models
+        ? `\`listen\` uses ${listen.label} (\`${listen.id}\`), built for turn-taking. ${others} also works as the listen model.`
+        : `\`listen\` uses ${listen.label} (\`${listen.id}\`).${others ? ` ${others} also works as the listen model.` : ''}`
+  const names: Record<string, string> = { linear16: '16-bit signed little-endian PCM', mulaw: '8-bit mu-law', alaw: '8-bit A-law' }
+  const { input, output } = audio
+  const mic =
+    input.encoding === 'linear16' && input.sample_rate === INPUT_RATE
+      ? micSection(INPUT_RATE)
+      : `## Capture the mic
+
+Use \`getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } })\`
+and an AudioWorklet that downsamples to ${input.sample_rate / 1000} kHz mono and converts to ${names[input.encoding]}. Send each
+chunk (about 100 ms) as a binary WebSocket frame. Raw audio has no header, which is why
+\`audio.input\` names \`encoding\` \`${input.encoding}\` and \`sample_rate\` ${input.sample_rate}.`
+  const outName = output.encoding === 'linear16' && output.sample_rate === OUTPUT_RATE ? `${OUTPUT_RATE / 1000} kHz mono 16-bit PCM` : `${output.sample_rate / 1000} kHz mono ${names[output.encoding]}`
+  return { listen, listenLine, mic, output: outName, warning: warning ? `, along with a \`Warning\` whose code is \`${warning}\`` : '' }
+}
+
+const actionNote = (a: AgentAction) =>
+  [
+    a.mic === 'off' ? ', then stop sending mic audio' : a.mic === 'on' ? ', then start sending mic audio again' : '',
+    a.repeatMs ? `, and send it again every ${a.repeatMs / 1000} s while the mic is off` : '',
+  ].join('')
 
 // Everything the live check has to prove for a prompt: each wss:// URL opens, each Settings applies.
 export function promptRequests(md: string): { urls: string[]; settings: Json[] } {

@@ -96,6 +96,8 @@ demos/<name>/
   an ack. The Request card lists them under the Settings message. Think Live lines
   (`conversational_behavior` other than `default`) show as tagged asides and timeline events named
   `ConversationText <behavior>`, so `events` can mark them.
+- Agent demos only, optional hooks (2026-11-16, `shared/agent/feature.ts`). A demo that sets none
+  sends exactly what it did before. See "Voice agent hooks" below.
 - `copy`, `links`: headline, call to action, and docs link. Link tags are automatic (see
   "Link tags" below).
 
@@ -118,6 +120,30 @@ pnpm og <name> "<headline>" "<one line>" "<query string from the Request card>" 
 ```
 
 Use `wave` instead of `globe` for the glass waveform art.
+
+## Voice agent hooks
+
+Optional fields on `AgentFeature`, each checked by `pnpm test`, the prompt builder, and
+`pnpm verify:live` (`ONLY=agent-hooks` runs them on a stand-in feature):
+
+| Field | Does |
+|---|---|
+| `listenModels: {id, label}[]` | The listen toggle. One entry hides it; `[]` adds no listen block (agent() carries its own) |
+| `listen(state, model)` | Extra `agent.listen.provider` fields: `version`, `keyterms`, `eot_threshold`, `eager_eot_threshold`, `eot_timeout_ms`, `language`, `language_hints`, `smart_format` |
+| `settings(state)` | Top-level Settings fields: `tags`, `mip_opt_out`, `experimental`, `flags` |
+| `audio(state)` | `{ input, output }` formats: `linear16`, `mulaw`, `alaw`; input 16000 or 8000. The page encodes the mic and decodes the reply (`shared/agent/codec.ts`) |
+| `agent(state)` returning a string | A stored agent config id, sent as the whole `agent`. Pair with `listenModels: []` |
+| `expects(state)` | `{ error }`: that Settings must fail with that code (the prompt skips it). `{ warning }`: that Warning must arrive |
+| `Panel` | A component under the buttons with `messages` (every server message this run, History and LatencyReport included), `playing`, `audioStarts`, `status`, and `fire(label, patch?)` |
+| action `ack: []` | Nothing comes back (KeepAlive); verify:live passes on no Error or Warning in 3 s |
+| action `mic: 'off' \| 'on'`, `repeatMs` | Stop or resume mic audio after sending; resend every `repeatMs` while it is off |
+| action `hidden` | No button: only `Panel` fires it (a text box for `InjectUserMessage`). Still on the Request card |
+
+Listing `History` or `LatencyReport` in `events` puts them in the timeline. Live facts (2026-11-16):
+the server sends `EndOfTurn` (Flux, and after `InjectUserMessage`) but never `AgentThinking` or
+`AgentStartedSpeaking`; use `audioStarts` and `AgentAudioDone` for a speaking light. Each
+`LatencyReport` carries one field, and Flux sends an `stt_latency` one about every 250 ms of audio.
+`agent.language` must be left out with `flux-general-multi` or with `listen.provider.language`.
 
 ## Link tags
 
