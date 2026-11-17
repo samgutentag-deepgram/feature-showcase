@@ -1,0 +1,5 @@
+{
+  "title": "Dynamic InjectAgentMessage | Deepgram",
+  "description": "Ask a Deepgram voice agent to word its own filler line with is_dynamic, next to a fixed line, and count the DYNAMIC_FILLER_UNAVAILABLE warnings.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-dynamic-inject/"
+}

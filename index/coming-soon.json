@@ -737,7 +737,7 @@
       "what": "Let Think Live word its own filler line on demand.",
       "models": "Think Live",
       "docs": "https://developers.deepgram.com/docs/voice-agent-inject-agent-message",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-update-think-live",

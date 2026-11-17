@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-dynamic-inject",
+      "platform": "Voice agent",
+      "headline": "Let the agent word its own filler.",
+      "param": "InjectAgentMessage is_dynamic",
+      "flux": "agent"
     }
   ]
 }
