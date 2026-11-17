@@ -3,11 +3,12 @@ ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
 all_demos() { (cd "$ROOT/demos" && for d in */; do [ -f "$d/index.tsx" ] && echo "${d%/}"; done); }
 
-# A demo's kind, read from its index.tsx: tts, agent, or stt (no kind line).
+# A demo's kind, read from its index.tsx: tts, agent, llm, or stt (no kind line).
 kind_of() {
   local f=$ROOT/demos/$1/index.tsx
   if grep -q "kind: 'tts'" "$f"; then echo tts
   elif grep -q "kind: 'agent'" "$f"; then echo agent
+  elif grep -q "kind: 'llm'" "$f"; then echo llm
   else echo stt; fi
 }
 
@@ -16,10 +17,10 @@ kind_of() {
 # blank lines ignored, for hand-picked groups.
 read_set() {
   case $1 in
-    stt|tts|agent) local n; for n in $(all_demos); do [ "$(kind_of "$n")" = "$1" ] && echo "$n"; done; return 0 ;;
+    stt|tts|agent|llm) local n; for n in $(all_demos); do [ "$(kind_of "$n")" = "$1" ] && echo "$n"; done; return 0 ;;
   esac
   local f=$ROOT/sets/$1.txt
-  [ -f "$f" ] || { echo "no set '$1' (stt tts agent $(cd "$ROOT/sets" && ls | sed 's/\.txt$//' | tr '\n' ' '))" >&2; return 1; }
+  [ -f "$f" ] || { echo "no set '$1' (stt tts agent llm $(cd "$ROOT/sets" && ls | sed 's/\.txt$//' | tr '\n' ' '))" >&2; return 1; }
   sed -e 's/#.*//' -e 's/[[:space:]]//g' "$f" | grep -v '^$'
 }
 

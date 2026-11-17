@@ -9,6 +9,7 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { agentPrompt, promptRequests, sttPrompt } from '../shared/common/prompt'
 import { ttsPrompt, ttsPromptRequests } from '../shared/tts/prompt'
+import { llmPrompt, llmPromptRequests } from '../shared/llm/prompt'
 import { readMeta } from '../vite.config'
 
 const names = readdirSync('demos', { withFileTypes: true })
@@ -20,6 +21,7 @@ export async function buildPrompt(name: string): Promise<string | undefined> {
   const meta = readMeta(name)
   if (feature.kind === 'agent') return agentPrompt(feature, meta)
   if (feature.kind === 'tts') return ttsPrompt(feature, meta)
+  if (feature.kind === 'llm') return llmPrompt(feature, meta)
   return sttPrompt(feature, meta)
 }
 
@@ -33,6 +35,6 @@ describe.each(names)('prompt for %s', (name) => {
     expect(readFileSync(file, 'utf8')).toBe(built)
     const { urls, settings } = promptRequests(built)
     const tts = ttsPromptRequests(built)
-    expect(urls.length + settings.length + tts.posts.length).toBeGreaterThan(0)
+    expect(urls.length + settings.length + tts.posts.length + llmPromptRequests(built).length).toBeGreaterThan(0)
   })
 })

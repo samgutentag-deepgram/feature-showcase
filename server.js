@@ -20,7 +20,8 @@ export const CSP = [
   "img-src 'self' data:",
   "font-src 'self'",
   "media-src 'self' blob:",
-  "connect-src 'self' https://api.deepgram.com wss://api.deepgram.com wss://agent.deepgram.com",
+  // https://agent.deepgram.com is /v1/think, for the LLM demos (shared/llm/).
+  "connect-src 'self' https://api.deepgram.com wss://api.deepgram.com wss://agent.deepgram.com https://agent.deepgram.com",
   "worker-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

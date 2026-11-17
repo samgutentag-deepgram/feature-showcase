@@ -32,6 +32,9 @@ function probeListen(): Promise<string> {
 import { AGENT_URL, INPUT_RATE, LISTEN_MODELS, settingsMessage, type AgentAction, type AgentFeature } from '../shared/agent/feature'
 import { existsSync, readFileSync } from 'node:fs'
 import { promptRequests, TOKEN_TTL_SECONDS } from '../shared/common/prompt'
+// LLM kind: checks live in tests/llm-live.ts.
+import { llmEveryVariant, llmPromptLive } from './llm-live'
+import { llmPrompt } from '../shared/llm/prompt'
 
 const LIVE = process.env.LIVE === '1'
 if (LIVE) {
@@ -422,6 +425,11 @@ describe.skipIf(!LIVE).each(names)('live: feature %s', (name) => {
   it('opens every request the page can make', async () => {
     expect(process.env.DEEPGRAM_API_KEY, 'DEEPGRAM_API_KEY missing from .env').toBeTruthy()
     const loaded = (await import(`../demos/${name}/index.tsx`)).default
+    // LLM kind (shared/llm/): every variant on every input, through the page's own send code.
+    if (loaded.kind === 'llm') {
+      expect(await llmEveryVariant(loaded)).toEqual([])
+      return
+    }
     if (loaded.kind === 'tts') {
       await speakEveryVariant(loaded as TtsFeature<unknown>)
       return
@@ -652,6 +660,11 @@ const withPrompt = names.filter((n) => existsSync(`demos/${n}/prompt.md`))
 describe.skipIf(!LIVE || withPrompt.length === 0).each(withPrompt)('live: prompt.md for %s', (name) => {
   it('every request it shows works with a granted token', async () => {
     const md = readFileSync(`demos/${name}/prompt.md`, 'utf8')
+    const llm = (await import(`../demos/${name}/index.tsx`)).default
+    if (llm.kind === 'llm') {
+      expect(await llmPromptLive(md, llm)).toEqual([])
+      return
+    }
     if ((await import(`../demos/${name}/index.tsx`)).default.kind === 'tts') {
       expect(await ttsPromptLive(md)).toEqual([])
       return
@@ -685,4 +698,16 @@ describe.skipIf(!LIVE || withPrompt.length === 0).each(withPrompt)('live: prompt
     }
     expect(failed).toEqual([])
   }, 90_000)
+})
+
+// LLM kind: the two starters new.sh copies (shared/llm-starters/), sent live with their prompts, so
+// the shared send code is proven before any LLM demo exists. Runs without ONLY, or with ONLY=llm-starters.
+const starters = !only || only.includes('llm-starters') ? ['intelligence', 'think'] : []
+describe.skipIf(!LIVE || starters.length === 0).each(starters)('live: llm starter %s', (name) => {
+  it('sends every request the page and its prompt can make', async () => {
+    const feature = (await import(`../shared/llm-starters/${name}.tsx`)).default
+    expect(await llmEveryVariant(feature)).toEqual([])
+    const md = llmPrompt(feature, { title: `${name} | Deepgram`, url: 'https://dg-devrel-demos.fly.dev/demos/example/' })
+    expect(await llmPromptLive(md, feature)).toEqual([])
+  }, 120_000)
 })
