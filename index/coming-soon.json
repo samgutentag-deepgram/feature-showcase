@@ -62,7 +62,7 @@
       "what": "Upload any clip and see the detected language code and confidence.",
       "models": "Pre-recorded only, Nova-3 down to Base",
       "docs": "https://developers.deepgram.com/docs/language-detection",
-      "built": false
+      "built": true
     },
     {
       "id": "keyterm",

@@ -1,0 +1,5 @@
+{
+  "title": "Language detection | Deepgram",
+  "description": "Record a line in a language you speak and see the language Nova-3 detects, with its confidence, or limit detection to a list of languages.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/detect-language/"
+}
