@@ -37,4 +37,4 @@ a vaguer prompt they also brought filler lines ("Let me look up that order.") an
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: pnpm verify:live applied both Settings (voice_prompt_opt_out false and true) with Flux and Nova-3 listen; false also brought Warning VOICE_PROMPT_ADDED, the InjectUserMessage test line came back as ConversationText, prompt.md requests worked, and the docs link resolved. Separate probes: true never sent the warning (6 of 6 runs).

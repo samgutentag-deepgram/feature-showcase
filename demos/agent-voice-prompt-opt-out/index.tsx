@@ -11,6 +11,7 @@
 //   Think-Fast itself leans spoken, so the instructions are a push, not a switch.
 //   With a vaguer prompt the added instructions also brought filler lines ("Let me look up that
 //   order.") and once a raw "<tool_call>" text line with no functions defined.
+// Verified live 2026-11-16: pnpm verify:live applied both Settings (voice_prompt_opt_out false and true) with Flux and Nova-3 listen; false also brought Warning VOICE_PROMPT_ADDED, the InjectUserMessage test line came back as ConversationText, prompt.md requests worked, and the docs link resolved. Separate probes: true never sent the warning (6 of 6 runs).
 import type { AgentMessage } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'
