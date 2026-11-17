@@ -1,0 +1,5 @@
+{
+  "title": "KeepAlive | Deepgram",
+  "description": "Pause your mic mid-stream and keep the same Nova-3 socket open with KeepAlive, or send nothing and see Deepgram close it after about 10 seconds.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/stt-keepalive/"
+}
