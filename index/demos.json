@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-frustration",
+      "platform": "Voice agent",
+      "headline": "It knows when you are fed up.",
+      "param": "frustration_max_count + FrustrationDetected",
+      "flux": "agent"
     }
   ]
 }
