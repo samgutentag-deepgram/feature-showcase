@@ -1052,7 +1052,7 @@
       "what": "Show how temperature and reasoning effort change replies and token usage.",
       "models": "think-fast, phonellm-mini (Early Access)",
       "docs": "https://developers.deepgram.com/docs/llm/request-response-format",
-      "built": false
+      "built": true
     }
   ]
 }

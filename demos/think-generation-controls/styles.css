@@ -1,0 +1,10 @@
+.gen-verdict {
+  margin: 0;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: var(--dg-shape-pill);
+  background: var(--dg-bg-well);
+  color: var(--dg-text-body);
+  font-size: 15px;
+}
+.gen-verdict--same { background: var(--dg-accent); color: var(--dg-text-on-accent); }

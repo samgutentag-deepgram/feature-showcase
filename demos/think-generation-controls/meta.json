@@ -1,0 +1,5 @@
+{
+  "title": "Think temperature | Deepgram",
+  "description": "Send the same /v1/think request twice at temperature 0 and at 1, and see whether the replies match.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/think-generation-controls/"
+}

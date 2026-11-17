@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "think-generation-controls",
+      "platform": "LLM",
+      "headline": "Same question twice. Same answer?",
+      "param": "\"temperature\": 0",
+      "flux": "think"
     }
   ]
 }
