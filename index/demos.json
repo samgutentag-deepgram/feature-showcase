@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-inject-user-message",
+      "platform": "Voice agent",
+      "headline": "Type to a voice agent mid-call.",
+      "param": "InjectUserMessage",
+      "flux": "agent"
     }
   ]
 }

@@ -863,7 +863,7 @@
       "what": "Type to the agent instead of speaking.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-inject-user-message",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-keepalive",

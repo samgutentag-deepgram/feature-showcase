@@ -1,0 +1,5 @@
+{
+  "title": "Type to a voice agent | Deepgram",
+  "description": "Ask the agent a question out loud, then type the next one: InjectUserMessage makes the typed line your turn, and the agent answers by voice.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-inject-user-message/"
+}
