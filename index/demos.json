@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "finalize",
+      "platform": "Speech-to-text",
+      "headline": "Done talking? Say so.",
+      "param": "Finalize",
+      "flux": "nova-only"
+    },
+    {
       "id": "detect-entities",
       "platform": "Speech-to-text",
       "headline": "Who, where, when, and how much?",
