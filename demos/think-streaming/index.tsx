@@ -8,6 +8,7 @@
 // `stream_options.include_usage` to `true`."). On the ~120-word default prompt, Think-Fast: first
 // token 314 ms streamed vs whole reply 863 ms unstreamed (142 chunks); phoneLLM mini: 332 ms vs 721 ms
 // (148 chunks). On a five-word reply the two are within a few ms.
+// Verified live 2026-11-16: ONLY=think-streaming pnpm verify:live passed (both bodies on Think-Fast and phoneLLM mini, every stream ended in [DONE]); through the shell's runThinkLane on the default prompt, Think-Fast first token 310 ms streamed vs whole reply 847 ms unstreamed (142 chunks, usage in the last chunk), phoneLLM mini 242 ms vs 680 ms (135 chunks).
 import { useEffect, useRef, useState } from 'react'
 import { THINK_MODELS, defineLlmFeature, type Lane, type LlmRun, type ThinkBody } from '../../shared/llm/feature'
 import { splitReasoning } from '../../shared/llm/request'

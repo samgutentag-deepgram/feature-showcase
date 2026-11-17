@@ -23,4 +23,4 @@ FEATURE=think-streaming pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=think-streaming pnpm verify:live passed (both bodies on Think-Fast and phoneLLM mini, every stream ended in [DONE]); through the shell's runThinkLane on the default prompt, Think-Fast first token 310 ms streamed vs whole reply 847 ms unstreamed (142 chunks, usage in the last chunk), phoneLLM mini 242 ms vs 680 ms (135 chunks).
