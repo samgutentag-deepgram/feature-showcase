@@ -62,4 +62,8 @@ FEATURE=keywords-legacy pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=keywords-legacy pnpm verify:live passed (nova-2 socket opened for keywords off and :1, :2, :5, prompt URLs and docs link OK); pre-recorded nova-2 with keyterm.mp3 went from "Callistrum", "Vexmor" to "Kallistrum", "Vexmoor" with keywords=Kallistrum:2&keywords=Vexmoor:2&keywords=Trellisync:2; nova-3 + keywords is a 400 and the flux-general-en handshake with keywords is a 400 (101 without).
+```

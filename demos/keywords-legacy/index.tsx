@@ -4,6 +4,7 @@
 // Checked 2026-11-16 on /v1/listen pre-recorded, nova-2, smart_format=true, a `say` clip: without
 // keywords "Callistrum", "Vexmor"; with keywords=Kallistrum:2&keywords=Vexmoor:2&keywords=Trellisync:2
 // "Kallistrum" both times and "Vexmoor" once. Streaming nova-2 gave the same change.
+// Verified live 2026-11-16: ONLY=keywords-legacy pnpm verify:live passed (nova-2 socket opened for keywords off and :1, :2, :5, prompt URLs and docs link OK); pre-recorded nova-2 with keyterm.mp3 went from "Callistrum", "Vexmor" to "Kallistrum", "Vexmoor" with keywords=Kallistrum:2&keywords=Vexmoor:2&keywords=Trellisync:2; nova-3 + keywords is a 400 and the flux-general-en handshake with keywords is a 400 (101 without).
 import { defineFeature, type Params, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'
