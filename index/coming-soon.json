@@ -962,7 +962,7 @@
       "what": "Compare Think-Fast replies with and without Deepgram voice-style instructions.",
       "models": "Deepgram think-fast only (Early Access)",
       "docs": "https://developers.deepgram.com/docs/llm/voice-agent",
-      "built": false
+      "built": true
     },
     {
       "id": "summarize",
