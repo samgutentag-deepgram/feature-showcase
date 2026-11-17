@@ -339,6 +339,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-listen-model",
+      "platform": "Voice agent",
+      "headline": "Pick what your agent listens with.",
+      "param": "agent.listen.provider",
+      "flux": "agent"
+    },
+    {
       "id": "agent-greeting",
       "platform": "Voice agent",
       "headline": "Let the agent say hello first.",

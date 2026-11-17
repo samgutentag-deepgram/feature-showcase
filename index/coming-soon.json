@@ -584,7 +584,7 @@
       "what": "Swap the agent ear between Nova-3 (v1) and Flux (v2).",
       "models": "Nova-3 and Flux",
       "docs": "https://developers.deepgram.com/docs/voice-agent-stt-models",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-keyterms",

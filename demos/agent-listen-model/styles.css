@@ -1,0 +1,21 @@
+/* Field table and turn list. var() only: literals live in styles/packs/. */
+.listen-fields { display: flex; flex-direction: column; gap: 8px; }
+.listen-fields__label,
+.listen-turns__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.listen-fields table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.listen-fields th,
+.listen-fields td { text-align: left; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--dg-border); vertical-align: top; }
+.listen-fields thead th { font-family: var(--dg-font-code); font-size: 11px; text-transform: uppercase; letter-spacing: var(--dg-type-label-tracking); color: var(--dg-text-label); }
+.listen-fields tbody th { font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.listen-fields td { font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-body); overflow-wrap: anywhere; }
+
+.listen-turns { display: flex; flex-direction: column; gap: 8px; }
+.listen-turns ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.listen-turns li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 2px 10px; align-items: baseline; }
+.listen-turns__at { font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-label); }
+.listen-turns__line { font-size: 17px; color: var(--dg-text-primary); padding-left: 10px; border-left: 3px solid var(--dg-accent); }
+.listen-turns__facts { grid-column: 2; font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+
+@media (max-width: 760px) {
+  .listen-fields table { font-size: 13px; }
+}
