@@ -1,0 +1,29 @@
+/* The state light. var() only: literals live in styles/packs/. */
+.asi { display: grid; gap: 14px; margin-top: 18px; }
+.asi__lights { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.asi__light {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--dg-line-hairline);
+  border-radius: var(--dg-radius-md);
+  background: var(--dg-surface-raised);
+  opacity: 0.55;
+  transition: opacity var(--dg-motion-fast) var(--dg-ease), border-color var(--dg-motion-fast) var(--dg-ease);
+}
+.asi__light.is-on { opacity: 1; border-color: var(--asi-on); }
+.asi__light--listening { --asi-on: var(--dg-signal-ga); }
+.asi__light--user { --asi-on: var(--dg-accent-alt); }
+.asi__light--thinking { --asi-on: var(--dg-accent-3); }
+.asi__light--agent { --asi-on: var(--dg-accent); }
+.asi__dot { width: 14px; height: 14px; border-radius: var(--dg-radius-round); background: var(--dg-grey-300); }
+.asi__light.is-on .asi__dot { background: var(--asi-on); box-shadow: 0 0 0 4px var(--dg-surface-page), 0 0 0 6px var(--asi-on); }
+.asi__name { font-weight: var(--dg-weight-bold); color: var(--dg-ink-primary); }
+.asi__from { font-family: var(--dg-font-mono); font-size: 11px; color: var(--dg-ink-muted); }
+.asi__log { margin: 0; padding-left: 20px; font-size: 14px; color: var(--dg-ink-secondary); }
+.asi__ms { font-family: var(--dg-font-mono); color: var(--dg-ink-muted); }
+.asi__seen { margin: 0; }
+
+@media (max-width: 760px) {
+  .asi__lights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
