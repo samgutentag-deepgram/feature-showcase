@@ -1,0 +1,63 @@
+/* Sentiment segments, legend, and average meter. var() only: literals live in styles/packs/. */
+
+.sent-segments { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.sent-seg {
+  --sent: var(--dg-border-hover);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  border-left: 6px solid var(--sent);
+  border-radius: var(--dg-shape-control);
+  background: color-mix(in srgb, var(--sent) 10%, var(--dg-bg-panel));
+}
+.sent-seg--negative { --sent: var(--dg-state-error); }
+.sent-seg--positive { --sent: var(--dg-state-available); }
+.sent-seg--neutral { --sent: var(--dg-border-hover); background: var(--dg-bg-well); }
+
+.sent-seg__text { font-size: 17px; line-height: 1.45; color: var(--dg-text-primary); }
+.sent-seg__tag {
+  align-self: flex-start;
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  border-radius: var(--dg-shape-pill);
+  padding: 2px 10px;
+  color: var(--dg-text-primary);
+  border: 1px solid var(--sent, var(--dg-border-hover));
+  background: var(--dg-bg-panel);
+}
+
+.sent-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.sent-legend--negative { --sent: var(--dg-state-error); }
+.sent-legend--neutral { --sent: var(--dg-border-hover); }
+.sent-legend--positive { --sent: var(--dg-state-available); }
+
+.sent-meter { position: relative; height: 44px; max-width: 520px; }
+.sent-meter__track {
+  position: absolute;
+  inset: 8px 0 auto;
+  height: 10px;
+  border-radius: var(--dg-shape-pill);
+  background: linear-gradient(to right, var(--dg-state-error), var(--dg-bg-well) 33.3%, var(--dg-bg-well) 66.7%, var(--dg-state-available));
+}
+.sent-meter__break { position: absolute; top: 4px; width: 1px; height: 18px; background: var(--dg-text-label); }
+.sent-meter__dot {
+  position: absolute;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  border-radius: var(--dg-shape-pill);
+  background: var(--dg-text-primary);
+  border: 3px solid var(--dg-bg-panel);
+}
+.sent-meter__ends {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  color: var(--dg-text-label);
+}

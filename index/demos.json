@@ -409,6 +409,13 @@
       "flux": "agent"
     },
     {
+      "id": "sentiment",
+      "platform": "LLM",
+      "headline": "Did the call end better than it started?",
+      "param": "sentiment",
+      "flux": "intelligence"
+    },
+    {
       "id": "custom-intents",
       "platform": "LLM",
       "headline": "Does the caller want one of your intents?",
