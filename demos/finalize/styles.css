@@ -1,0 +1,6 @@
+.fin-summary { list-style: none; margin: 16px 0 0; padding: 12px 0 0; border-top: 1px solid var(--dg-border); display: flex; flex-direction: column; gap: 6px; }
+.fin-summary li { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; font-size: 14px; color: var(--dg-text-label); }
+.fin-summary__how { font-family: var(--dg-font-code); color: var(--dg-text-body); }
+.fin-summary__time { color: var(--dg-text-body); }
+.fin-summary li.is-finalize .fin-summary__how { color: var(--dg-text-primary); background: var(--dg-accent-dim); border-radius: var(--dg-shape-control); padding: 0 6px; }
+.fin-summary li.is-finalize .fin-summary__time { color: var(--dg-text-primary); }

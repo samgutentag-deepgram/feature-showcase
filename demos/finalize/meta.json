@@ -1,0 +1,5 @@
+{
+  "title": "Finalize | Deepgram",
+  "description": "Read a line, press Finalize now as you finish, and see Nova-3 send the final result in milliseconds instead of waiting out a second of silence.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/finalize/"
+}

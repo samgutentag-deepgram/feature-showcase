@@ -323,7 +323,7 @@
       "what": "Force final results now, like on a push-to-talk release.",
       "models": "Nova streaming only",
       "docs": "https://developers.deepgram.com/docs/finalize",
-      "built": false
+      "built": true
     },
     {
       "id": "close-stream",
