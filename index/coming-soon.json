@@ -737,7 +737,7 @@
       "what": "Agent covers a slow function call with \"let me check that\".",
       "models": "Think Live",
       "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-dynamic-inject",

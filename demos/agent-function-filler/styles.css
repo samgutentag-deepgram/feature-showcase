@@ -1,0 +1,14 @@
+/* Filler on and off, side by side. var() only: literals live in styles/packs/. */
+.aff { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 18px; }
+.aff__col {
+  padding: 12px 14px;
+  border: 1px solid var(--dg-line-hairline);
+  border-radius: var(--dg-radius-md);
+  background: var(--dg-surface-raised);
+}
+.aff__col:first-child { border-left: 3px solid var(--dg-accent); }
+.aff__head { margin: 0; font-size: 14px; font-weight: var(--dg-weight-bold); color: var(--dg-ink-primary); }
+.aff__gap { margin: 6px 0 0; font-size: 13px; color: var(--dg-ink-secondary); }
+.aff__none { margin: 6px 0 0; font-size: 13px; color: var(--dg-ink-muted); }
+.aff__lines { margin: 8px 0 0; padding-left: 20px; font-size: 14px; color: var(--dg-ink-secondary); }
+.aff__ms { font-family: var(--dg-font-mono); color: var(--dg-ink-muted); }
