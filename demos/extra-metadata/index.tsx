@@ -4,6 +4,7 @@
 // metadata.extra = {"order_id":"A1042","team":"support desk"} on every Results message, interim
 // and final, and on the closing Metadata message. With no extra sent, metadata has no extra key.
 // Flux refuses it: /v2/listen answers the handshake with 400 "Unknown query parameters: extra".
+// Verified live 2026-11-16: ONLY=extra-metadata pnpm verify:live passed (both variants, two pairs and one pair, accepted on /v1/listen nova-3, plus the prompt URL); a streamed clip returned metadata.extra {"order_id":"A1042","team":"support desk"} on every Results message.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

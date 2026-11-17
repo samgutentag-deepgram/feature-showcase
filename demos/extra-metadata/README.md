@@ -61,4 +61,14 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+extra on Nova-3: tag a request with your own key:value pairs and get them back in the response.
+Checked live 2026-11-16 on /v1/listen streaming with a macOS-voice clip:
+extra=order_id%3AA1042&extra=team%3Asupport+desk came back as
+metadata.extra = {"order_id":"A1042","team":"support desk"} on every Results message, interim
+and final, and on the closing Metadata message. With no extra sent, metadata has no extra key.
+Flux refuses it: /v2/listen answers the handshake with 400 "Unknown query parameters: extra".
+Verified live 2026-11-16: ONLY=extra-metadata pnpm verify:live passed (both variants, two pairs and one pair, accepted on /v1/listen nova-3, plus the prompt URL); a streamed clip returned metadata.extra {"order_id":"A1042","team":"support desk"} on every Results message.
+```
