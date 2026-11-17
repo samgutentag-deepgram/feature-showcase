@@ -8,6 +8,7 @@
 // reasoning_effort is left to think-model-compare. "Invent a name for a coffee shop run by robots":
 // phoneLLM mini at 0 gave "RoboBrew Café" 9 times in 9; at 1 it gave three different names. Think-Fast
 // at 0 gave "The Iron Bean" 6 times in 7 (once "BrewBot"); at 1, three different names in 3.
+// Verified live 2026-11-16: ONLY=think-generation-controls pnpm verify:live passed, 8 streamed /v1/think requests (2 models x temperature 0 and 1, each sent twice) all 200 with a reply, and every prompt.md request worked with a granted token. In the page, Think-Fast at 0 gave "The Caffeinated Circuit" on both tries; at 1 it gave "The Circuit Brew" and "The Silicon Sip".
 import { LaneView } from '../../shared/llm/Results'
 import { THINK_MODELS, defineLlmFeature, type ThinkBody } from '../../shared/llm/feature'
 import './styles.css'

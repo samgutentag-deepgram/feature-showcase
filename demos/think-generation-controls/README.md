@@ -20,4 +20,4 @@ FEATURE=think-generation-controls pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=think-generation-controls pnpm verify:live passed, 8 streamed /v1/think requests (2 models x temperature 0 and 1, each sent twice) all 200 with a reply, and every prompt.md request worked with a granted token. In the page, Think-Fast at 0 gave "The Caffeinated Circuit" on both tries; at 1 it gave "The Circuit Brew" and "The Silicon Sip".
