@@ -12,7 +12,7 @@ Every URL here is opened against the live API before this file ships.
 
 ### Use Flux: `/v2/listen`
 
-On Flux, CloseStream decodes the audio already sent (one last Update) and closes with no status code. It does not end the turn and sends no Metadata, so press ForceEndTurn first, then CloseStream.
+On Flux, CloseStream decodes the audio already sent (an Update, if any was left) and closes with no status code. It does not end the turn and sends no Metadata, so press ForceEndTurn first, then CloseStream.
 
 
 The params that matter, as a reader would copy them:
@@ -107,7 +107,7 @@ Comes back: `EndOfTurn`.
 }
 ```
 
-After this, stop the mic and wait for the socket to close. Comes back: `Update`.
+After this, stop the mic and wait for the socket to close. Nothing comes back; the socket stays open.
 
 ## Try it
 

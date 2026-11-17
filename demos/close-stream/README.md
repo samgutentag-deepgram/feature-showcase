@@ -16,7 +16,7 @@ socket, and the words still in flight never come back final, with no Metadata.
   **CloseStream** while you say "Tuesday morning". Read it again and press **Hang up (close socket)**
   instead. The two runs sit side by side: the first keeps every word and shows Metadata, the second
   strikes through the words that were only ever interim.
-- **Flux.** On Flux, CloseStream decodes what it has (one last `Update`) and closes with no status
+- **Flux.** On Flux, CloseStream decodes what it has left (an `Update`, if any) and closes with no status
   code. It does not end the turn and sends no Metadata, so the open turn shows dashed. Press
   **ForceEndTurn** first, then **CloseStream**, and the turn comes back as an `EndOfTurn`.
 - **The wire.** The Request card lists the messages each button sends. The Response card shows the
@@ -62,4 +62,8 @@ FEATURE=close-stream pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=close-stream pnpm verify:live passed. /v2/listen?model=flux-general-en and /v1/listen?model=nova-3 opened; ForceEndTurn came back EndOfTurn on Flux; CloseStream came back Metadata then a clean close on Nova-3, and closed cleanly with no Error on Flux (the run before, which waited for an Update after it, got none, so that Update is not guaranteed); prompt.md URLs accepted.
+```

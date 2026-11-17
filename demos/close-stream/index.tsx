@@ -8,11 +8,13 @@
 //   Nova-3, client close() instead: nothing more arrives, close 1000. Every word was interim only.
 //     Waiting 5 s with no audio before the close (what this page does) brings nothing either.
 //   Flux /v2/listen, CloseStream: one more Update with the tail ("...Tuesday morning."), then close
-//     1005 (no status code). No EndOfTurn, no Metadata, as the Flux docs say.
+//     1005 (no status code). No EndOfTurn, no Metadata, as the Flux docs say. The extra Update only
+//     comes when audio is still undecoded: in verify:live's run it did not.
 //   Flux, ForceEndTurn then CloseStream: EndOfTurn with the whole line 68 ms after ForceEndTurn,
 //     then close 1005. Flux, client close(): no further Update, close 1000.
 // Hang up is an action with no message: the shared page stops the mic and closes the socket itself
 // 5 s later, without CloseStream. Checked live that nothing arrives in those 5 s on either model.
+// Verified live 2026-11-16: ONLY=close-stream pnpm verify:live passed. /v2/listen?model=flux-general-en and /v1/listen?model=nova-3 opened; ForceEndTurn came back EndOfTurn on Flux; CloseStream came back Metadata then a clean close on Nova-3, and closed cleanly with no Error on Flux (the run before, which waited for an Update after it, got none, so that Update is not guaranteed); prompt.md URLs accepted.
 import { defineFeature, type Json, type SttAction, type SttEvent, type Word } from '../../shared/common/feature'
 import { EmptyTranscript, PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
@@ -84,7 +86,7 @@ export default defineFeature<State>({
       label: 'Flux',
       endpoint: 'v2',
       params: { model: 'flux-general-en' },
-      note: 'On Flux, CloseStream decodes the audio already sent (one last Update) and closes with no status code. It does not end the turn and sends no Metadata, so press ForceEndTurn first, then CloseStream.',
+      note: 'On Flux, CloseStream decodes the audio already sent (an Update, if any was left) and closes with no status code. It does not end the turn and sends no Metadata, so press ForceEndTurn first, then CloseStream.',
     },
     {
       id: 'nova-3',
@@ -108,8 +110,9 @@ export default defineFeature<State>({
 
   actions: (_state, { model }): SttAction[] => [
     ...(model.endpoint === 'v2' ? [{ label: 'ForceEndTurn', message: FORCE, ack: ['EndOfTurn'] }] : []),
-    // Flux sends no Metadata. Its answer is one last Update for the audio it had not decoded yet.
-    { label: 'CloseStream', message: CLOSE, ack: model.endpoint === 'v1' ? ['Metadata'] : ['Update'], ends: true, primary: true },
+    // Flux sends no Metadata, and its last Update only comes when audio is still undecoded (not
+    // always, live), so its CloseStream has no ack: verify:live checks for a clean close instead.
+    { label: 'CloseStream', message: CLOSE, ...(model.endpoint === 'v1' ? { ack: ['Metadata'] } : {}), ends: true, primary: true },
     { label: HANG_UP, audio: 'pause', ends: true },
   ],
   // Updates stay in, so Flux's last Update after CloseStream shows. Nova interims stay out.
