@@ -1,0 +1,24 @@
+/* Entity marks and the Response card list. var() only: literals live in styles/packs/. */
+
+/* An entity in the transcript: the words it covers, with its label in a small pill after them. */
+.transcript__text .entity {
+  background: var(--dg-bg-well);
+  color: var(--dg-text-primary);
+  border-bottom: 2px solid var(--dg-color-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 1px 4px;
+}
+.transcript__text .entity__label {
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: var(--dg-shape-pill);
+  background: var(--dg-text-primary);
+  color: var(--dg-bg-app);
+  font-family: var(--dg-font-code);
+  font-size: 0.6em;
+  letter-spacing: 0;
+  vertical-align: 0.2em;
+}
+
+/* One entity per line on the Response card. */
+.entity-line { display: block; padding-left: 16px; }

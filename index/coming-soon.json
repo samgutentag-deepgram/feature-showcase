@@ -224,7 +224,7 @@
       "what": "Highlight names, emails, and phone numbers found in speech.",
       "models": "English; pre-recorded all models, streaming Nova only (not Flux)",
       "docs": "https://developers.deepgram.com/docs/detect-entities",
-      "built": false
+      "built": true
     },
     {
       "id": "raw-audio-format",
