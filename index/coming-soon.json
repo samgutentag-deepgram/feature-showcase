@@ -395,7 +395,7 @@
       "what": "Bring your own turn detection with a push-to-talk button.",
       "models": "Flux only",
       "docs": "https://developers.deepgram.com/docs/flux/own-turn-detection",
-      "built": false
+      "built": true
     },
     {
       "id": "aura-voice-picker",

@@ -1,0 +1,5 @@
+{
+  "title": "Flux ForceEndTurn | Deepgram",
+  "description": "Say a sentence that trails off, press End turn now, and watch Flux end the turn on your signal with ForceEndTurn.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-force-end-turn/"
+}
