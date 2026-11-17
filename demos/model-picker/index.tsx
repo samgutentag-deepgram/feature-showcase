@@ -13,6 +13,7 @@
 // model_info.name in Nova results: general-nova-3, 2-general-nova, general-nova, general-enhanced,
 // general (base). Flux results carry no model_info.
 // nova-3-medical and flux-general-multi also opened on the socket; they are left to the docs.
+// Verified live 2026-11-16: pnpm verify:live opened /v2/listen?model=flux-general-en and /v1/listen?model= nova-3, nova-2, nova, enhanced, base on the socket, all accepted; prompt.md URLs and docs link passed.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'
