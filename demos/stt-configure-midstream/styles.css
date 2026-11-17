@@ -1,0 +1,35 @@
+/* Keyterm box and the before/after transcript. var() only: literals live in styles/packs/. */
+
+.cfg-field { gap: 10px; display: flex; flex-direction: column; }
+.cfg-field__label { color: var(--dg-text-label); }
+.cfg-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+
+.cfg-segments { display: flex; flex-direction: column; gap: 14px; }
+.cfg-segment__label {
+  display: block;
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+  margin-bottom: 4px;
+}
+.cfg-segment--after { border-top: 1px dashed var(--dg-border-hover); padding-top: 12px; }
+
+.cfg-text mark {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
+
+.cfg-echo { white-space: normal; word-break: break-word; }
