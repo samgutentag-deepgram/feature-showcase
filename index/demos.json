@@ -381,6 +381,13 @@
       "flux": "agent"
     },
     {
+      "id": "intents",
+      "platform": "LLM",
+      "headline": "What does this caller want?",
+      "param": "intents",
+      "flux": "intelligence"
+    },
+    {
       "id": "custom-topics",
       "platform": "LLM",
       "headline": "Will Deepgram find your topics?",
