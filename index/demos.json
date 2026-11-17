@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-reusable-config",
+      "platform": "Voice agent",
+      "headline": "Send an id, not the whole agent.",
+      "param": "agent as a stored config id",
+      "flux": "agent"
+    },
+    {
       "id": "agent-flux-turn-tuning",
       "platform": "Voice agent",
       "headline": "Should your agent wait, or jump in?",

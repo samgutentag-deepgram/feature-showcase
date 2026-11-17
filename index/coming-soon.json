@@ -818,7 +818,7 @@
       "what": "Store the agent config server-side and connect by ID.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/reusable-agent-configurations",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-update-prompt",
