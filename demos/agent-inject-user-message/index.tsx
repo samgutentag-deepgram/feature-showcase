@@ -8,6 +8,7 @@
 //                  ConversationText, EndOfTurn on Flux, then a reply to the typed question. Same on
 //                  Nova-3 without EndOfTurn, and the same during the greeting.
 // The docs page shows only the request; it does not say what comes back or what happens mid-reply.
+// Verified live 2026-11-16: verify:live sent the Settings message with Flux and Nova-3 listen, both came back SettingsApplied; InjectUserMessage after SettingsApplied came back as ConversationText on both; docs links resolved.
 import { useState } from 'react'
 import type { AgentMessage } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'

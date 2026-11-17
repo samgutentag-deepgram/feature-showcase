@@ -72,4 +72,18 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO
+From the top of `index.tsx`:
+
+```text
+InjectUserMessage: the visitor types a turn into a live voice call, and the agent answers it out
+loud as if it had been spoken. Probed live 2026-11-16 with {"type": "InjectUserMessage", "content":
+"What time do you close today?"} after SettingsApplied, on Flux and Nova-3:
+  agent quiet:   UserStartedSpeaking, ConversationText role user (the typed text, verbatim), History,
+                 EndOfTurn {"trigger": "manual"} (Flux only), then the agent's reply about 0.6 s later.
+  agent talking: no Error and no Warning (unlike InjectAgentMessage, which warns). It works as a
+                 barge-in: UserStartedSpeaking, AgentAudioDone (the old reply stops), the typed
+                 ConversationText, EndOfTurn on Flux, then a reply to the typed question. Same on
+                 Nova-3 without EndOfTurn, and the same during the greeting.
+The docs page shows only the request; it does not say what comes back or what happens mid-reply.
+Verified live 2026-11-16: verify:live sent the Settings message with Flux and Nova-3 listen, both came back SettingsApplied; InjectUserMessage after SettingsApplied came back as ConversationText on both; docs links resolved.
+```
