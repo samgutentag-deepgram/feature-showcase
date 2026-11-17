@@ -206,7 +206,7 @@
       "what": "Find where a phrase was spoken using acoustic matching, with timestamps.",
       "models": "Nova (pre-recorded, streaming v1)",
       "docs": "https://developers.deepgram.com/docs/search",
-      "built": false
+      "built": true
     },
     {
       "id": "detect-entities",
