@@ -11,6 +11,10 @@
 //   ttt_thinking_latency never arrived (gpt-4o-mini does not think). flags.latency_report is
 //   UNPARSABLE_CLIENT_MESSAGE: there is no switch, the reports always come.
 // The panel groups the single-field reports into one row per turn and only shows fields that arrived.
+// Verified live 2026-11-16: ONLY=agent-latency-report pnpm verify:live passed. Both Settings
+// variants (with and without get_weather) came back SettingsApplied on Flux and Nova-3, the prompt's
+// phrase spoken to the agent came back as get_weather({"city":"Paris"}), and the docs link resolved.
+// LatencyReport fields and cadence above come from separate live probes the same day.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
 import './styles.css'

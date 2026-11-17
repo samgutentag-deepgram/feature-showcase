@@ -63,4 +63,24 @@ Then open <http://localhost:8080>. Deploys go through `bash scripts/deploy.sh si
 
 ## Verified live
 
-TODO: filled in after `ONLY=agent-latency-report pnpm verify:live` passes.
+From the top of `index.tsx`:
+
+```text
+Latency report: the per-stage timings the Voice Agent API sends on every turn, with no setting
+to turn on. Checked live 2026-11-16 with synthetic user speech (Aura-2 audio streamed at real time),
+gpt-4o-mini as the LLM and aura-2-thalia-en as the voice:
+  Every LatencyReport carries exactly one field, not the whole breakdown the docs' example shows.
+  A plain turn sends four, all within about 0.1 s of the reply's first audio: ttt_token_latency
+  0.49, ttt_text_latency 0.49, tts_latency 0.07, total_latency 0.59 (seconds).
+  A tool turn sends ttt_token 0.52 and ttt_tool 0.52, then after FunctionCallResponse ttt_token
+  again and ttt_text 1.20 (the tool round trip is inside it), tts 0.07, total 1.30.
+  stt_latency on Flux arrives about every 240 ms for the whole call, silence included, cycling
+  0 to 0.08 in 0.02 steps. On Nova-3 it arrives once per final user transcript (0.07 to 0.09).
+  ttt_thinking_latency never arrived (gpt-4o-mini does not think). flags.latency_report is
+  UNPARSABLE_CLIENT_MESSAGE: there is no switch, the reports always come.
+The panel groups the single-field reports into one row per turn and only shows fields that arrived.
+Verified live 2026-11-16: ONLY=agent-latency-report pnpm verify:live passed. Both Settings
+variants (with and without get_weather) came back SettingsApplied on Flux and Nova-3, the prompt's
+phrase spoken to the agent came back as get_weather({"city":"Paris"}), and the docs link resolved.
+LatencyReport fields and cadence above come from separate live probes the same day.
+```
