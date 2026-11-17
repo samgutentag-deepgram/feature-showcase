@@ -5,6 +5,11 @@
 // Checked 2026-11-16 before building: Flux (/v2/listen) answers 400 "Unknown query parameters:
 // sentiment" at the handshake. The /v1/listen socket opens with sentiment=true but no message
 // carries sentiment, so this demo is batch only, though the docs page badges it "Streaming: Nova".
+// Verified live 2026-11-16: ONLY=sentiment pnpm verify:live passed (/v1/read with the first text and
+// /v1/listen with the phrase spoken by Aura-2, both return results.sentiments; prompt.md requests
+// pass with a granted Bearer token). By hand, /v1/read gave negative -0.49, neutral +0.00, positive
+// +0.78, average neutral -0.11; /v1/listen on a macOS-voice read of the phrase gave negative -0.46,
+// neutral -0.25, positive +0.71, average neutral -0.16.
 import './styles.css'
 import { defineLlmFeature } from '../../shared/llm/feature'
 import { analysis, type Segment } from '../../shared/llm/request'

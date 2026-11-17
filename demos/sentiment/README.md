@@ -31,4 +31,4 @@ FEATURE=sentiment pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=sentiment pnpm verify:live passed (/v1/read with the first text and /v1/listen with the phrase spoken by Aura-2, both return results.sentiments; prompt.md requests pass with a granted Bearer token). By hand, /v1/read gave negative -0.49, neutral +0.00, positive +0.78, average neutral -0.11; /v1/listen on a macOS-voice read of the phrase gave negative -0.46, neutral -0.25, positive +0.71, average neutral -0.16.
