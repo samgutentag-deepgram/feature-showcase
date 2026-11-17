@@ -6,6 +6,10 @@
 // nova-3-medical gave "patient takes lisinopril ten mg and metformin five hundred mg daily",
 // nova-3 gave "the patient takes lisinopril ten mg and metformin five hundred mg daily". Both got
 // every drug name right on this synthetic clip; the "listen" mishearing was not reproduced.
+// Verified live 2026-11-16: pnpm verify:live opened the /v1/listen socket with model=nova-3 and
+// model=nova-3-medical (both accepted) and the docs link resolved; on synthetic speech (macOS say)
+// both models wrote lisinopril, metformin, atorvastatin, amoxicillin clavulanate, and
+// levothyroxine correctly.
 import { defineFeature, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'

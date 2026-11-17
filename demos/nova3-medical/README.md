@@ -38,4 +38,16 @@ FEATURE=nova3-medical pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: pnpm verify:live opened the /v1/listen socket with model=nova-3 and
+model=nova-3-medical (both accepted) and the docs link resolved; on synthetic speech (macOS say)
+both models wrote lisinopril, metformin, atorvastatin, amoxicillin clavulanate, and
+levothyroxine correctly.
+```
+
+Pre-recorded transcripts of the same synthetic clip, verbatim:
+
+- `nova-3-medical`: "patient takes lisinopril ten mg and metformin five hundred mg daily"
+- `nova-3`: "the patient takes lisinopril ten mg and metformin five hundred mg daily"
