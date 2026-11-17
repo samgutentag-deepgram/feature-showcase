@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-errors-warnings",
+      "platform": "Voice agent",
+      "headline": "Break the agent on purpose.",
+      "param": "Error + Warning",
+      "flux": "agent"
     }
   ]
 }

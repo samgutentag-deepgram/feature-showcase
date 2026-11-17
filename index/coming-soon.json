@@ -935,7 +935,7 @@
       "what": "Trigger bad settings and render the agent error and warning codes.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-errors-warnings",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-custom-think-passthrough",
