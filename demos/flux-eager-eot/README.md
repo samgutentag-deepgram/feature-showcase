@@ -60,4 +60,22 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO
+From the top of `index.tsx`:
+
+```text
+Eager end of turn on Flux: eager_eot_threshold makes Flux send EagerEndOfTurn as soon as it is
+fairly sure you are done, so an agent can start its LLM call early. TurnResumed cancels that
+draft if you keep talking; EndOfTurn confirms it with the same transcript.
+Checked live 2026-11-16 in real time on "I'd like to book. [1.2 s] Um. [0.9 s] A table for two."
+(macOS voice Samantha), /v2/listen?model=flux-general-en, eot_threshold=0.7 on every run:
+  eager off   StartOfTurn, EndOfTurn "I'd like to book, um, a table for two." Nothing early.
+  0.4         EagerEndOfTurn "I'd like to book." > TurnResumed > EagerEndOfTurn "I'd like to
+              book." > TurnResumed > EagerEndOfTurn (full sentence) > EndOfTurn 441 ms later.
+              3 drafts, 2 cancelled.
+  0.6         EagerEndOfTurn "I'd like to book." > TurnResumed > EagerEndOfTurn (full sentence)
+              > EndOfTurn 81 ms later. 2 drafts, 1 cancelled.
+  eager_eot_threshold=0.8 with eot_threshold=0.7 is a 400 at the handshake: INVALID_QUERY_PARAMETER
+  "eager_eot_threshold cannot be greater than eot_threshold." 0.2 is a 400 too: "must be between
+  0.3 and 0.9, inclusive."
+Verified live 2026-11-16: ONLY=flux-eager-eot pnpm verify:live passed (3 tests: the /v2/listen socket for eager off, 0.4 and 0.6 with eot_threshold=0.7, the prompt URLs, the docs link); the say clip above streamed in real time gave off: StartOfTurn, EndOfTurn; 0.4: EagerEndOfTurn, TurnResumed, EagerEndOfTurn, TurnResumed, EagerEndOfTurn, EndOfTurn (441 ms head start); 0.6: EagerEndOfTurn, TurnResumed, EagerEndOfTurn, EndOfTurn (81 ms head start).
+```

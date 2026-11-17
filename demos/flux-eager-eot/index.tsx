@@ -12,6 +12,7 @@
 //   eager_eot_threshold=0.8 with eot_threshold=0.7 is a 400 at the handshake: INVALID_QUERY_PARAMETER
 //   "eager_eot_threshold cannot be greater than eot_threshold." 0.2 is a 400 too: "must be between
 //   0.3 and 0.9, inclusive."
+// Verified live 2026-11-16: ONLY=flux-eager-eot pnpm verify:live passed (3 tests: the /v2/listen socket for eager off, 0.4 and 0.6 with eot_threshold=0.7, the prompt URLs, the docs link); the say clip above streamed in real time gave off: StartOfTurn, EndOfTurn; 0.4: EagerEndOfTurn, TurnResumed, EagerEndOfTurn, TurnResumed, EagerEndOfTurn, EndOfTurn (441 ms head start); 0.6: EagerEndOfTurn, TurnResumed, EagerEndOfTurn, EndOfTurn (81 ms head start).
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
