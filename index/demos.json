@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "detect-language",
+      "platform": "Speech-to-text",
+      "headline": "Which language did I just speak?",
+      "param": "detect_language=true",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",

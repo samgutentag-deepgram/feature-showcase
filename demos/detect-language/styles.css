@@ -1,0 +1,50 @@
+/* Phrase picker, language list, and the detected-language panel. var() only: literals live in styles/packs/. */
+
+.detect-field { max-width: 320px; }
+.detect-field__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.detect-field select {
+  font: inherit;
+  font-size: 16px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.detect-field select:disabled { color: var(--dg-text-label); }
+
+.detect-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.detect-chip {
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-radius: var(--dg-shape-pill);
+  padding: 5px 12px;
+}
+.detect-chip span { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); margin-left: 4px; }
+.detect-chip:hover:not(:disabled) { border-color: var(--dg-accent); }
+.detect-chip[aria-pressed='true'] { background: var(--dg-text-primary); color: var(--dg-bg-app); border-color: var(--dg-text-primary); }
+.detect-chip[aria-pressed='true'] span { color: var(--dg-state-inactive); }
+.detect-chip:disabled { cursor: default; opacity: 0.5; }
+
+.detect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 3px solid var(--dg-accent);
+}
+.detect[data-low] { border-bottom-color: var(--dg-state-error); }
+.detect__label { font-size: 13px; text-transform: uppercase; letter-spacing: var(--dg-type-label-tracking); color: var(--dg-text-label); }
+.detect__lang { font-size: 24px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.detect__lang code { font-family: var(--dg-font-code); font-size: 14px; color: var(--dg-text-label); }
+.detect__conf { display: inline-flex; align-items: center; gap: 8px; font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-body); }
+.detect__bar { display: inline-block; width: 96px; height: 6px; border-radius: var(--dg-shape-pill); background: var(--dg-bg-well); overflow: hidden; }
+.detect__bar span { display: block; height: 100%; background: var(--dg-accent); }
+.detect[data-low] .detect__bar span { background: var(--dg-state-error); }
+.detect__hint { flex-basis: 100%; margin: 0; font-size: 14px; color: var(--dg-text-body); }
