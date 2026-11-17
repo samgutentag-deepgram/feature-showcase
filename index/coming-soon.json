@@ -1025,7 +1025,7 @@
       "what": "Analyze long text asynchronously and get results on a webhook.",
       "models": "/v1/read",
       "docs": "https://developers.deepgram.com/docs/text-intelligence-callback",
-      "built": false
+      "built": true
     },
     {
       "id": "think-model-compare",

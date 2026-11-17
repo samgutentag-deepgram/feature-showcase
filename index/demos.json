@@ -409,6 +409,13 @@
       "flux": "agent"
     },
     {
+      "id": "read-callback",
+      "platform": "LLM",
+      "headline": "Send the text. Get the summary later.",
+      "param": "callback on /v1/read",
+      "flux": "intelligence"
+    },
+    {
       "id": "think-model-compare",
       "platform": "LLM",
       "headline": "Which LLM should answer the phone?",
