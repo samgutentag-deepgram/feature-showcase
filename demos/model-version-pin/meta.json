@@ -1,0 +1,5 @@
+{
+  "title": "Model version pin | Deepgram",
+  "description": "Run the same phrase on Nova-3 with version=latest and with a pinned 2025-01-09.0 build, and see the model version and uuid Deepgram reports for each.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/model-version-pin/"
+}
