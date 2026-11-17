@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-function-filler",
+      "platform": "Voice agent",
+      "headline": "No dead air while it looks it up.",
+      "param": "initial_agent_filler",
+      "flux": "agent"
     }
   ]
 }
