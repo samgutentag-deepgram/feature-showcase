@@ -1,0 +1,5 @@
+{
+  "title": "Nova-3 Medical | Deepgram",
+  "description": "Read drug names and doses aloud and compare transcripts from model=nova-3-medical and plain nova-3, side by side.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/nova3-medical/"
+}

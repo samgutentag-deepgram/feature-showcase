@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "nova3-medical",
+      "platform": "Speech-to-text",
+      "headline": "Lisinopril, or listen?",
+      "param": "model=nova-3-medical",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
