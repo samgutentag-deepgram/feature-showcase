@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-voice-picker",
+      "platform": "Voice agent",
+      "headline": "Pick the voice your agent speaks with.",
+      "param": "agent.speak.provider.model",
+      "flux": "agent"
     }
   ]
 }

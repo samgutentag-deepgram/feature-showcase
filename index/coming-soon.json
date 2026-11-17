@@ -755,7 +755,7 @@
       "what": "Same agent, swappable voice providers.",
       "models": "Aura, Aura-2, Flux TTS, third-party",
       "docs": "https://developers.deepgram.com/docs/voice-agent-tts-models",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-speak-controls",

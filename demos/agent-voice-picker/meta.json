@@ -1,0 +1,5 @@
+{
+  "title": "Agent voice picker | Deepgram",
+  "description": "Pick any of 36 English Flux voices or 41 Aura-2 voices for a Deepgram voice agent's speak provider, then talk to it and hear that voice answer.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-voice-picker/"
+}

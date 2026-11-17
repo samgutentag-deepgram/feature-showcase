@@ -1,0 +1,15 @@
+.avp { display: flex; flex-direction: column; gap: 12px; }
+.avp__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.avp select {
+  font: inherit;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+  align-self: flex-start;
+  min-width: 260px;
+}
