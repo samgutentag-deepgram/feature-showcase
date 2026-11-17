@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-dynamic-inject",
+      "platform": "Voice agent",
+      "headline": "Let the agent word its own filler.",
+      "param": "InjectAgentMessage is_dynamic",
+      "flux": "agent"
+    },
+    {
       "id": "agent-think-fallback",
       "platform": "Voice agent",
       "headline": "Break the first LLM. The agent still answers.",
