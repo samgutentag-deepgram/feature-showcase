@@ -719,7 +719,7 @@
       "what": "Sound annoyed and watch the escalation counter trip.",
       "models": "Think Live",
       "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-restricted-terms",
