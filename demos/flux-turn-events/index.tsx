@@ -167,8 +167,8 @@ export default defineFeature<Record<string, never>>({
         Flux&apos;s default: <code>EndOfTurn</code> fires once <code>end_of_turn_confidence</code> passes
         it. <code>EagerEndOfTurn</code> and{' '}
         <code>TurnResumed</code> only arrive when you set <code>eager_eot_threshold</code>, which the
-        eager end of turn demo shows. Capping the silence with <code>eot_timeout_ms</code> has a demo of
-        its own too.
+        <a href="../flux-eager-eot/">eager end of turn demo</a> shows. Capping the silence with{' '}
+        <code>eot_timeout_ms</code> has <a href="../flux-eot-timeout/">a demo of its own</a> too.
       </p>
     )
   },
