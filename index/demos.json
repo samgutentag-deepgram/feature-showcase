@@ -479,6 +479,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-inject-user-message",
+      "platform": "Voice agent",
+      "headline": "Type to a voice agent mid-call.",
+      "param": "InjectUserMessage",
+      "flux": "agent"
+    },
+    {
       "id": "agent-update-prompt",
       "platform": "Voice agent",
       "headline": "Rewrite its instructions mid-call.",

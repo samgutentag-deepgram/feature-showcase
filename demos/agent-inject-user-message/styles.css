@@ -1,0 +1,44 @@
+/* The text box and the typed-turn log. var() only: literals live in styles/packs/. */
+.ium { display: grid; gap: 14px; margin-top: 18px; }
+.ium__form { display: grid; gap: 8px; }
+.ium__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ium__row { display: flex; gap: 10px; }
+.ium__row input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 17px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 10px 14px;
+}
+.ium__row input:disabled { opacity: 0.6; cursor: not-allowed; }
+.ium__ideas { display: flex; flex-wrap: wrap; gap: 8px; }
+.ium__idea {
+  font: inherit;
+  font-size: 14px;
+  color: var(--dg-text-body);
+  background: var(--dg-bg-well);
+  border: 0;
+  border-radius: var(--dg-shape-pill);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.ium__idea:disabled { cursor: not-allowed; opacity: 0.6; }
+.ium__turns { display: grid; gap: 10px; }
+.ium__turn {
+  padding: 10px 14px;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-shape-control);
+  background: var(--dg-bg-panel);
+}
+.ium__turn-head { margin: 0 0 6px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ium__turn ol { margin: 0; padding-left: 20px; font-size: 14px; color: var(--dg-text-body); }
+.ium__ms { font-family: var(--dg-font-mono); color: var(--dg-text-label); }
+
+@media (max-width: 560px) {
+  .ium__row { flex-direction: column; }
+}
