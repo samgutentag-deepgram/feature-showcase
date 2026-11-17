@@ -1,0 +1,5 @@
+{
+  "title": "Voice agent listen model | Deepgram",
+  "description": "Pick Flux or Nova as a Deepgram voice agent's speech-to-text model, pause mid-sentence, and see who ends your turn and how fast the agent answers.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-listen-model/"
+}
