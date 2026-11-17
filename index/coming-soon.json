@@ -296,7 +296,7 @@
       "what": "Detect end of utterance from word timing gaps, robust to background noise.",
       "models": "Nova streaming only (needs interim_results)",
       "docs": "https://developers.deepgram.com/docs/utterance-end",
-      "built": false
+      "built": true
     },
     {
       "id": "speech-started",
