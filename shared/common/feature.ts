@@ -25,8 +25,14 @@ export interface Mode {
   id: string
   label: string
   // mic streams the microphone (the default every demo starts with). file streams an upload; it is
-  // opt-in per demo, see TEMPLATE.md.
-  source: 'mic' | 'file'
+  // opt-in per demo, see TEMPLATE.md. sample sends the bundled clip in `sample` (no upload UI).
+  source: 'mic' | 'file' | 'sample'
+  // Pre-recorded instead of streaming: one POST to /v1/listen with the whole clip (a mic recording
+  // up to BATCH_MAX_SECONDS, wrapped as WAV; the file; or the sample), for features the socket
+  // refuses. v1 models only. See "Speech-to-text extensions" in TEMPLATE.md.
+  batch?: boolean
+  // source 'sample' only: the clip, imported from the demo folder (`import clip from './x.mp3'`).
+  sample?: { url: string; name: string }
   // Keep the last two runs side by side so a visitor can compare settings. Defaults to true for
   // file modes and false for mic modes.
   compare?: boolean
@@ -38,6 +44,8 @@ export interface Word {
   lang: string
   // Speaker index when the request has diarize_model set (Nova only).
   speaker?: number
+  // Channel index when the audio has more than one channel (multichannel=true).
+  channel?: number
   // True on the last word of a turn: a Nova result with speech_final, or a Flux EndOfTurn.
   endsTurn?: boolean
   pending?: boolean
@@ -54,6 +62,9 @@ export interface Run<S> {
   pending: Word[]
   // The latest non-empty value feature.echo pulled out of a message for this run.
   echoed: unknown
+  // What happened, in order: server messages, and the messages the page sent. Recorded only for a
+  // feature with `timeline` or `actions`, or a batch mode; empty otherwise.
+  events: SttEvent[]
 }
 
 export interface Ctx {
@@ -101,7 +112,57 @@ export interface Feature<S> {
   Response: FC<{ state: S; ctx: Ctx; latest?: Run<S> }>
   // One transcript panel. With no run yet it renders the empty state.
   Result: FC<{ run?: Run<S>; state: S; ctx: Ctx; live: boolean }>
+
+  // Speech-to-text extensions (2026-11-16), all optional. See TEMPLATE.md.
+  // Messages the visitor sends mid-stream, one button each, live while the socket is open. The
+  // Request card lists them under the query; verify:live sends each one and waits for its ack.
+  actions?(state: S, ctx: Ctx): SttAction[]
+  // Record server messages in a timeline under each run. `mark` highlights events by name (see
+  // shared/stt/events.ts), `quiet` hides chatty ones (DEFAULT_QUIET when unset). With a timeline,
+  // echo() sees every server message, not only transcripts.
+  timeline?: { mark: string[]; quiet?: string[] }
+  // The audio actually streamed, when it should differ from what the params declare (to show a
+  // mismatch). Without it the page sends what `encoding` and `sample_rate` say (linear16, 16 kHz).
+  audio?(state: S, ctx: Ctx): AudioFormat
+  // Batch modes only: the feature's params carry `callback: CALLBACK_SHOWN`; the page swaps in a
+  // slot from demos/<id>/server.js, POSTs, and polls the slot for the transcript Deepgram delivers.
+  callback?: boolean
+  // The setting prompt.md shows. Without it the prompt picks the variant that sends the most.
+  promptState?: S
 }
 
 // Identity, for type inference in a feature file.
 export const defineFeature = <S,>(f: Feature<S>): Feature<S> => f
+
+// ---- Speech-to-text extensions (2026-11-16) -------------------------------------------------------
+
+export type { AudioFormat } from '../stt/audio'
+import type { AudioFormat } from '../stt/audio'
+
+// One timeline entry. name is eventName(msg) for a server message ("EndOfTurn", "Results
+// from_finalize", "Metadata"), or the sent message's type (sent: true).
+export interface SttEvent {
+  ms: number
+  name: string
+  detail?: string
+  sent?: boolean
+  msg?: Json
+}
+
+export interface SttAction {
+  label: string
+  // Sent as a text frame, exactly as shown on the Request card. Omit for an audio-only action.
+  message?: Json
+  // Event names that answer it (prefix match: 'Results' matches 'Results from_finalize'). The
+  // button shows which came back and how fast; verify:live waits for one. Omit when none comes
+  // (KeepAlive): verify:live then checks the socket stays open with no Error.
+  ack?: string[]
+  // Stop or start sending mic audio. The mic keeps running; nothing reaches the socket while paused.
+  audio?: 'pause' | 'resume'
+  // Resend `message` every this many ms until another action runs or the run ends (KeepAlive).
+  every?: number
+  // The run ends after this message (CloseStream): capture stops and the page waits for the close.
+  ends?: boolean
+  // Drawn as the filled button.
+  primary?: boolean
+}

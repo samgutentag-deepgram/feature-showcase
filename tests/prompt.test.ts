@@ -31,8 +31,8 @@ describe.each(names)('prompt for %s', (name) => {
     if (process.env.UPDATE_PROMPTS === '1') writeFileSync(file, built)
     if (!existsSync(file)) return
     expect(readFileSync(file, 'utf8')).toBe(built)
-    const { urls, settings } = promptRequests(built)
+    const { urls, settings, listenPosts } = promptRequests(built)
     const tts = ttsPromptRequests(built)
-    expect(urls.length + settings.length + tts.posts.length).toBeGreaterThan(0)
+    expect(urls.length + settings.length + tts.posts.length + listenPosts.length).toBeGreaterThan(0)
   })
 })

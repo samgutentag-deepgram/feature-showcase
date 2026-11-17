@@ -3,6 +3,7 @@
 import { DeepgramClient } from '@deepgram/sdk'
 import { fetchToken, requestParams } from '../common/config'
 import type { Json, Model, Params, Word } from '../common/feature'
+import { declaredFormat, transcode, type AudioFormat } from './audio'
 
 export interface TranscriptUpdate {
   // Final words are kept; interim words replace the previous interim batch.
@@ -16,10 +17,21 @@ export interface StreamHandlers {
   onUpdate(u: TranscriptUpdate): void
   onError(message: string): void
   onClose(): void
+  // Every server message, before it is parsed, Error included. For timelines and action acks.
+  onMessage?(msg: Json): void
+}
+
+export interface StreamOptions {
+  // The audio actually sent, when it should differ from what the params declare. Defaults to the
+  // declared encoding and sample_rate (linear16 at 16 kHz unless the feature says otherwise).
+  audio?: AudioFormat
 }
 
 export interface Stream {
+  // 16 kHz linear16 from capture; converted to the stream's audio format before it is sent.
   send(pcm: ArrayBuffer): void
+  // A text frame, exactly as given (Configure, Finalize, KeepAlive, ForceEndTurn, CloseStream).
+  sendText(msg: Json): void
   // Flush what Deepgram is holding, then close once it has answered.
   finish(): void
   close(): void
@@ -78,11 +90,15 @@ export function finalTranscript(msg: Json): string | undefined {
   return undefined
 }
 
-export async function openStream(model: Model, params: Params, h: StreamHandlers): Promise<Stream> {
+export async function openStream(model: Model, params: Params, h: StreamHandlers, opts: StreamOptions = {}): Promise<Stream> {
+  const sent = requestParams(model, params)
+  const format = opts.audio ?? declaredFormat(sent)
+  // Fails here, before a token is spent, if the page cannot produce that format.
+  transcode(new ArrayBuffer(0), format)
   const token = await fetchToken()
   const client = new DeepgramClient({ accessToken: token })
   const args = {
-    ...requestParams(model, params),
+    ...sent,
     Authorization: `Bearer ${token}`,
     // The token lives 30 s, so a reconnect would fail anyway. End the session instead.
     reconnectAttempts: 0,
@@ -117,6 +133,7 @@ export async function openStream(model: Model, params: Params, h: StreamHandlers
   }
   socket.on('message', (msg) => {
     const m = msg as unknown as Json
+    h.onMessage?.(m)
     if (m.type === 'Error') {
       fail(`Deepgram returned an error: ${String(m.description ?? m.message ?? 'no details')}`)
       return
@@ -155,7 +172,11 @@ export async function openStream(model: Model, params: Params, h: StreamHandlers
 
   return {
     send(pcm) {
-      if (socket.readyState === 1) socket.sendMedia(pcm)
+      if (socket.readyState === 1) socket.sendMedia(transcode(pcm, format))
+    },
+    sendText(msg) {
+      // The SDK has one typed method per message; the raw socket sends any of them as shown.
+      if (socket.readyState === 1) (socket as unknown as { socket: { send(data: string): void } }).socket.send(JSON.stringify(msg))
     },
     finish() {
       if (socket.readyState !== 1 || flushing) return

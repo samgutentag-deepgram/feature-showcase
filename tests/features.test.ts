@@ -1,7 +1,7 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { PLUMBING, describeRequest, requestParams, toQuery } from '../shared/common/config'
+import { MAX_UPLOAD_BYTES, PLUMBING, describeRequest, requestParams, toQuery } from '../shared/common/config'
 import type { Feature } from '../shared/common/feature'
 import type { TtsFeature } from '../shared/tts/feature'
 import { closeMidLine } from '../shared/tts/close'
@@ -49,11 +49,13 @@ describe.each(names)('feature %s', (name) => {
     for (const model of feature.models) {
       for (const mode of feature.modes) {
         const params = feature.params(feature.initialState, { model, mode, busy: false })
-        const shown = describeRequest(model, params)
-        const sent = toQuery(requestParams(model, params)).toString()
+        const shown = describeRequest(model, params, mode)
+        const sent = toQuery(requestParams(model, params, mode)).toString()
         // Every shown param is sent, in the same order, with the same value.
         expect(sent.startsWith(shown.split('?')[1])).toBe(true)
-        expect(shown.startsWith(`/${model.endpoint}/listen?`)).toBe(true)
+        // A batch mode is one POST to /v1/listen (Flux has no pre-recorded endpoint).
+        expect(shown.startsWith(mode.batch ? 'POST /v1/listen?' : `/${model.endpoint}/listen?`)).toBe(true)
+        if (mode.source === 'sample') expect(mode.sample?.url, `${mode.id} names its sample`).toBeTruthy()
       }
     }
   })
@@ -76,7 +78,15 @@ describe.each(names)('feature %s', (name) => {
       if (!fluxSendsIt) expect(flux.note, 'Flux sends no param, so its note says the feature is built in').toBeTruthy()
     } else {
       expect(feature.models).toHaveLength(1)
-      expect(feature.models[0].note ?? '', 'Nova-3 only says Flux does not support it').toMatch(/^Nova-3 only\. Flux does not support/)
+      // Or Nova-2 only, for a param Nova-3 and Flux dropped (keywords: both answer it with a 400).
+      expect(feature.models[0].note ?? '', 'Nova-3 only says Flux does not support it').toMatch(/^(Nova-3 only\. Flux does not support|Nova-2 only\. Nova-3 and Flux )/)
+    }
+  })
+
+  // Bundled sample clips ship with the page: the same 1 MB ceiling as an upload.
+  it('bundles no audio over the upload limit', () => {
+    for (const f of readdirSync(path.join('demos', name))) {
+      if (/\.(mp3|wav|m4a|ogg|flac|webm)$/i.test(f)) expect(statSync(path.join('demos', name, f)).size, f).toBeLessThanOrEqual(MAX_UPLOAD_BYTES)
     }
   })
 

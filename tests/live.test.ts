@@ -433,8 +433,11 @@ describe.skipIf(!LIVE).each(names)('live: feature %s', (name) => {
     }
     const feature = loaded as Feature<unknown>
     const variants = feature.variants ?? [feature.initialState]
+    // Batch modes are POSTs, checked below; the socket checks cover the streaming modes.
+    if (feature.modes.some((m) => m.batch)) expect(await batchEveryVariant(feature)).toEqual([])
+    if (feature.actions) expect(await sttActionsEveryVariant(feature)).toEqual([])
     const cases = feature.models.flatMap((model) =>
-      feature.modes.flatMap((mode) => variants.map((state) => ({ model, params: feature.params(state, { model, mode, busy: false }) }))),
+      feature.modes.filter((mode) => !mode.batch).flatMap((mode) => variants.map((state) => ({ model, params: feature.params(state, { model, mode, busy: false }) }))),
     )
     // The same request from two modes is only opened once.
     const unique = [...new Map(cases.map((c) => [`${c.model.endpoint}?${toQuery(requestParams(c.model, c.params))}`, c])).values()]
@@ -656,8 +659,16 @@ describe.skipIf(!LIVE || withPrompt.length === 0).each(withPrompt)('live: prompt
       expect(await ttsPromptLive(md)).toEqual([])
       return
     }
-    const { urls, settings } = promptRequests(md)
+    const { urls, settings, listenPosts } = promptRequests(md)
     const failed: string[] = []
+    // Pre-recorded: the POST it shows, with a granted token as Bearer and the phrase as WAV.
+    for (const url of listenPosts) {
+      const feature = (await import(`../demos/${name}/index.tsx`)).default as Feature<unknown>
+      const mode = feature.modes[0]
+      const body = await batchBody(feature, mode, feature.promptState ?? (feature.variants ?? [feature.initialState]).at(-1))
+      const r = await postListen(url.replace(/callback=[^&]*/, `callback=${encodeURIComponent(CHECK_STT_CALLBACK)}`), body, `Bearer ${await grant()}`)
+      if (r) failed.push(`POST ${url} -> ${r}`)
+    }
     for (const url of urls) {
       const r = await openWithToken(url, await grant())
       if (!r.opened || ![1000, 1005].includes(r.code)) failed.push(`${url} -> opened=${r.opened} code=${r.code} ${r.reason}`)
@@ -686,3 +697,134 @@ describe.skipIf(!LIVE || withPrompt.length === 0).each(withPrompt)('live: prompt
     expect(failed).toEqual([])
   }, 90_000)
 })
+
+// ---- Speech-to-text extensions (2026-11-16) -------------------------------------------------------
+import path from 'node:path'
+import { wav, transcode, declaredFormat } from '../shared/stt/audio'
+import { eventName, matches } from '../shared/stt/events'
+import type { Mode, SttAction } from '../shared/common/feature'
+
+// Where a callback check asks Deepgram to deliver. Reserved for examples (RFC 2606): the check is that
+// Deepgram takes the request and answers with a request_id.
+const CHECK_STT_CALLBACK = 'https://example.com/stt-callback'
+
+// The clip a batch mode sends: its bundled sample, or the phrase spoken by Aura-2 as WAV.
+async function batchBody(feature: Feature<unknown>, mode: Mode, state: unknown): Promise<Blob> {
+  if (mode.sample) {
+    const file = mode.sample.url.startsWith('/') ? path.join(process.cwd(), mode.sample.url) : mode.sample.url
+    const ext = path.extname(file).slice(1).toLowerCase()
+    return new Blob([readFileSync(file)], { type: ext === 'wav' ? 'audio/wav' : ext === 'mp3' ? 'audio/mpeg' : `audio/${ext}` })
+  }
+  const phrase = feature.phrases?.(state, { model: feature.models[0], mode, busy: false }).join(' ') || 'Testing one two three.'
+  return wav([await speech(phrase)])
+}
+
+// '' when Deepgram answers 200 with a transcript (or, with a callback, a request_id).
+async function postListen(url: string, body: Blob, auth: string): Promise<string> {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(url, { method: 'POST', headers: { Authorization: auth, 'Content-Type': body.type }, body })
+    if (res.status === 429) {
+      await new Promise((r) => setTimeout(r, 1500))
+      continue
+    }
+    const text = await res.text()
+    if (res.status !== 200) return `${res.status} ${text.slice(0, 160)}`
+    return /"results"|"request_id"/.test(text) ? '' : `200 without results: ${text.slice(0, 120)}`
+  }
+  return 'rate limited'
+}
+
+async function batchEveryVariant(feature: Feature<unknown>): Promise<string[]> {
+  const failed: string[] = []
+  const seen = new Set<string>()
+  for (const mode of feature.modes.filter((m) => m.batch)) {
+    for (const model of feature.models) {
+      if (model.endpoint !== 'v1') failed.push(`${mode.id}: batch modes need a v1 model, not ${model.id}`)
+      for (const state of feature.variants ?? [feature.initialState]) {
+        let params = feature.params(state, { model, mode, busy: false })
+        if (feature.callback) params = { ...params, callback: CHECK_STT_CALLBACK }
+        const url = `https://api.deepgram.com/v1/listen?${toQuery(requestParams(model, params, mode))}`
+        if (seen.has(`${mode.sample?.url}${url}`)) continue
+        seen.add(`${mode.sample?.url}${url}`)
+        const r = await postListen(url, await batchBody(feature, mode, state), `Token ${process.env.DEEPGRAM_API_KEY}`)
+        if (r) failed.push(`${describeRequest(model, params, mode)} -> ${r}`)
+      }
+    }
+  }
+  return failed
+}
+
+// One action, live: stream up to 3 s of the phrase in real time (in the feature's audio format),
+// pause the audio if the action does, send the message, and wait for an ack. With no ack, the socket
+// must stay open with no Error (12 s for a repeating KeepAlive, past the 10 s timeout). With ends,
+// it must close cleanly, after the ack if one is named.
+function sttAction(url: string, audio: ArrayBuffer, per: number, a: SttAction): Promise<string> {
+  return new Promise((resolve) => {
+    const ws = new WebSocket(url, ['token', process.env.DEEPGRAM_API_KEY ?? ''])
+    let acked = !a.ack?.length
+    let sent = false
+    let done = false
+    let repeat: ReturnType<typeof setInterval> | undefined
+    const end = (r: string) => {
+      if (done) return
+      done = true
+      clearTimeout(timer)
+      clearInterval(repeat)
+      ws.close()
+      resolve(r)
+    }
+    const hold = a.every ? 12_000 : 1_500
+    const timer = setTimeout(() => end(a.ack?.length && !acked ? `no ${a.ack.join(' or ')} in time` : a.ends ? 'did not close' : 'ok'), 8_000 + hold)
+    ws.onopen = async () => {
+      const bytes = new Uint8Array(audio)
+      for (let i = 0; i < Math.min(bytes.length, per * 30) && !done; i += per) {
+        ws.send(bytes.slice(i, i + per))
+        await new Promise((r) => setTimeout(r, 100))
+      }
+      if (done || !a.message) return end('ok')
+      sent = true
+      ws.send(JSON.stringify(a.message))
+      if (a.every) repeat = setInterval(() => ws.readyState === 1 && ws.send(JSON.stringify(a.message)), a.every)
+      if (!a.ack?.length && !a.ends) setTimeout(() => end('ok'), hold)
+    }
+    ws.onmessage = (e) => {
+      const m = JSON.parse(String(e.data))
+      const name = eventName(m)
+      if (name === 'Error') return end(`Error: ${m.description ?? m.message}`)
+      if (sent && a.ack && matches(name, a.ack)) {
+        acked = true
+        if (!a.ends) end('ok')
+      }
+    }
+    ws.onerror = () => {}
+    ws.onclose = (e) => {
+      if (a.ends && sent && [1000, 1005].includes(e.code)) return end(acked ? 'ok' : `closed before ${a.ack?.join(' or ')}`)
+      end(`closed ${e.code} ${e.reason}`)
+    }
+  })
+}
+
+async function sttActionsEveryVariant(feature: Feature<unknown>): Promise<string[]> {
+  const failed: string[] = []
+  const mode = feature.modes.find((m) => !m.batch)
+  if (!mode) return failed
+  for (const model of feature.models) {
+    for (const state of feature.variants ?? [feature.initialState]) {
+      const ctx = { model, mode, busy: false }
+      const params = feature.params(state, ctx)
+      const sent = requestParams(model, params)
+      const pcm = await speech(feature.phrases?.(state, ctx).join(' ') || 'Testing one two three.')
+      const format = feature.audio?.(state, ctx) ?? declaredFormat(sent)
+      const audio = transcode(pcm, format)
+      // 100 ms of that format.
+      const per = (format.sample_rate / 10) * (format.encoding === 'linear16' ? 2 : 1)
+      const url = `wss://api.deepgram.com/${model.endpoint}/listen?${toQuery(sent)}`
+      for (const a of feature.actions?.(state, ctx) ?? []) {
+        if (!a.message) continue
+        const r = await sttAction(url, audio, per, a)
+        if (r !== 'ok') failed.push(`${describeRequest(model, params)} ${a.label} -> ${r}`)
+      }
+    }
+  }
+  return failed
+}

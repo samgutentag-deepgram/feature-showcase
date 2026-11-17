@@ -2,12 +2,16 @@
 // Request and Response cards, the runs, the call to action. The feature fills in the rest.
 import { useCallback, useEffect, useRef, useState, type DragEvent as ReactDragEvent } from 'react'
 import { readDuration, startCapture, type Capture, type Source } from '../common/capture'
-import { MAX_SECONDS, MAX_UPLOAD_BYTES, clock, describeRequest, formatMB } from '../common/config'
-import type { Ctx, Feature, Run } from '../common/feature'
+import { BATCH_MAX_SECONDS, MAX_SECONDS, MAX_UPLOAD_BYTES, clock, describeRequest, formatMB } from '../common/config'
+import type { Ctx, Feature, Json, Run, SttAction, SttEvent } from '../common/feature'
 import { LimitDialog } from './LimitDialog'
 import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { openStream, type Stream } from './stream'
 import { TakeHome } from '../common/TakeHome'
+import { wav } from './audio'
+import { openCallbackSlot, parseBatch, transcribe, unreachable, waitForCallback } from './batch'
+import { DEFAULT_QUIET, eventDetail, eventName, matches } from './events'
+import './stt.css'
 
 type Status = 'idle' | 'connecting' | 'live' | 'finishing'
 
@@ -15,6 +19,15 @@ interface LoadedFile {
   file: File
   seconds: number
 }
+
+// What an action button shows after a click: waiting, then which message answered and how fast.
+interface Fired {
+  kind: 'wait' | 'ok' | 'warn'
+  note: string
+}
+
+// How long an action waits for its ack before the button says nothing came back.
+const ACK_WAIT_MS = 5000
 
 export function Shell<S>({ feature }: { feature: Feature<S> }) {
   const [modeId, setModeId] = useState(feature.modes[0].id)
@@ -32,19 +45,45 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
   const capture = useRef<Capture | null>(null)
   const timer = useRef<number | undefined>(undefined)
   const fileInput = useRef<HTMLInputElement>(null)
+  // The extensions: mid-stream actions, the event timeline, and batch (pre-recorded) runs.
+  const [fired, setFired] = useState<Record<string, Fired>>({})
+  const firedTimers = useRef<Record<string, number>>({})
+  const activeId = useRef(0)
+  const runStart = useRef(0)
+  const paused = useRef(false)
+  const every = useRef<number | undefined>(undefined)
+  const pending = useRef<Array<{ label: string; ack: string[]; at: number; timer: number }>>([])
+  const batchSubmit = useRef<(() => void) | null>(null)
+  const abort = useRef<AbortController | null>(null)
 
   const busy = status !== 'idle'
   const model = feature.models.find((m) => m.id === modelId) ?? feature.models[0]
   const mode = feature.modes.find((m) => m.id === modeId) ?? feature.modes[0]
   const ctx: Ctx = { model, mode, busy }
   const isFile = mode.source === 'file'
-  const compare = mode.compare ?? isFile
-  const phrases = !isFile ? feature.phrases?.(state, ctx) ?? [] : []
+  const isMic = mode.source === 'mic'
+  const isBatch = !!mode.batch
+  const compare = mode.compare ?? !isMic
+  const phrases = isMic ? feature.phrases?.(state, ctx) ?? [] : []
+  const actions = isBatch ? [] : feature.actions?.(state, ctx) ?? []
+  const tracks = !!(feature.timeline || feature.actions || isBatch)
   // The newest run is the one streaming whenever a session is open.
   const activeRun = busy ? runs[0]?.id : undefined
   const link = (href: string, placement: Placement, button: Button) => dgLink(href, placement, button)
 
+  const showFired = (label: string, f: Fired | null) => {
+    window.clearTimeout(firedTimers.current[label])
+    setFired((all) => {
+      const next = { ...all }
+      if (f) next[label] = f
+      else delete next[label]
+      return next
+    })
+    if (f && f.kind !== 'wait') firedTimers.current[label] = window.setTimeout(() => showFired(label, null), 4000)
+  }
+
   const stopCapture = useCallback(() => {
+    window.clearInterval(every.current)
     window.clearInterval(timer.current)
     capture.current?.stop()
     capture.current = null
@@ -52,6 +91,12 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
 
   const teardown = useCallback(() => {
     stopCapture()
+    batchSubmit.current = null
+    abort.current?.abort()
+    abort.current = null
+    for (const p of pending.current) window.clearTimeout(p.timer)
+    pending.current = []
+    paused.current = false
     const s = stream.current
     stream.current = null
     s?.close()
@@ -72,6 +117,10 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
 
   const finish = useCallback(() => {
     stopCapture()
+    // A batch mic recording is sent once it stops.
+    const submit = batchSubmit.current
+    batchSubmit.current = null
+    if (submit) return submit()
     const s = stream.current
     if (!s) return
     setStatus('finishing')
@@ -82,6 +131,111 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
 
   const updateRun = (id: number, fn: (r: Run<S>) => Run<S>) =>
     setRuns((rs) => rs.map((r) => (r.id === id ? fn(r) : r)))
+
+  const addEvent = (id: number, e: Omit<SttEvent, 'ms'>) =>
+    updateRun(id, (r) => ({ ...r, events: [...r.events, { ...e, ms: performance.now() - runStart.current }] }))
+
+  // A server message: answers any action waiting on it, and lands in the timeline unless quiet.
+  const onServerMessage = (id: number, m: Json) => {
+    const name = eventName(m)
+    const failed = name === 'Error' || name === 'ConfigureFailure'
+    for (const p of [...pending.current]) {
+      if (!matches(name, p.ack) && name !== 'Error') continue
+      window.clearTimeout(p.timer)
+      pending.current = pending.current.filter((x) => x !== p)
+      showFired(p.label, { kind: failed ? 'warn' : 'ok', note: `${name} in ${Math.round(performance.now() - p.at)} ms` })
+    }
+    if (!tracks) return
+    // With a timeline, echo sees every message; transcripts already went through onUpdate.
+    if (feature.timeline && m.type !== 'Results' && m.type !== 'TurnInfo') {
+      const echoed = feature.echo?.(m, model)
+      if (echoed !== undefined) updateRun(id, (r) => ({ ...r, echoed }))
+    }
+    const mark = feature.timeline?.mark ?? []
+    if (matches(name, feature.timeline?.quiet ?? DEFAULT_QUIET) && !matches(name, mark)) return
+    addEvent(id, { name, detail: eventDetail(m), msg: m })
+  }
+
+  // One action button: pause or resume the audio, send its message, and wait for its ack.
+  const fire = (a: SttAction) => {
+    const s = stream.current
+    const id = activeId.current
+    if (!s || status !== 'live') return
+    window.clearInterval(every.current)
+    if (a.audio) {
+      paused.current = a.audio === 'pause'
+      addEvent(id, { name: a.audio === 'pause' ? 'audio paused' : 'audio resumed', sent: true })
+    }
+    if (a.message) {
+      const message = a.message
+      const sendIt = () => {
+        s.sendText(message)
+        addEvent(id, { name: String(message.type ?? 'message'), detail: JSON.stringify(message), sent: true, msg: message })
+      }
+      sendIt()
+      if (a.every) every.current = window.setInterval(sendIt, a.every)
+      if (a.ack?.length) {
+        const timer = window.setTimeout(() => {
+          pending.current = pending.current.filter((p) => p.timer !== timer)
+          showFired(a.label, { kind: 'warn', note: 'no answer' })
+        }, ACK_WAIT_MS)
+        pending.current.push({ label: a.label, ack: a.ack, at: performance.now(), timer })
+        showFired(a.label, { kind: 'wait', note: '…' })
+      } else showFired(a.label, { kind: 'ok', note: a.every ? `every ${a.every / 1000} s` : 'sent' })
+    } else showFired(a.label, { kind: 'ok', note: a.audio === 'pause' ? 'paused' : 'sending' })
+    if (a.ends) {
+      stopCapture()
+      setStatus('finishing')
+      window.setTimeout(() => s.close(), 5000)
+    }
+  }
+
+  // Batch: one POST with the whole clip. With a callback, the answer is only a request_id and the
+  // transcript arrives at the demo server's slot, which the page polls.
+  const post = async (id: number, body: Blob) => {
+    setStatus('finishing')
+    const controller = new AbortController()
+    abort.current = controller
+    try {
+      let params = feature.params(state, ctx)
+      let slot: { id: string; callback: string } | undefined
+      if (feature.callback) {
+        slot = await openCallbackSlot()
+        if (unreachable(slot.callback)) {
+          throw new Error('Deepgram cannot deliver a callback to this machine: it answers a localhost URL with a 400, "Invalid callback URL". The round trip works on the deployed page.')
+        }
+        params = { ...params, callback: slot.callback }
+      }
+      addEvent(id, { name: 'POST /v1/listen', detail: `${formatMB(body.size)} ${body.type}`.trim(), sent: true })
+      const res = await transcribe(model, params, mode, body, controller.signal)
+      let json = res.json
+      if (slot) {
+        addEvent(id, { name: 'Accepted', detail: `request_id ${String(json.request_id ?? '')}, ${Math.round(res.ms)} ms`, msg: json })
+        const echoedEarly = feature.echo?.(json, model)
+        if (echoedEarly !== undefined) updateRun(id, (r) => ({ ...r, echoed: echoedEarly }))
+        const d = await waitForCallback(slot.id, controller.signal)
+        json = d.json
+        addEvent(id, { name: 'Callback', detail: `${d.method || 'POST'} ${Math.round(d.afterMs)} ms after the slot was made`, msg: json })
+      } else addEvent(id, { name: 'Response', detail: `${Math.round(res.ms)} ms`, msg: json })
+      const echoed = feature.echo?.(json, model)
+      updateRun(id, (r) => ({ ...r, echoed: echoed ?? r.echoed, committed: parseBatch(json), pending: [] }))
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') setError((err as Error).message)
+    } finally {
+      if (abort.current === controller) abort.current = null
+      endRun()
+    }
+  }
+
+  // The bundled clip of a sample mode, as a File the stream or the POST can take.
+  const loadSample = async (): Promise<File> => {
+    const sample = mode.sample
+    if (!sample) throw new Error('This mode has no sample clip.')
+    const res = await fetch(sample.url).catch(() => null)
+    if (!res?.ok) throw new Error('Could not load the sample clip. Reload the page and try again.')
+    const blob = await res.blob()
+    return new File([blob], sample.name, { type: blob.type || 'audio/mpeg' })
+  }
 
   // Checks a file and holds it. Nothing is sent until Run is pressed.
   const loadFile = async (file: File) => {
@@ -114,18 +268,66 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
     setStatus('idle')
   }
 
-  const start = async (src: Source) => {
-    setError('')
+  const newRun = () => {
     const id = (runs[0]?.id ?? 0) + 1
     const label = `${model.label}, ${feature.runLabel(state, ctx)}`
-    const run: Run<S> = { id, label, model, mode, state, committed: [], pending: [], echoed: undefined }
+    const run: Run<S> = { id, label, model, mode, state, committed: [], pending: [], echoed: undefined, events: [] }
     // Compare modes keep the previous run beside the new one; the others start fresh.
     setRuns((rs) => (compare ? [run, ...rs].slice(0, 2) : [run]))
+    activeId.current = id
+    runStart.current = performance.now()
+    setFired({})
     setElapsed(0)
+    return id
+  }
+
+  // Batch from the mic: record up to BATCH_MAX_SECONDS, then POST it as WAV when it stops.
+  const record = async () => {
+    setError('')
+    const id = newRun()
+    setStatus('connecting')
+    const chunks: ArrayBuffer[] = []
+    try {
+      capture.current = await startCapture({ kind: 'mic' }, (pcm) => chunks.push(pcm), finish)
+      batchSubmit.current = () => void post(id, wav(chunks))
+      const startedAt = performance.now()
+      timer.current = window.setInterval(() => {
+        const s = (performance.now() - startedAt) / 1000
+        setElapsed(s)
+        if (s >= BATCH_MAX_SECONDS) finish()
+      }, 250)
+      setStatus('live')
+    } catch (err) {
+      endRun()
+      setError(startError(err as Error))
+    }
+  }
+
+  // Batch from a file or the sample: POST it as it is.
+  const sendWhole = async (file: File) => {
+    setError('')
+    const id = newRun()
+    await post(id, file)
+  }
+
+  const runSample = async () => {
+    try {
+      const file = await loadSample()
+      if (isBatch) await sendWhole(file)
+      else await start({ kind: 'file', file })
+    } catch (err) {
+      setError((err as Error).message)
+    }
+  }
+
+  const start = async (src: Source) => {
+    setError('')
+    const id = newRun()
     setStatus('connecting')
 
     try {
       stream.current = await openStream(model, feature.params(state, ctx), {
+        onMessage: (m) => onServerMessage(id, m),
         onUpdate(u) {
           const echoed = feature.echo?.(u.raw, model)
           updateRun(id, (r) => ({
@@ -147,9 +349,10 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
           }))
           endRun()
         },
-      })
+      }, { audio: feature.audio?.(state, ctx) })
 
-      capture.current = await startCapture(src, (pcm) => stream.current?.send(pcm), finish)
+      // An action can pause the audio: the mic keeps running, nothing reaches the socket.
+      capture.current = await startCapture(src, (pcm) => !paused.current && stream.current?.send(pcm), finish)
       const startedAt = performance.now()
       timer.current = window.setInterval(() => {
         const audio = capture.current?.audio
@@ -196,7 +399,7 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
   }
 
   // Path, then one entry per query param, so the card can wrap between params.
-  const requestParts = describeRequest(model, feature.params(state, ctx)).split(/[?&]/)
+  const requestParts = describeRequest(model, feature.params(state, ctx), mode).split(/[?&]/)
   const marked = (part: string) => feature.highlight.some((k) => part.startsWith(`${k}=`))
   const { Controls, Response, Result } = feature
 
@@ -280,6 +483,15 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
           />
         )}
 
+        {mode.source === 'sample' && mode.sample && (
+          <div className="filecard">
+            <div className="filecard__info">
+              <span className="filecard__name">{mode.sample.name}</span>
+              <span className="filecard__meta">{isBatch ? 'Sample clip, sent in one request' : 'Sample clip, plays while it streams'}</span>
+            </div>
+          </div>
+        )}
+
         {isFile &&
           (loaded ? (
             <div className={dragOver ? 'filecard is-over' : 'filecard'} {...dropProps}>
@@ -332,7 +544,24 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
         <div className="actions">
           {busy ? (
             <button className="btn btn--stop" onClick={finish} disabled={status !== 'live'}>
-              <span className="dot" /> {status === 'connecting' ? 'Connecting…' : status === 'finishing' ? 'Finishing…' : 'Stop'}
+              <span className="dot" />{' '}
+              {status === 'connecting'
+                ? 'Connecting…'
+                : status === 'finishing'
+                  ? isBatch
+                    ? 'Transcribing…'
+                    : 'Finishing…'
+                  : isBatch
+                    ? 'Stop and transcribe'
+                    : 'Stop'}
+            </button>
+          ) : mode.source === 'sample' ? (
+            <button className="btn btn--primary" onClick={runSample}>
+              {feature.actionLabel?.(state, ctx) ?? 'Run'}
+            </button>
+          ) : isFile && isBatch ? (
+            <button className="btn btn--primary" disabled={!loaded} onClick={() => loaded && sendWhole(loaded.file)}>
+              {feature.actionLabel?.(state, ctx) ?? 'Run'}
             </button>
           ) : isFile ? (
             <button
@@ -342,15 +571,33 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
             >
               {feature.actionLabel?.(state, ctx) ?? 'Run'}
             </button>
+          ) : isBatch ? (
+            <button className="btn btn--primary" onClick={record}>
+              Start recording
+            </button>
           ) : (
             <button className="btn btn--primary" onClick={() => start({ kind: 'mic' })}>
               Start mic
             </button>
           )}
+          {actions.map((a) => {
+            const f = fired[a.label]
+            return (
+              <button
+                key={a.label}
+                className={`btn ${a.primary ? 'btn--primary' : 'btn--ghost'} stt-action${f ? ` is-${f.kind}` : ''}`}
+                disabled={status !== 'live'}
+                onClick={() => fire(a)}
+              >
+                {a.label}
+                {f && <span className="stt-action__note" aria-live="polite">{f.note}</span>}
+              </button>
+            )
+          })}
           <span className="timer" aria-label="Elapsed">
             {clock(elapsed)}
             {/* Uploads are already under the limit; only a mic run can hit it. */}
-            {!isFile && ` / ${clock(MAX_SECONDS)}`}
+            {isMic && ` / ${clock(isBatch ? BATCH_MAX_SECONDS : MAX_SECONDS)}`}
           </span>
         </div>
 
@@ -373,6 +620,20 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
                 )
               })}
             </code>
+            {actions.some((a) => a.message) && (
+              <>
+                <span className="wire__label">Then, mid-stream, one per button</span>
+                <code>
+                  {actions
+                    .filter((a) => a.message)
+                    .map((a) => (
+                      <span className="wire__part wire__part--text stt-wire-msg" key={a.label}>
+                        <mark>{JSON.stringify(a.message)}</mark>
+                      </span>
+                    ))}
+                </code>
+              </>
+            )}
           </div>
           <div className="wire__block">
             <span className="wire__label">Response</span>
@@ -400,6 +661,7 @@ export function Shell<S>({ feature }: { feature: Feature<S> }) {
                 </header>
               )}
               <Result run={r} state={state} ctx={ctx} live={activeRun === r.id && status === 'live'} />
+              {tracks && r.events.length > 0 && <Timeline events={r.events} mark={feature.timeline?.mark ?? []} />}
             </section>
           ))}
         </div>
@@ -442,4 +704,23 @@ function startError(e: Error): string {
   if (e.name === 'NotFoundError') return 'No microphone was found. Plug one in and try again.'
   if (e.name === 'NotSupportedError' || e.name === 'EncodingError') return 'This browser could not play that file. Try an MP3 or WAV.'
   return e.message || 'Could not start. Try again.'
+}
+
+// What happened in a run, in order, with the time since it started. Sent messages are marked as
+// such; events the feature names in timeline.mark are highlighted.
+function Timeline({ events, mark }: { events: SttEvent[]; mark: string[] }) {
+  return (
+    <ol className="stt-events" aria-label="Events">
+      {events.map((e, i) => (
+        <li key={i} className={`${e.sent ? 'is-sent' : ''}${matches(e.name, mark) ? ' is-marked' : ''}`}>
+          <span className="stt-events__ms">{(e.ms / 1000).toFixed(2)} s</span>
+          <span className="stt-events__type">
+            {e.sent ? '→ ' : ''}
+            {e.name}
+          </span>
+          {e.detail && <span className="stt-events__detail">{e.detail}</span>}
+        </li>
+      ))}
+    </ol>
+  )
 }
