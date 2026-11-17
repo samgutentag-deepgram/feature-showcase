@@ -35,6 +35,7 @@ describe('error messages', () => {
   it('says what to do when Deepgram closes the socket early, with the code for a bug report', () => {
     expect(closeMessage(1011)).toMatch(/^Deepgram hit a problem.*Try again.*\(1011\)$/)
     expect(closeMessage(1006)).toMatch(/closed early\. Try again\. \(1006\)$/)
+    expect(closeMessage(1011, 'Deepgram did not receive audio data or a text message within the timeout window. See https://dpgr.am/net0001')).toMatch(/^Deepgram closed the stream after about 10 to 12 seconds with no audio and no KeepAlive\. \(1011: /)
     expect(closeMessage(1008, 'DATA-0000')).toMatch(/\(1008: DATA-0000\)$/)
   })
 })

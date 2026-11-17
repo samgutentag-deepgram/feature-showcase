@@ -44,7 +44,11 @@ export const FLUX_FLUSH_MS = 3_000
 // Close codes a visitor might actually see, in words. The code stays at the end for a bug report.
 export function closeMessage(code: number, reason?: string): string {
   const why =
-    code === 1008 || code === 4001 || code === 4003
+    // NET-0001 is Deepgram's idle timeout (checked live 2026-11-16: close 1011 about 12 s after the
+    // last audio when no KeepAlive was sent). It is not a fault on Deepgram's side.
+    reason?.includes('NET-0001') || reason?.includes('net0001')
+      ? 'Deepgram closed the stream after about 10 to 12 seconds with no audio and no KeepAlive.'
+      : code === 1008 || code === 4001 || code === 4003
       ? 'Deepgram did not accept the session. Try again.'
       : code === 1011 || code === 1013
         ? 'Deepgram hit a problem on its side. Try again in a moment.'
