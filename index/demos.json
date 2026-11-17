@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "search",
+      "platform": "Speech-to-text",
+      "headline": "Did they say Kallistrum? Search can tell.",
+      "param": "search",
+      "flux": "nova-only"
+    },
+    {
       "id": "model-picker",
       "platform": "Speech-to-text",
       "headline": "Siobhan, or Chevron?",

@@ -1,0 +1,5 @@
+{
+  "title": "Search | Deepgram",
+  "description": "Type the words you are listening for and say them. Nova-3 finds each one by sound, with a confidence and a timestamp, even when the transcript spells it wrong.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/search/"
+}

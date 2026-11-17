@@ -1,0 +1,28 @@
+/* Search terms input, the hits on the Response card, and found words. var() only: literals live in styles/packs/. */
+
+.search-field { gap: 10px; }
+.search-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.search-input:disabled { color: var(--dg-text-label); border-left-color: var(--dg-border-hover); }
+
+.search-echo,
+.search-echo__query { display: flex; flex-direction: column; }
+.search-echo__query { padding-left: 1.5ch; }
+.search-echo__hit { padding-left: 1.5ch; white-space: normal; opacity: 0.6; }
+.search-echo__hit--found { opacity: 1; }
+
+.search-text mark {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
