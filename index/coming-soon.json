@@ -611,7 +611,7 @@
       "what": "An agent that hears and answers in the caller language.",
       "models": "flux-general-multi or Nova-3 multi",
       "docs": "https://developers.deepgram.com/docs/multilingual-voice-agent",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-llm-picker",

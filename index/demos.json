@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-multilingual",
+      "platform": "Voice agent",
+      "headline": "Talk to it in Spanish.",
+      "param": "language_hints: [\"en\", \"es\"]",
+      "flux": "agent"
     }
   ]
 }
