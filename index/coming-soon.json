@@ -368,7 +368,7 @@
       "what": "Start the LLM early on EagerEndOfTurn and cancel on TurnResumed.",
       "models": "Flux only",
       "docs": "https://developers.deepgram.com/docs/flux/voice-agent-eager-eot",
-      "built": false
+      "built": true
     },
     {
       "id": "flux-eot-timeout",
