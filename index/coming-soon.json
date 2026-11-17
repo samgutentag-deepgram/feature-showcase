@@ -80,7 +80,7 @@
       "what": "Boost or suppress words with weighted intensifiers on older models.",
       "models": "Nova-2 and older only (not Nova-3; use keyterm)",
       "docs": "https://developers.deepgram.com/docs/keywords",
-      "built": false
+      "built": true
     },
     {
       "id": "smart-format",

@@ -1,0 +1,81 @@
+<!-- Generated from the feature's index.tsx by shared/common/prompt.ts. Do not edit by hand. -->
+# Add Keywords on Nova-2 to a web app with Deepgram
+
+Before keyterm there was keywords: a list of rare words, each with a weight, on Nova-2 and older models. Read the phrase without keywords, then send them and read it again.
+
+Build a page with a mic button that streams speech to Deepgram and shows the final transcript,
+with `keywords` set as below. Live demo: https://dg-devrel-demos.fly.dev/demos/keywords-legacy/
+
+## The request
+
+Every URL here is opened against the live API before this file ships.
+
+### Use Nova-2: `/v1/listen`
+
+Nova-2 only. Nova-3 and Flux use keyterm instead and answer keywords with a 400. See the keyterm demo for them.
+
+
+The params that matter, as a reader would copy them:
+
+```
+/v1/listen?model=nova-2&smart_format=true&keywords=Kallistrum%3A2&keywords=Vexmoor%3A2&keywords=Trellisync%3A2
+```
+
+The exact URL to open, with the audio format appended:
+
+```
+wss://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&keywords=Kallistrum%3A2&keywords=Vexmoor%3A2&keywords=Trellisync%3A2&interim_results=true&encoding=linear16&sample_rate=16000
+```
+
+Send repeated params once per value (`keyterm=a&keyterm=b`), never comma-joined. Build the query with
+`URLSearchParams` and `append`, which encodes a space in a value as `+`.
+
+## Keep the API key on your server
+
+The browser never sees `DEEPGRAM_API_KEY`. Add one server route, `GET /api/token`, that asks
+Deepgram for a short-lived token and returns it as plain text:
+
+```http
+POST https://api.deepgram.com/v1/auth/grant
+Authorization: Token <DEEPGRAM_API_KEY>
+Content-Type: application/json
+
+{"ttl_seconds": 30}
+```
+
+The response is JSON with `access_token`. The key needs the Member role or above. A token only
+has to live long enough to open the socket; an open socket outlives it. Refuse the route to other
+sites: answer 403 when `Sec-Fetch-Site` is present and not `same-origin`.
+
+In the browser, fetch a fresh token for every session and open the socket with it as a
+subprotocol: `new WebSocket(url, ['bearer', token])`.
+
+## Capture the mic
+
+Use `getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } })`
+and an AudioWorklet that downsamples to 16 kHz mono and converts to 16-bit signed
+little-endian PCM. Send each chunk (about 100 ms) as a binary WebSocket frame. Raw PCM has no
+header, which is why the request names `encoding=linear16` and `sample_rate=16000`.
+
+## Read the transcript
+
+- Nova-2 (`/v1/listen`): a message with `"type": "Results"` and `"is_final": true` carries it in `channel.alternatives[0].transcript`.
+
+## Stop without losing the last words
+
+- Nova-2: send `{"type": "CloseStream"}` as a text frame and wait for the socket to close; the last final results arrive first.
+
+## Try it
+
+Read this aloud twice: once without `keywords`, once with:
+
+> Welcome to the Kallistrum onboarding. Today we will set up Vexmoor and connect it to your Trellisync dashboard.
+
+## Done when
+
+- [ ] The page streams the mic to the URL above, with `keywords` exactly as shown.
+- [ ] `DEEPGRAM_API_KEY` exists only on the server; the browser uses a token from `/api/token`.
+- [ ] Reading the phrase above shows the difference the feature makes, in the final transcript.
+- [ ] Mic errors and socket closes show a sentence that says what to do next, not a stack trace.
+
+Docs: https://developers.deepgram.com/docs/keywords
