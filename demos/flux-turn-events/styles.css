@@ -1,0 +1,52 @@
+/* The state diagram and the TurnInfo list. var() only: literals live in styles/packs/. */
+
+/* This page draws its own event list (Updates folded, turn_index shown), so the shell's plain
+   timeline under each run would repeat it. */
+.panel--transcript > .stt-events { display: none; }
+
+.fte-note { margin: 0; }
+.fte { display: flex; flex-direction: column; gap: 18px; }
+
+.fsm { display: flex; flex-direction: column; gap: 6px; }
+.fsm__row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.fsm__back { display: flex; gap: 24px; padding-left: 12px; }
+.fsm__state {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-shape-control);
+  background: var(--dg-surface-raised);
+  transition: border-color 120ms, background 120ms;
+}
+.fsm__name { font-family: var(--dg-font-code); font-size: 14px; color: var(--dg-text-body); }
+.fsm__hint { font-size: 12px; color: var(--dg-text-label); }
+.fsm__state.is-now { border-color: var(--dg-accent); background: var(--dg-accent-dim); }
+.fsm__state.is-now .fsm__name { color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }
+.fsm__edge { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-body); }
+/* The eager half of the machine: drawn, but off on this page. */
+.fsm__state.is-off, .fsm__edge.is-off { opacity: 0.45; }
+.fsm__state.is-off { border-style: dashed; }
+
+.fte-events { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--dg-border); display: flex; flex-direction: column; gap: 4px; }
+.fte-ev {
+  display: grid;
+  grid-template-columns: 64px 150px 96px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--dg-text-label);
+}
+.fte-ev__ms, .fte-ev__name, .fte-ev__turn { font-family: var(--dg-font-code); }
+.fte-ev__detail { overflow-wrap: anywhere; }
+/* Update is shown, quietly. */
+.fte-ev--Update { opacity: 0.6; }
+.fte-ev.is-change .fte-ev__name { color: var(--dg-text-primary); background: var(--dg-accent-dim); border-radius: var(--dg-shape-control); padding: 0 6px; justify-self: start; }
+.fte-ev.is-change .fte-ev__turn, .fte-ev.is-change .fte-ev__detail { color: var(--dg-text-primary); }
+
+@media (max-width: 760px) {
+  .fte-ev { grid-template-columns: 56px 1fr; }
+  .fte-ev__turn, .fte-ev__detail { grid-column: 2; }
+  .fsm__back { flex-direction: column; gap: 2px; }
+}

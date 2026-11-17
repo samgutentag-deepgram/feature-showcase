@@ -359,7 +359,7 @@
       "what": "Visualize the Flux turn state machine as you talk.",
       "models": "Flux only",
       "docs": "https://developers.deepgram.com/docs/flux/state",
-      "built": false
+      "built": true
     },
     {
       "id": "flux-eager-eot",
