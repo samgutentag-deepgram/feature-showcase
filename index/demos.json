@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "custom-topics",
+      "platform": "LLM",
+      "headline": "Will Deepgram find your topics?",
+      "param": "custom_topic + custom_topic_mode",
+      "flux": "intelligence"
     }
   ]
 }

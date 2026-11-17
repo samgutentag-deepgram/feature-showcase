@@ -1,0 +1,19 @@
+/* Custom topics input and the found/missing list. var() only: literals live in styles/packs/. */
+
+.ctopics-field { gap: 10px; }
+.ctopics-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.ctopics-input:disabled { color: var(--dg-text-label); border-left-color: var(--dg-border-hover); }
+
+.ctopics-found { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.ctopics-found li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--dg-text-body); }
+.ctopics-miss { color: var(--dg-text-label); }
