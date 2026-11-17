@@ -1,0 +1,5 @@
+{
+  "title": "Latency report | Deepgram",
+  "description": "Talk to a Deepgram voice agent and see each turn's STT, LLM first token, TTS, and total latency from the LatencyReport messages, one row per turn.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-latency-report/"
+}

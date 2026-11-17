@@ -926,7 +926,7 @@
       "what": "Per-turn waterfall of STT, LLM, tool, and TTS latency.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-latency-report",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-handshake",
