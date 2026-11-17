@@ -55,4 +55,21 @@ FEATURE=utterance-end pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+utterance_end_ms on Nova-3: an UtteranceEnd message once there is a gap in the words at least
+that long, next to the speech_final that endpointing sends the moment you go quiet.
+Checked live 2026-11-16, streamed in real time: "I want to book a table for" [1.5 s silence]
+"four people tomorrow night." (macOS voice Samantha), times from the socket opening:
+  1000 ms  speech_final 1.79 s, UtteranceEnd 2.80 s (last_word_end 1.52), speech_final 4.74 s,
+           UtteranceEnd 5.76 s (last_word_end 4.43)
+  1500 ms  speech_final 1.77 s and 4.71 s, one UtteranceEnd 6.75 s (last_word_end 4.43)
+  2500 ms  speech_final 1.77 s and 4.72 s, one UtteranceEnd 7.77 s (last_word_end 4.43)
+Without interim_results=true the handshake is a 400 ("Utterance End feature requires interim
+results."), so the card shows it. /v2/listen (Flux) answers utterance_end_ms with a 400
+("Unknown query parameters: utterance_end_ms").
+Verified live 2026-11-16: ONLY=utterance-end pnpm verify:live passed (3 tests): the socket
+opened for utterance_end_ms 1000, 1500, and 2500 with interim_results=true, and the prompt.md
+URL was accepted. The streamed timings above came from the same day.
+```

@@ -9,6 +9,9 @@
 // Without interim_results=true the handshake is a 400 ("Utterance End feature requires interim
 // results."), so the card shows it. /v2/listen (Flux) answers utterance_end_ms with a 400
 // ("Unknown query parameters: utterance_end_ms").
+// Verified live 2026-11-16: ONLY=utterance-end pnpm verify:live passed (3 tests): the socket
+// opened for utterance_end_ms 1000, 1500, and 2500 with interim_results=true, and the prompt.md
+// URL was accepted. The streamed timings above came from the same day.
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
