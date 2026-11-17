@@ -10,9 +10,9 @@
 //   http://localhost:...: Error INVALID_SETTINGS "Endpoints must use https or wss".
 //   https://example.invalid/...: Error INVALID_SETTINGS "Failed to resolve endpoint" (the host is
 //     resolved when Settings is applied, as the configure docs say).
-// NOT YET VERIFIED: Deepgram calling the deployed route and the agent speaking its answer. That needs
-// a deploy. The request body Deepgram sends is undocumented, so server.js reads `day` leniently.
+// The round trip was verified after the 2026-11-17 deploy (see below). The request body Deepgram sends is undocumented, so server.js reads `day` leniently.
 // Verified live 2026-11-16: verify:live sent Settings in both modes (with the endpoint, and page-answered) with Flux and Nova-3 listen, all four came back SettingsApplied; prompt.md's Settings came back SettingsApplied with a granted token; the docs link resolved. A probe saw FunctionCallRequest client_side false, then FUNCTION_CALL_FAILED 404 from the not-yet-deployed route. The round trip (Deepgram calling the deployed route, the agent speaking the hours) is unverified until deploy.
+// Verified on the deployed site 2026-11-17: Sam ran server mode once on dg-devrel-demos.fly.dev; Deepgram called the deployed store-hours route and the agent spoke its answer. The POST body Deepgram sent was not captured here; the route logs it in the Fly logs.
 import type { AgentMessage } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import { STORE_HOURS_PATH, storeHours } from './server.js'

@@ -89,8 +89,9 @@ a localhost callback is 400 "Invalid callback URL."; Flux /v2/listen with callba
 handshake. Not yet seen: a real delivery, and whether it carries the Authorization header. Those
 need the deployed page (no request inspector was used).
 Verified live 2026-11-16: pnpm verify:live POSTs Aura-2 speech of the phrase to /v1/listen?model=nova-3&smart_format=true&callback=https://example.com/stt-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery not observed before deploy.
+Verified on the deployed site 2026-11-17: Sam ran the page once on dg-devrel-demos.fly.dev and the transcript arrived at the callback route and showed on the page. Its method and Authorization header were not written down; the Response card shows both.
 ```
 
-Not verified before deploy: a real delivery, its method, and whether it carries the
+Not written down after deploy: a real delivery, its method, and whether it carries the
 `Authorization` header. No request inspector was used. Check them on the deployed page: the
 Response card shows all three.

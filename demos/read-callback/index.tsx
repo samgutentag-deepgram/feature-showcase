@@ -7,6 +7,7 @@
 // localhost callback is 400 "Invalid callback URL.". Not yet seen: a real delivery, its shape, and
 // whether it carries the Authorization header. Those need the deployed page (no request inspector was used).
 // Verified live 2026-11-16: ONLY=read-callback pnpm verify:live POSTs the 116-word email to /v1/read?language=en&summarize=v2&callback=https://example.com/read-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery and its Authorization header not observed before deploy.
+// Verified on the deployed site 2026-11-17: Sam ran the page once on dg-devrel-demos.fly.dev and the summary arrived at the callback route and showed on the page. Its body shape, method and Authorization header were not written down; the Response card shows them.
 import { useEffect, useState } from 'react'
 import { demoPath } from '../../shared/common/demo'
 import { defineLlmFeature, type Lane, type LlmRun } from '../../shared/llm/feature'

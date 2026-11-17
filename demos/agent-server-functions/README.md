@@ -19,14 +19,13 @@ page sends nothing back: the `FunctionCallRequest` arrives marked `client_side: 
 - **This page answers.** Switch modes and ask again. Now the call says `client_side: true` and the
   timeline shows the page's `FunctionCallResponse`.
 
-## Not verified yet: the round trip
+## The round trip
 
 The endpoint is `https://dg-devrel-demos.fly.dev/demos/agent-server-functions/api/store-hours`, the
 deployed site, in every run, local ones included. Deepgram cannot reach `localhost`, and the API
-refuses it anyway (`INVALID_SETTINGS`, "Endpoints must use https or wss"). Until this demo is
-deployed, that URL is a 404, so server mode ends in `FUNCTION_CALL_FAILED` and the agent says nothing
-more. Nobody has yet seen Deepgram call the deployed route and the agent speak its answer. After the
-deploy, run server mode once and record what came back here.
+refuses it anyway (`INVALID_SETTINGS`, "Endpoints must use https or wss"). Before the first deploy that URL
+was a 404, so server mode ended in `FUNCTION_CALL_FAILED`. After the 2026-11-17 deploy, one run of
+server mode had Deepgram call the route and the agent speak the hours.
 
 What Deepgram POSTs to the endpoint is not in the docs, so `server.js` reads `day` from the top level
 of a JSON body, from an `arguments` field (object or JSON string), or from the query string, and
@@ -64,3 +63,4 @@ FEATURE=agent-server-functions pnpm dev
 ## Verified live
 
 Verified live 2026-11-16: verify:live sent Settings in both modes (with the endpoint, and page-answered) with Flux and Nova-3 listen, all four came back SettingsApplied; prompt.md's Settings came back SettingsApplied with a granted token; the docs link resolved. A probe saw FunctionCallRequest client_side false, then FUNCTION_CALL_FAILED 404 from the not-yet-deployed route. The round trip (Deepgram calling the deployed route, the agent speaking the hours) is unverified until deploy.
+Verified on the deployed site 2026-11-17: Sam ran server mode once on dg-devrel-demos.fly.dev; Deepgram called the deployed store-hours route and the agent spoke its answer. The POST body Deepgram sent was not captured here; the route logs it in the Fly logs.

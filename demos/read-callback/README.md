@@ -76,6 +76,7 @@ From the top of `index.tsx`:
 
 ```text
 Verified live 2026-11-16: ONLY=read-callback pnpm verify:live POSTs the 116-word email to /v1/read?language=en&summarize=v2&callback=https://example.com/read-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery and its Authorization header not observed before deploy.
+Verified on the deployed site 2026-11-17: Sam ran the page once on dg-devrel-demos.fly.dev and the summary arrived at the callback route and showed on the page. Its body shape, method and Authorization header were not written down; the Response card shows them.
 ```
 
 Before that, checked with curl: `/v1/read` with `summarize=v2` and a callback is 200 with only a
@@ -84,6 +85,6 @@ Before that, checked with curl: `/v1/read` with `summarize=v2` and a callback is
 localhost callback is 400 "Invalid callback URL.". Without a callback, the same text returns
 `results.summary.text`.
 
-Not verified before deploy: a real delivery, its body shape, its method, and whether it carries the
+Not written down after deploy: a real delivery, its body shape, its method, and whether it carries the
 `Authorization` header. No request inspector was used. Check them on the deployed page: the Response
 card shows all of them.
