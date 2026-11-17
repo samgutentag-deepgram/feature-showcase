@@ -6,6 +6,7 @@
 // language=es gave "Bora y untávolo perdue viccino a la finaestra, per favore."
 // Flux: /v2/listen answers language with a 400 (INVALID_QUERY_PARAMETER) on flux-general-multi
 // and flux-general-en, so this demo is Nova-3 only.
+// Verified live 2026-11-16: pnpm verify:live opened all ten language= requests on /v1/listen (nova-3, smart_format=true) and the prompt.md URL with a granted token, and the docs link resolved; all passed.
 import { defineFeature, type Params, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'

@@ -62,4 +62,6 @@ FEATURE=language-select pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: pnpm verify:live opened all ten language= requests on /v1/listen (nova-3, smart_format=true) and the prompt.md URL with a granted token, and the docs link resolved; all passed.
+```
