@@ -10,6 +10,9 @@
 //   provider, and the next reply was plain English again. So every button here resends the prompt.
 //   An unknown model (anthropic claude-3-5-haiku-latest) came back Error INVALID_SETTINGS "model not
 //   available" and the session closed, so offer a known list.
+// Verified live 2026-11-16: ONLY=agent-update-think pnpm verify:live passed. The Settings message
+// (open_ai gpt-4o-mini, flux-wes-en) came back SettingsApplied on Flux and Nova-3, each of the five
+// UpdateThink messages came back ThinkUpdated on both, and the docs link resolved.
 import { useEffect, useState } from 'react'
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentAction, type AgentPanelProps } from '../../shared/agent/feature'

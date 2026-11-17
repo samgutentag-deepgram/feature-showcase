@@ -62,4 +62,6 @@ FEATURE=agent-update-think pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=agent-update-think pnpm verify:live passed. The Settings message (open_ai gpt-4o-mini, flux-wes-en) came back SettingsApplied on Flux and Nova-3, each of the five UpdateThink messages came back ThinkUpdated on both, and the docs link resolved.
+```
