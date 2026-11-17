@@ -73,4 +73,6 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=agent-think-fallback pnpm verify:live passed. With Flux and Nova-3 listening, both Settings (first LLM at example.com, and both up) came back SettingsApplied with no Error, Ask who answered came back AgentAudioDone in both (with the first LLM broken, only the Anthropic fallback could have replied), and the prompt.md Settings worked with a granted token.
+
+The probes behind the tables above are recorded at the top of [`index.tsx`](index.tsx).

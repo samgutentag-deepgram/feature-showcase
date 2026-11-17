@@ -19,6 +19,11 @@
 // Docs mismatches (https://developers.deepgram.com/docs/voice-agent-llm-models): the docs say each
 // new turn starts again from the first provider, but later turns went straight to the fallback with
 // no Warnings; the docs describe one Warning per failure, but each failed provider sent three.
+// Verified live 2026-11-16: ONLY=agent-think-fallback pnpm verify:live passed. With Flux and
+//   Nova-3 listening, both Settings (first LLM at example.com, and both up) came back
+//   SettingsApplied with no Error, Ask who answered came back AgentAudioDone in both (with the first
+//   LLM broken, only the Anthropic fallback could have replied), and the prompt.md Settings worked
+//   with a granted token.
 import { useEffect, useState } from 'react'
 import { defineAgentFeature, type AgentMessage } from '../../shared/agent/feature'
 import './styles.css'
