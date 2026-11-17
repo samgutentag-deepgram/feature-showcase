@@ -62,5 +62,14 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 From the top of `index.tsx`:
 
 ```text
-TODO
+Flux turn events: the TurnInfo messages every /v2/listen socket sends, as a state machine.
+No eager_eot_threshold here, so this is the default flow (EagerEndOfTurn and TurnResumed only
+arrive with it; that is the flux-eager-eot demo).
+Checked live 2026-11-16 in real time on "My name is Sam. [2 s pause] I need a table for two."
+(macOS voice Samantha), /v2/listen?model=flux-general-en&eot_threshold=0.7, the same twice:
+  Connected, Update 0, StartOfTurn 0 "My name", Update 0 x7, EndOfTurn 0 "My name is Sam."
+  (confidence 0.72, trigger model), Update 1 x4 (empty: the pause), StartOfTurn 1 "I need",
+  Update 1 x9, EndOfTurn 1 "I need a table for two" (0.76, model), Update 2 on the silence after.
+  No EagerEndOfTurn or TurnResumed without eager_eot_threshold, as the docs say.
+Verified live 2026-11-16: ONLY=flux-turn-events pnpm verify:live passed (3 tests: the /v2/listen?model=flux-general-en&eot_threshold=0.7 socket, the prompt URLs, the docs link); the say clip above came back StartOfTurn 0, EndOfTurn 0 "My name is Sam.", StartOfTurn 1, EndOfTurn 1 "I need a table for two", Updates between, no EagerEndOfTurn or TurnResumed.
 ```

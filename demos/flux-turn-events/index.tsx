@@ -7,6 +7,7 @@
 //   (confidence 0.72, trigger model), Update 1 x4 (empty: the pause), StartOfTurn 1 "I need",
 //   Update 1 x9, EndOfTurn 1 "I need a table for two" (0.76, model), Update 2 on the silence after.
 //   No EagerEndOfTurn or TurnResumed without eager_eot_threshold, as the docs say.
+// Verified live 2026-11-16: ONLY=flux-turn-events pnpm verify:live passed (3 tests: the /v2/listen?model=flux-general-en&eot_threshold=0.7 socket, the prompt URLs, the docs link); the say clip above came back StartOfTurn 0, EndOfTurn 0 "My name is Sam.", StartOfTurn 1, EndOfTurn 1 "I need a table for two", Updates between, no EagerEndOfTurn or TurnResumed.
 import { defineFeature, type Json, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
