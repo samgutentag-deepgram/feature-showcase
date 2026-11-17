@@ -53,4 +53,8 @@ Then open <http://localhost:8080>. Deploys go through `bash scripts/deploy.sh si
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=agent-update-listen pnpm verify:live passed. Settings came back SettingsApplied on flux-general-en and nova-3, each of the four UpdateListen actions came back ListenUpdated on both listen models, the docs link resolved, and the prompt.md Settings applied with a granted token.
+```

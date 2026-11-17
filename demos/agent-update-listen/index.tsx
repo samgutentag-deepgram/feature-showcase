@@ -10,6 +10,7 @@
 //   across a model switch, so every message here sends the model and the keyterms together.
 //   eot_threshold 0.9 on Flux also came back ListenUpdated (not offered: hard to see on a page).
 //   A provider without model (keyterms only, or type and keyterms) is UNPARSABLE_CLIENT_MESSAGE.
+// Verified live 2026-11-16: ONLY=agent-update-listen pnpm verify:live passed. Settings came back SettingsApplied on flux-general-en and nova-3, each of the four UpdateListen actions came back ListenUpdated on both listen models, the docs link resolved, and the prompt.md Settings applied with a granted token.
 import type { FC } from 'react'
 import type { AgentAction, AgentPanelProps } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
