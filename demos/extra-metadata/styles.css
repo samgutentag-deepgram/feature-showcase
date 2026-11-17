@@ -1,0 +1,16 @@
+/* Key and value rows. var() only: literals live in styles/packs/. */
+.extra-field { gap: 10px; }
+.extra-pair { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.extra-pair input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-radius: var(--dg-shape-control);
+  padding: 10px 12px;
+  flex: 1 1 140px;
+  min-width: 0;
+}
+.extra-pair input:disabled { color: var(--dg-text-label); }

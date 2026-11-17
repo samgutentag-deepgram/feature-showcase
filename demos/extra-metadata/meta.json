@@ -1,0 +1,5 @@
+{
+  "title": "Extra metadata | Deepgram",
+  "description": "Tag a live transcription with your own key:value pairs and watch Deepgram hand them back in metadata.extra.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/extra-metadata/"
+}

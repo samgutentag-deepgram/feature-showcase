@@ -251,7 +251,7 @@
       "what": "Attach key-value pairs that come back in the response metadata.",
       "models": "Pre-recorded and streaming v1",
       "docs": "https://developers.deepgram.com/docs/extra-metadata",
-      "built": false
+      "built": true
     },
     {
       "id": "redact-usage",
