@@ -5,6 +5,10 @@
 // where the docs show it), with label, value, confidence, start_word, end_word (end exclusive,
 // counted in the transcript's own words), plus raw_value when smart_format is on. Interim results
 // carry none. Flux (/v2/listen, flux-general-en) answers detect_entities=true with a 400.
+// Verified live 2026-11-16: ONLY=detect-entities pnpm verify:live passed (both smart_format
+// variants open on Nova-3), and the suggested phrase as a say clip streamed in real time came back
+// with NAME, PHONE_NUMBER, EMAIL_ADDRESS, DATE, LOCATION_ADDRESS, LOCATION_CITY, and MONEY,
+// confidence 0.93 to 0.99.
 import { defineFeature, type Json, type Params, type Word } from '../../shared/common/feature'
 import type { ReactNode } from 'react'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'

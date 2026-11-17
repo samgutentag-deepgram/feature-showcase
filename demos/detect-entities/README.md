@@ -58,4 +58,11 @@ FEATURE=detect-entities pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=detect-entities pnpm verify:live passed (both smart_format
+variants open on Nova-3), and the suggested phrase as a say clip streamed in real time came back
+with NAME, PHONE_NUMBER, EMAIL_ADDRESS, DATE, LOCATION_ADDRESS, LOCATION_CITY, and MONEY,
+confidence 0.93 to 0.99.
+```
