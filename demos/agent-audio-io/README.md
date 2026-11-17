@@ -72,4 +72,22 @@ FEATURE=agent-audio-io pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Agent audio formats: the same agent over browser audio (linear16) and phone audio (mulaw or alaw at
+8 kHz), set by the Settings audio block. Checked live 2026-11-16 with a one-off script per format:
+Settings, a greeting, then a 2.6 s spoken question encoded with shared/agent/codec.ts the way the
+page encodes the mic. Every combo below came back SettingsApplied, the agent heard the question
+("What is the capital of France?") and answered, and the reply bytes decoded at the Settings rate:
+  linear16 16 kHz in, 24 kHz out: 48,000 bytes per second of reply audio, greeting 4.2 s.
+  linear16 16 kHz in, 16 kHz out: 32,000 B/s.   linear16 8 kHz in, 16 kHz out: 32,000 B/s.
+  mulaw 8 kHz both ways: 8,000 B/s, greeting 4.6 s.   alaw 8 kHz both ways: 8,000 B/s.
+Flux and Nova-3 listen both understood mulaw and alaw 8 kHz input. Energy above 4 kHz: 1.5 to 3.8%
+of each 24 kHz reply, 0.5 to 1.8% at 16 kHz, none at 8 kHz (it cannot carry anything above 4 kHz).
+Rejected or changed: output mp3 with a Flux voice -> Error INVALID_SETTINGS. container wav with a
+Flux voice is NOT rejected, though the docs say INVALID_SETTINGS: a Warning
+SPEAK_STREAMING_FORMAT_UNSUPPORTED arrives, then each reply comes whole as one WAV file ("RIFF" and
+a 44-byte header, then 48,000 B/s). The page plays raw audio only, so it offers container none.
+Verified live 2026-11-16: verify:live sent all four Settings audio blocks (mulaw 8k, alaw 8k, linear16 16k/16k, linear16 16k/24k) with Flux and Nova-3 listen, all 8 came back SettingsApplied; docs links resolved.
+```

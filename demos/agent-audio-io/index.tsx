@@ -12,6 +12,7 @@
 // Flux voice is NOT rejected, though the docs say INVALID_SETTINGS: a Warning
 // SPEAK_STREAMING_FORMAT_UNSUPPORTED arrives, then each reply comes whole as one WAV file ("RIFF" and
 // a 44-byte header, then 48,000 B/s). The page plays raw audio only, so it offers container none.
+// Verified live 2026-11-16: verify:live sent all four Settings audio blocks (mulaw 8k, alaw 8k, linear16 16k/16k, linear16 16k/24k) with Flux and Nova-3 listen, all 8 came back SettingsApplied; docs links resolved.
 import type { AgentAudio } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'
