@@ -1,0 +1,15 @@
+/* Threshold picker and the per-turn lists. var() only: literals live in styles/packs/. */
+.spr-controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+
+.spr { display: flex; flex-direction: column; gap: 10px; }
+.spr__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.spr__cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.spr__cols--two { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.spr__run { display: flex; flex-direction: column; gap: 8px; }
+.spr__runlabel { font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-label); }
+.spr__runlabel mark { background: transparent; color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }
+.spr ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.spr li { display: flex; flex-direction: column; gap: 4px; }
+.spr__line { font-size: 17px; color: var(--dg-text-primary); padding-left: 10px; border-left: 3px solid var(--dg-accent); }
+.spr__facts { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); padding-left: 13px; }
+.spr__facts b { color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }

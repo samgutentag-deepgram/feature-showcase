@@ -602,7 +602,7 @@
       "what": "Start the LLM before the turn is confirmed and watch latency drop.",
       "models": "Flux listen only",
       "docs": "https://developers.deepgram.com/docs/voice-agent-speculative-replies",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-multilingual",

@@ -1,0 +1,5 @@
+{
+  "title": "Speculative replies for voice agents | Deepgram",
+  "description": "Say a line with a hesitation to a Flux voice agent, switch eager_eot_threshold, and compare when the reply starts after your last word.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-speculative-replies/"
+}

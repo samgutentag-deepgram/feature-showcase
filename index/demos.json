@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-speculative-replies",
+      "platform": "Voice agent",
+      "headline": "Does the agent think before you finish?",
+      "param": "eager_eot_threshold",
+      "flux": "agent"
     }
   ]
 }
