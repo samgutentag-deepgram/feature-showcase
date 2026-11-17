@@ -1,0 +1,5 @@
+{
+  "title": "Sentiment analysis | Deepgram",
+  "description": "Read an annoyed-then-pleased customer message aloud or type it, and see Deepgram tag each part negative, neutral, or positive, with scores and an average.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/sentiment/"
+}

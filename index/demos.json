@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "sentiment",
+      "platform": "LLM",
+      "headline": "Did the call end better than it started?",
+      "param": "sentiment",
+      "flux": "intelligence"
     }
   ]
 }
