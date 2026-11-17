@@ -2,6 +2,7 @@
 // /v1/read (typed text). Input of 50 words or fewer comes back unchanged as the summary.
 // Checked live 2026-11-16 with curl: /v1/read returns results.summary.text, /v1/listen returns
 // results.summary.short (with result: "success"); a 16-word text came back word for word.
+// Verified live 2026-11-16: ONLY=summarize pnpm verify:live passed (the 101-word voicemail on /v1/read, and spoken by Aura-2 on /v1/listen). curl: /v1/read returned summary.text and /v1/listen summary.short, three sentences naming Dana Whitfield, the grinding left leg motor, and the Monday deadline; a 16-word text came back unchanged.
 import { defineLlmFeature, type LlmRun } from '../../shared/llm/feature'
 import { analysis } from '../../shared/llm/request'
 import './styles.css'

@@ -27,4 +27,6 @@ FEATURE=summarize pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=summarize pnpm verify:live passed (the 101-word voicemail on /v1/read, and spoken by Aura-2 on /v1/listen). curl: /v1/read returned summary.text and /v1/listen summary.short, three sentences naming Dana Whitfield, the grinding left leg motor, and the Monday deadline; a 16-word text came back unchanged.
+```
