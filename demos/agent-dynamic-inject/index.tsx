@@ -18,6 +18,7 @@
 //   0.2 s later, cutting the story ("I'll search for that.").
 //   The worded lines narrate a lookup ("Let me try checking with your email address instead"), so
 //   they fit a real wait in your app, not small talk.
+// Verified live 2026-11-16: verify:live sent the Settings message (think_live on) with Flux and Nova-3 listen, both came back SettingsApplied; Agent words it and Fixed line were each sent 1.5 s in with both listen models and came back ConversationText or Warning (the check accepts either, so the warning rate above comes from the probes, not this run); docs link resolved.
 import { useEffect, useRef } from 'react'
 import type { Json } from '../../shared/common/feature'
 import type { AgentAction, AgentMessage } from '../../shared/agent/feature'

@@ -67,4 +67,6 @@ FEATURE=agent-dynamic-inject pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: verify:live sent the Settings message (think_live on) with Flux and Nova-3 listen, both came back SettingsApplied; Agent words it and Fixed line were each sent 1.5 s in with both listen models and came back ConversationText or Warning (the check accepts either, so the warning rate above comes from the probes, not this run); docs link resolved.
+```
