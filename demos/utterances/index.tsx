@@ -7,6 +7,10 @@
 // a 0.7 s one split at 0.8 and below and not at 1.0. So the choices start at the 0.8 default.
 // Utterance start and end are word times, so the gap between rows is shorter than the silence
 // measured in the audio.
+// Verified live 2026-11-16: POST /v1/listen?model=nova-3&punctuate=true&utterances=true&utt_split=<v> on a
+// macOS say clip of the phrase with 0.5 s and 1.2 s silences gave 2 utterances at 0.8, 2 at 1.5, 1 at
+// 3; with 0.8 s and 2.0 s silences, 3 at 0.8, 2 at 1.5, 1 at 3, each row with start, end, confidence
+// 0.99 or above and transcript. ONLY=utterances pnpm verify:live passed all three variants.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { EmptyTranscript, PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

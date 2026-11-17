@@ -72,5 +72,8 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 From the top of `index.tsx`:
 
 ```text
-TODO
+Verified live 2026-11-16: POST /v1/listen?model=nova-3&punctuate=true&utterances=true&utt_split=<v> on a
+macOS say clip of the phrase with 0.5 s and 1.2 s silences gave 2 utterances at 0.8, 2 at 1.5, 1 at
+3; with 0.8 s and 2.0 s silences, 3 at 0.8, 2 at 1.5, 1 at 3, each row with start, end, confidence
+0.99 or above and transcript. ONLY=utterances pnpm verify:live passed all three variants.
 ```
