@@ -1,0 +1,5 @@
+{
+  "title": "MIP opt-out | Deepgram",
+  "description": "Opt a Flux or Nova-3 request out of the Model Improvement Partnership Program with mip_opt_out, and see that the transcript does not change.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/mip-opt-out/"
+}
