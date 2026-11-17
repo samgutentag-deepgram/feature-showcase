@@ -1,0 +1,5 @@
+{
+  "title": "Agent handshake | Deepgram",
+  "description": "Watch a Deepgram voice agent session open: Welcome with its request_id, Settings, SettingsApplied, each timed, plus the real errors when the order breaks.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-handshake/"
+}

@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-handshake",
+      "platform": "Voice agent",
+      "headline": "Watch the agent say hello.",
+      "param": "Welcome + Settings + SettingsApplied",
+      "flux": "agent"
     }
   ]
 }
