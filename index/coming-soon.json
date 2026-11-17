@@ -134,7 +134,7 @@
       "what": "Compare v1 and v2 diarizer speaker labels on the same recording.",
       "models": "Pre-recorded for v2; streaming supports v1/latest",
       "docs": "https://developers.deepgram.com/docs/diarization",
-      "built": false
+      "built": true
     },
     {
       "id": "multichannel",
