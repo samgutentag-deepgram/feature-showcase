@@ -1,0 +1,26 @@
+/* The hold panel. var() only: literals live in styles/packs/. */
+.ka { display: grid; gap: 10px; margin-top: 18px; }
+.ka__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.ka__state { color: var(--dg-ink-secondary); }
+.ka__meter {
+  position: relative;
+  height: 28px;
+  border: 1px solid var(--dg-line-hairline);
+  border-radius: var(--dg-radius-sm);
+  background: var(--dg-surface-raised);
+  overflow: hidden;
+}
+.ka__fill { height: 100%; background: var(--dg-signal-ga); transition: width var(--dg-motion-fast) var(--dg-ease); }
+.ka__fill.is-over { background: var(--dg-danger); }
+.ka__mark {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--dg-font-mono);
+  font-size: 11px;
+  color: var(--dg-ink-muted);
+}
+.ka__quiet { margin: 0; }
+.ka__holds { margin: 0; padding-left: 20px; font-size: 14px; color: var(--dg-ink-secondary); }
+.ka__hold--closed { color: var(--dg-danger); }

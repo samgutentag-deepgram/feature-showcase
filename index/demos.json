@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-keepalive",
+      "platform": "Voice agent",
+      "headline": "Put the caller on hold.",
+      "param": "KeepAlive",
+      "flux": "agent"
+    },
+    {
       "id": "agent-errors-warnings",
       "platform": "Voice agent",
       "headline": "Break the agent on purpose.",

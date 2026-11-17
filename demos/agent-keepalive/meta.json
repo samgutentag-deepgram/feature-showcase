@@ -1,0 +1,5 @@
+{
+  "title": "Agent keepalive | Deepgram",
+  "description": "Mute the mic mid-call and send KeepAlive every 8 seconds so the voice agent holds the line, or skip it and watch the call drop after 12 seconds.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-keepalive/"
+}
