@@ -65,4 +65,4 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: pnpm verify:live passed (v1, v2, latest on the Sample and Record modes), and POST /v1/listen?model=nova-3&smart_format=true with a granted Bearer token on support-call.mp3 gave v1 speakers [0] (one speaker for all six turns), v2 and latest [0, 1, 0, 1, 0, 1] with diarize_info.arch v2.

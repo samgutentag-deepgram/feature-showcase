@@ -1,9 +1,10 @@
 // diarize_model on Nova-3 pre-recorded: the same call through the v1 diarizer, then v2, side by side.
 // Checked live 2026-11-16 with support-call.mp3 (two Deepgram Flux voices, flux-wes-en and
 // flux-drew-en, six turns) on POST /v1/listen?model=nova-3&smart_format=true: diarize_model=v1 put
-// every word on speaker 0 (speakers 0); v2 and latest split all six turns correctly (0/1/0/1/0/1),
+// every word on speaker 0; v2 and latest split all six turns correctly (0/1/0/1/0/1),
 // and metadata.diarize_info.arch said v1, v2, v2. diarize_model=v2 is a 400 at the /v1/listen
 // streaming handshake and on Flux /v2/listen, so this page is batch only, on Nova-3.
+// Verified live 2026-11-16: pnpm verify:live passed (v1, v2, latest on the Sample and Record modes), and POST /v1/listen?model=nova-3&smart_format=true with a granted Bearer token on support-call.mp3 gave v1 speakers [0] (one speaker for all six turns), v2 and latest [0, 1, 0, 1, 0, 1] with diarize_info.arch v2.
 import { defineFeature, type Json, type Params, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import clip from './support-call.mp3'
