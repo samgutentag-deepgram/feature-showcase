@@ -9,6 +9,7 @@
 // Streaming: /v1/listen with multichannel=true&channels=2 opens (101) and tags each Results with
 // channel_index [0,2] or [1,2]; Flux /v2/listen answers 400 "Unknown query parameters: channels,
 // multichannel". A browser mic records one channel, so this page sends the bundled stereo sample.
+// Verified live 2026-11-16: pnpm verify:live passed (multichannel=false and true on the Stereo call sample), and POST /v1/listen?model=nova-3&smart_format=true on call-stereo.mp3 gave metadata.channels 1 with all six lines in one transcript for false, and metadata.channels 2 for true: channel 0 holds the three agent lines, channel 1 the three customer lines ("Hi, Dan. My order arrived yesterday, but the box was empty. 4815. Great. Thanks.").
 import { defineFeature, type Json, type Params, type Word } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import clip from './call-stereo.mp3'
