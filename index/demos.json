@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-think-fallback",
+      "platform": "Voice agent",
+      "headline": "Break the first LLM. The agent still answers.",
+      "param": "agent.think as an array",
+      "flux": "agent"
     }
   ]
 }

@@ -647,7 +647,7 @@
       "what": "Ordered LLM fallback chain that survives a dead primary provider.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-llm-models",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-context-length",
