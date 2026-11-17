@@ -80,7 +80,15 @@ Then open <http://localhost:8080>. Deploys go through `bash scripts/deploy.sh si
 From the top of `index.tsx`:
 
 ```text
-TODO
+callback on Nova-3 pre-recorded: Deepgram answers the POST at once with only a request_id, then
+delivers the transcript to the callback URL. The demo's server.js is that URL, and it checks the
+Basic Auth credentials it put in the URL (the method the docs recommend).
+Checked 2026-11-16 with the key: POST /v1/listen?model=nova-3&callback=https://example.com/... is 200
+{"request_id": ...}; with deepgram:<password>@ in the URL, and with callback_method=put, also 200;
+a localhost callback is 400 "Invalid callback URL."; Flux /v2/listen with callback is 400 at the
+handshake. Not yet seen: a real delivery, and whether it carries the Authorization header. Those
+need the deployed page (no request inspector was used).
+Verified live 2026-11-16: pnpm verify:live POSTs Aura-2 speech of the phrase to /v1/listen?model=nova-3&smart_format=true&callback=https://example.com/stt-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery not observed before deploy.
 ```
 
 Not verified before deploy: a real delivery, its method, and whether it carries the

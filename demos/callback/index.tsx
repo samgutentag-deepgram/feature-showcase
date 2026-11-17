@@ -6,6 +6,7 @@
 // a localhost callback is 400 "Invalid callback URL."; Flux /v2/listen with callback is 400 at the
 // handshake. Not yet seen: a real delivery, and whether it carries the Authorization header. Those
 // need the deployed page (no request inspector was used).
+// Verified live 2026-11-16: pnpm verify:live POSTs Aura-2 speech of the phrase to /v1/listen?model=nova-3&smart_format=true&callback=https://example.com/stt-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery not observed before deploy.
 import { useEffect, useState } from 'react'
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { demoPath } from '../../shared/common/demo'
