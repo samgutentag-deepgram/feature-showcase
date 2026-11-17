@@ -1043,7 +1043,7 @@
       "what": "Stream tokens as server-sent events and show time to first token.",
       "models": "think-fast, phonellm-mini (Early Access)",
       "docs": "https://developers.deepgram.com/docs/llm/request-response-format",
-      "built": false
+      "built": true
     },
     {
       "id": "think-tools",

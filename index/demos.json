@@ -423,6 +423,13 @@
       "flux": "agent"
     },
     {
+      "id": "think-streaming",
+      "platform": "LLM",
+      "headline": "Read the first word before the reply is done.",
+      "param": "stream + stream_options",
+      "flux": "think"
+    },
+    {
       "id": "read-callback",
       "platform": "LLM",
       "headline": "Send the text. Get the summary later.",
