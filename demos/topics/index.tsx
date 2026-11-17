@@ -2,6 +2,7 @@
 // (typed text). Deepgram splits the text into segments and tags each with one or more topics and a
 // confidence from 0 to 1. Plain topics only; custom_topic and custom_topic_mode are the custom-topics demo.
 // Flux refuses topics at the /v2/listen handshake (400, checked 2026-11-16), so audio goes to Nova-3.
+// Verified live 2026-11-16: ONLY=topics pnpm verify:live passed; topics=true on /v1/read (the call text) and /v1/listen (Nova-3, the call spoken by Aura-2) both returned results.topics. By hand on /v1/read: "Bill refund" 0.87, then "Internet router connection issue" 0.38 and "Moving to new apartment" 0.51 in one segment; the standup chip came back as one segment with Marketing budget 0.98, Paid ads 0.94, Hiring 0.77, Mobile app launch 0.93. Flux: /v2/listen?topics=true is a 400 at the handshake.
 import { defineLlmFeature } from '../../shared/llm/feature'
 
 type State = Record<string, never>

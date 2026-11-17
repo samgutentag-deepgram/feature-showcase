@@ -20,4 +20,4 @@ FEATURE=topics pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=topics pnpm verify:live passed; topics=true on /v1/read (the call text) and /v1/listen (Nova-3, the call spoken by Aura-2) both returned results.topics. By hand on /v1/read: "Bill refund" 0.87, then "Internet router connection issue" 0.38 and "Moving to new apartment" 0.51 in one segment; the standup chip came back as one segment with Marketing budget 0.98, Paid ads 0.94, Hiring 0.77, Mobile app launch 0.93. Flux: /v2/listen?topics=true is a 400 at the handshake.
