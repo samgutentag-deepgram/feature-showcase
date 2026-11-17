@@ -8,6 +8,7 @@
 //   then a presence check 5 s later. No think_live in Settings at all: UpdateThink_Live still came
 //   back ThinkLiveUpdated and a presence check followed 5.5 s later (not in the docs).
 //   The card's name, UpdateThinkLive, came back Error UNPARSABLE_CLIENT_MESSAGE and the session closed.
+// Verified live 2026-11-16: verify:live sent both Settings variants (asides on and off at start) with Flux and Nova-3 listen, all came back SettingsApplied; Asides off and Asides on each sent UpdateThink_Live and came back ThinkLiveUpdated; docs links resolved.
 import type { Json } from '../../shared/common/feature'
 import type { AgentAction } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'

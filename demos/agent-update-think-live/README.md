@@ -89,4 +89,18 @@ FEATURE=agent-update-think-live pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+UpdateThink_Live: change Think Live (backchannels and presence checks) in the middle of a call.
+Probed live 2026-11-16 on the Agent API, Flux listening, gpt-4o-mini thinking, silent mic audio:
+  No update, presence_check_max_count 3, interval 4000: presence checks at 7.8, 15.7 and 22.2 s.
+  Same start, UpdateThink_Live at 13.3 s with sensitivity 0 and count 0: ThinkLiveUpdated 0.1 s
+  later, then no presence check for the next 13 s. UpdateThink_Live back to count 2 at 26.3 s:
+  ThinkLiveUpdated, and a presence_check "Hello? Are you still there?" 0.6 s later.
+  Start with everything at 0: silence for 12 s; UpdateThink_Live with count 3: ThinkLiveUpdated,
+  then a presence check 5 s later. No think_live in Settings at all: UpdateThink_Live still came
+  back ThinkLiveUpdated and a presence check followed 5.5 s later (not in the docs).
+  The card's name, UpdateThinkLive, came back Error UNPARSABLE_CLIENT_MESSAGE and the session closed.
+Verified live 2026-11-16: verify:live sent both Settings variants (asides on and off at start) with Flux and Nova-3 listen, all came back SettingsApplied; Asides off and Asides on each sent UpdateThink_Live and came back ThinkLiveUpdated; docs links resolved.
+```
