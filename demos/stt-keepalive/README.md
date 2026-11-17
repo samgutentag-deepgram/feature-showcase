@@ -76,5 +76,13 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 From the top of `index.tsx`:
 
 ```text
-TODO
+KeepAlive on Nova-3: pause the mic audio and keep the same /v1/listen socket open, or send
+nothing and watch Deepgram close it. The close code and reason show on the page's error line.
+Checked live 2026-11-16 by script (macOS say clips, real time): with KeepAlive every 3 s through
+14 s of no audio, the same socket kept transcribing after audio resumed.
+Without it, Metadata then close 1011 "Deepgram did not receive audio data or a text message
+within the timeout window. See https://dpgr.am/net0001", 11.9 s after the last audio.
+Flux: KeepAlive gets Error UNPARSABLE_CLIENT_MESSAGE and the socket closes (1005); with no audio
+at all a Flux socket stayed open for 40 s, sent nothing meanwhile, and resumed the turn.
+Verified live 2026-11-16: pnpm verify:live opened wss /v1/listen?model=nova-3, streamed the phrase, paused audio and sent KeepAlive every 3 s, and the socket stayed open 12 s with no Error. Script run: without KeepAlive, Metadata then close 1011 NET-0001 at 11.9 s after the last audio; with it, the same socket transcribed after resume.
 ```
