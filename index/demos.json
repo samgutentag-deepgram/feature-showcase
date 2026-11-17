@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "extra-metadata",
+      "platform": "Speech-to-text",
+      "headline": "Send an order ID. Get it back.",
+      "param": "extra",
+      "flux": "nova-only"
+    },
+    {
       "id": "mip-opt-out",
       "platform": "Speech-to-text",
       "headline": "Opt out. Same transcript.",
