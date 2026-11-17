@@ -46,6 +46,7 @@ export const FLUX: Record<string, [string, string]> = {
   // LLM kind (shared/llm/).
   intelligence: ['Nova-3 audio or text', 'Recorded audio on /v1/listen with Nova-3, or typed text on /v1/read.'],
   think: ['Deepgram LLM, Early Access', 'Think-Fast or phoneLLM mini on /v1/think. Early Access.'],
+  'flux-only': ['Flux only', 'A Flux socket feature: Nova-3 does not have it.'],
 }
 
 // Run from the repo root, as vite.config.ts and vitest are.

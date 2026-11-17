@@ -359,7 +359,7 @@
       "what": "Retune turn thresholds and vocabulary on a live Flux stream.",
       "models": "Flux only",
       "docs": "https://developers.deepgram.com/docs/flux/configure",
-      "built": false
+      "built": true
     },
     {
       "id": "flux-turn-events",
