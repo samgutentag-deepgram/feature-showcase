@@ -242,7 +242,7 @@
       "what": "Submit audio, close the tab, receive the transcript on a webhook later.",
       "models": "Pre-recorded and streaming v1",
       "docs": "https://developers.deepgram.com/docs/callback",
-      "built": false
+      "built": true
     },
     {
       "id": "tag-usage",
