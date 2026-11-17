@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-audio-io",
+      "platform": "Voice agent",
+      "headline": "Talk to the agent over a phone line.",
+      "param": "audio.input, audio.output",
+      "flux": "agent"
+    },
+    {
       "id": "agent-llm-picker",
       "platform": "Voice agent",
       "headline": "Pick the brain behind your voice agent.",
