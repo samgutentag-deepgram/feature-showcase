@@ -602,7 +602,7 @@
       "what": "Make the agent wait longer or reply sooner after you stop.",
       "models": "Flux listen only",
       "docs": "https://developers.deepgram.com/docs/flux/agent",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-speculative-replies",

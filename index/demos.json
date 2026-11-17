@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-flux-turn-tuning",
+      "platform": "Voice agent",
+      "headline": "Should your agent wait, or jump in?",
+      "param": "eot_threshold + eot_timeout_ms",
+      "flux": "agent"
+    },
+    {
       "id": "agent-keepalive",
       "platform": "Voice agent",
       "headline": "Put the caller on hold.",
