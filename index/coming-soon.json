@@ -251,7 +251,7 @@
       "what": "Label requests and filter them in the usage dashboard. Also on TTS, agent, read.",
       "models": "All endpoints",
       "docs": "https://developers.deepgram.com/docs/stt-tagging",
-      "built": false
+      "built": true
     },
     {
       "id": "extra-metadata",

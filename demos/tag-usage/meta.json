@@ -1,0 +1,5 @@
+{
+  "title": "Tag requests | Deepgram",
+  "description": "Label a Flux or Nova-3 streaming request with tag, see it on the request, and get the request_id your usage reports file it under.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/tag-usage/"
+}
