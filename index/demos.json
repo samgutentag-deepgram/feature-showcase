@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-audio-io",
+      "platform": "Voice agent",
+      "headline": "Talk to the agent over a phone line.",
+      "param": "audio.input, audio.output",
+      "flux": "agent"
     }
   ]
 }

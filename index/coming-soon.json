@@ -566,7 +566,7 @@
       "what": "Run an agent over mulaw 8 kHz phone audio versus browser linear16.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-media-inputs-outputs",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-listen-model",
