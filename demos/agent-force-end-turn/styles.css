@@ -1,0 +1,30 @@
+/* The hold button and the turn list. var() only: literals live in styles/packs/. */
+.fet { display: grid; gap: 12px; margin-top: 18px; }
+.fet__hold {
+  justify-self: start;
+  min-width: 260px;
+  touch-action: none;
+  user-select: none;
+}
+.fet__hold.is-held { background: var(--dg-accent-alt); border-color: var(--dg-accent-alt); }
+.fet__turns { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.fet__turn {
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--dg-border);
+  border-left: 4px solid var(--fet-mark, var(--dg-border));
+  border-radius: var(--dg-radius-md);
+  background: var(--dg-bg-panel);
+}
+.fet__turn--manual { --fet-mark: var(--dg-accent); }
+.fet__turn--model { --fet-mark: var(--dg-accent-3); }
+.fet__turn--timeout { --fet-mark: var(--dg-ink-muted); }
+.fet__who { font-weight: var(--dg-weight-medium); color: var(--dg-ink-primary); }
+.fet__text { color: var(--dg-ink-secondary); }
+.fet__ms { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.fet__missed { margin: 0; }
+
+@media (max-width: 560px) {
+  .fet__hold { justify-self: stretch; min-width: 0; }
+}
