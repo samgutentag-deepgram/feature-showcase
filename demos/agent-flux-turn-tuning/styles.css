@@ -1,0 +1,22 @@
+/* Preset picker and the EndOfTurn list. var() only: literals live in styles/packs/. */
+.ftt-controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+
+.ftt { display: flex; flex-direction: column; gap: 8px; }
+.ftt__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ftt ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ftt li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 4px 10px; align-items: baseline; }
+.ftt__at { font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-label); }
+.ftt__line { font-size: 17px; color: var(--dg-text-primary); padding-left: 10px; border-left: 3px solid var(--dg-accent); }
+.ftt__facts { grid-column: 2; font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.ftt__trigger { background: transparent; color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }
+.ftt__trigger--timeout { color: var(--dg-accent-3); }
+
+.ftt__bar { grid-column: 2; position: relative; height: 14px; border-bottom: 1px solid var(--dg-border); }
+.ftt__mark { position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: var(--dg-radius-round); }
+.ftt__mark--you,
+.ftt__key--you { background: var(--dg-accent); }
+.ftt__mark--eot,
+.ftt__key--eot { background: var(--dg-text-primary); }
+.ftt__mark--voice,
+.ftt__key--voice { background: var(--dg-accent-alt); }
+.ftt__key { display: inline-block; width: 9px; height: 9px; border-radius: var(--dg-radius-round); margin: 0 2px 0 6px; vertical-align: middle; }

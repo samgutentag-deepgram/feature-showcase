@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-flux-turn-tuning",
+      "platform": "Voice agent",
+      "headline": "Should your agent wait, or jump in?",
+      "param": "eot_threshold + eot_timeout_ms",
+      "flux": "agent"
     }
   ]
 }

@@ -1,0 +1,5 @@
+{
+  "title": "Flux turn tuning for voice agents | Deepgram",
+  "description": "Pick Patient or Snappy end-of-turn settings for a voice agent on Flux, pause mid-sentence, and see whether the agent waits for the rest.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-flux-turn-tuning/"
+}
