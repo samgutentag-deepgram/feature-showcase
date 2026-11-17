@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-state-indicator",
+      "platform": "Voice agent",
+      "headline": "Show what the agent is doing.",
+      "param": "UserStartedSpeaking + EndOfTurn + AgentAudioDone",
+      "flux": "agent"
     }
   ]
 }

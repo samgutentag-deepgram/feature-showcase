@@ -899,7 +899,7 @@
       "what": "Live status light: listening, thinking, speaking, done.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-outputs",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-live-transcript",
