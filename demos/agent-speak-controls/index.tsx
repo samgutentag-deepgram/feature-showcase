@@ -23,6 +23,7 @@
 //     marker: nothing spoken, no error (as the docs say). Both belong in the LLM prompt per the
 //     docs, not on the speak provider, so this page leaves them out.
 // The panel times each reply's playback on the page, so the speed change shows as seconds.
+// Verified live 2026-11-16: ONLY=agent-speak-controls pnpm verify:live passed. Both Settings variants (Flux wes with speed 1 and expressivity 0, Aura-2 thalia with speed 1) came back SettingsApplied on Flux and Nova-3 listening, every UpdateSpeak button (Flux: speed 0.8, 1.0, 1.2, expressivity -2 and +2; Aura-2: speed 0.8, 1.0, 1.2) came back SpeakUpdated, and the docs link resolved. Durations and pitch above come from separate live probes the same day.
 import { useEffect, useRef, useState } from 'react'
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentAction, type AgentPanelProps } from '../../shared/agent/feature'

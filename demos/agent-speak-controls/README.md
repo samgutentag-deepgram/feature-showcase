@@ -22,4 +22,4 @@ FEATURE=agent-speak-controls pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=agent-speak-controls pnpm verify:live passed. Both Settings variants (Flux wes with speed 1 and expressivity 0, Aura-2 thalia with speed 1) came back SettingsApplied on Flux and Nova-3 listening, every UpdateSpeak button (Flux: speed 0.8, 1.0, 1.2, expressivity -2 and +2; Aura-2: speed 0.8, 1.0, 1.2) came back SpeakUpdated, and the docs link resolved. Durations and pitch above come from separate live probes the same day.
