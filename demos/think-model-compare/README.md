@@ -38,4 +38,10 @@ FEATURE=think-model-compare pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: verify:live streamed both models at reasoning none and low, all four
+replies non-empty. By hand, "move my cleaning to Thursday afternoon" (none): Think-Fast first token
+494 ms, 109 in / 34 out; phoneLLM mini 378 ms, 108 in / 18 out. At low: Think-Fast 2501 ms with 422
+reasoning tokens; phoneLLM mini 430 ms, reasoning text then </think> in the reply. Callback number
+chip: Think-Fast read it back as "four one five, five five five, zero one four two".
+```

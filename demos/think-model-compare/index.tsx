@@ -1,6 +1,11 @@
 // Model compare on /v1/think: one message, sent to every Deepgram LLM at once, side by side.
 // Early Access: the key's project must be enrolled. Both models in the docs answered this key;
 // any other name ("phonellm-mini", "think-slow") is a 400 "Model not available." (checked 2026-11-16).
+// Verified live 2026-11-16: verify:live streamed both models at reasoning none and low, all four
+//   replies non-empty. By hand, "move my cleaning to Thursday afternoon" (none): Think-Fast first token
+//   494 ms, 109 in / 34 out; phoneLLM mini 378 ms, 108 in / 18 out. At low: Think-Fast 2501 ms with 422
+//   reasoning tokens; phoneLLM mini 430 ms, reasoning text then </think> in the reply. Callback number
+//   chip: Think-Fast read it back as "four one five, five five five, zero one four two".
 import { THINK_MODELS, defineLlmFeature, type ThinkBody } from '../../shared/llm/feature'
 
 type Effort = 'none' | 'low'
