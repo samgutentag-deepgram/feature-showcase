@@ -1,0 +1,37 @@
+/* CloseStream demo: how each run ended, and which words never came back final. var() only: literals live in styles/packs/. */
+
+.cs-echo { white-space: normal; overflow-wrap: anywhere; }
+
+.cs-result { display: flex; flex-direction: column; gap: 10px; }
+.cs-verdict {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
+  gap: 4px 12px;
+  align-items: baseline;
+  padding: 8px 12px;
+  background: var(--dg-bg-well);
+  border-radius: var(--dg-shape-control);
+  border-left: 4px solid var(--dg-border-hover);
+}
+.cs-verdict__tag {
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+}
+.cs-verdict__text { margin: 0; }
+.cs-verdict__meta {
+  grid-column: 2;
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  color: var(--dg-text-label);
+  overflow-wrap: anywhere;
+}
+.cs-verdict.is-close { border-left-color: var(--dg-accent); }
+.cs-verdict.is-close .cs-verdict__tag { color: var(--dg-accent); }
+.cs-verdict.is-hangup { border-left-color: var(--dg-danger); }
+.cs-verdict.is-hangup .cs-verdict__tag { color: var(--dg-danger); }
+
+.cs-lost { text-decoration: line-through; text-decoration-color: var(--dg-danger); color: var(--dg-text-label); }
+.cs-open { color: var(--dg-text-label); border-bottom: 1px dashed var(--dg-text-label); }
+.cs-legend { margin: 0; }

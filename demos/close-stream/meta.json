@@ -1,0 +1,5 @@
+{
+  "title": "Close stream | Deepgram",
+  "description": "End a live transcription with CloseStream or by dropping the socket, and see which one keeps the last words and the Metadata summary.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/close-stream/"
+}
