@@ -98,7 +98,7 @@
       "what": "Break a long transcript into readable paragraphs.",
       "models": "Pre-recorded only",
       "docs": "https://developers.deepgram.com/docs/paragraphs",
-      "built": false
+      "built": true
     },
     {
       "id": "utterances",

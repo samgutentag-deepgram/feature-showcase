@@ -1,0 +1,32 @@
+/* Paragraphs of timed sentences. var() only: literals live in styles/packs/. */
+
+.para { border-left: 3px solid var(--dg-voice-1); padding-left: 16px; }
+.para:nth-child(even) { border-left-color: var(--dg-voice-2); }
+
+.para__head {
+  margin: 0 0 8px;
+  font-family: var(--dg-font-mono);
+  font-size: 13px;
+  color: var(--dg-text-label);
+}
+.para__sentences { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.para__sentence { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.para__time {
+  font-family: var(--dg-font-mono);
+  font-size: 12px;
+  color: var(--dg-text-label);
+  white-space: nowrap;
+}
+.para__text {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+.runs--compare .para__sentence { grid-template-columns: 1fr; gap: 0; }
+.runs--compare .para__text { font-size: 17px; }
+
+@media (max-width: 760px) {
+  .para__sentence { grid-template-columns: 1fr; gap: 0; }
+  .para__text { font-size: 17px; }
+}
