@@ -5,6 +5,7 @@
 // my account number is four two seven nine"), from ffmpeg's conversion and from the page's own
 // transcoder (shared/stt/audio.ts). Mismatch (linear16 16 kHz bytes, declared mulaw 8 kHz): no error,
 // the socket closes normally, and the transcript is empty on both models.
+// Verified live 2026-11-16: ONLY=raw-audio-format pnpm verify:live opened all 5 formats on Flux and Nova-3 (8 unique sockets), each accepted and closed cleanly; a say clip in each format gave the phrase word for word on both models, and the mismatch gave an empty transcript with no error.
 import { defineFeature, type AudioFormat, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'

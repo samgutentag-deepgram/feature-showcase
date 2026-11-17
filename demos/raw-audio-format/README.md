@@ -57,4 +57,8 @@ Then open <http://localhost:8080>.
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=raw-audio-format pnpm verify:live opened all 5 formats on Flux and Nova-3 (8 unique sockets), each accepted and closed cleanly; a say clip in each format gave the phrase word for word on both models, and the mismatch gave an empty transcript with no error.
+```
