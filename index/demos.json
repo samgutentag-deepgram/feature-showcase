@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-restricted-terms",
+      "platform": "Voice agent",
+      "headline": "Keep words out of its mouth.",
+      "param": "agent.think_live.provider.restricted_terms",
+      "flux": "agent"
+    },
+    {
       "id": "agent-defer-until-eot",
       "platform": "Voice agent",
       "headline": "Cancel the right order.",
