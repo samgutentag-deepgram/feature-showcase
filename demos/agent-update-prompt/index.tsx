@@ -12,6 +12,7 @@
 //   PromptUpdated and changes nothing: the last addition stays.
 //   The docs say UpdatePrompt "will add to – not replace – the current prompt", which is true of
 //   the Settings prompt only.
+// Verified live 2026-11-16: pnpm verify:live applied the Settings on Flux and Nova-3, each of the three UpdatePrompt actions came back PromptUpdated on both, and the docs link resolved.
 import { useEffect, useState } from 'react'
 import type { AgentAction, AgentMessage } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'

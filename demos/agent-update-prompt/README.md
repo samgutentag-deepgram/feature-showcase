@@ -49,4 +49,6 @@ FEATURE=agent-update-prompt pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: pnpm verify:live applied the Settings on Flux and Nova-3, each of the three UpdatePrompt actions came back PromptUpdated on both, and the docs link resolved.
+```
