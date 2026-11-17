@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "utterance-end",
+      "platform": "Speech-to-text",
+      "headline": "How long a gap ends the utterance?",
+      "param": "utterance_end_ms",
+      "flux": "nova-only"
+    },
+    {
       "id": "speech-started",
       "platform": "Speech-to-text",
       "headline": "Know they started talking before the first word.",

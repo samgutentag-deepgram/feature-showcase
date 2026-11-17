@@ -1,0 +1,24 @@
+/* Transcript with inline markers. var() only: literals live in styles/packs/. */
+.ue-field { gap: 10px; }
+.ue-field__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ue-field .segmented { align-self: flex-start; }
+
+.ue-flow { margin: 0; font-size: 22px; line-height: 1.7; color: var(--dg-text-primary); }
+.runs--compare .ue-flow { font-size: 19px; }
+.ue-mark {
+  display: inline-block;
+  margin: 0 8px 0 2px;
+  padding: 0 8px;
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  line-height: 1.8;
+  vertical-align: middle;
+  border-radius: var(--dg-shape-control);
+}
+/* speech_final: outlined, it fires on any silence. UtteranceEnd: filled, it waited for the gap. */
+.ue-mark--sf { color: var(--dg-text-label); border: 1px solid var(--dg-border-hover); }
+.ue-mark--ue { color: var(--dg-text-primary); background: var(--dg-accent-dim); }
+
+@media (max-width: 760px) {
+  .ue-flow { font-size: 19px; }
+}

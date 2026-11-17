@@ -1,0 +1,5 @@
+{
+  "title": "Utterance end | Deepgram",
+  "description": "Read a phrase with a long pause in it and see where Nova-3 sends speech_final and where it sends UtteranceEnd, for an utterance_end_ms you pick.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/utterance-end/"
+}
