@@ -989,7 +989,7 @@
       "what": "Detect what the speaker wants, per segment.",
       "models": "English; /v1/listen pre-recorded and /v1/read",
       "docs": "https://developers.deepgram.com/docs/intent-recognition",
-      "built": false
+      "built": true
     },
     {
       "id": "custom-intents",
