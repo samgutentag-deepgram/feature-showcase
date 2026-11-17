@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-history-events",
+      "platform": "Voice agent",
+      "headline": "Keep the transcript as you go.",
+      "param": "flags.history",
+      "flux": "agent"
     }
   ]
 }

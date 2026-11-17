@@ -800,7 +800,7 @@
       "what": "Stream conversation and function-call history events as they happen.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-history",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-reusable-config",
