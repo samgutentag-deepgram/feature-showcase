@@ -479,6 +479,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-update-prompt",
+      "platform": "Voice agent",
+      "headline": "Rewrite its instructions mid-call.",
+      "param": "UpdatePrompt",
+      "flux": "agent"
+    },
+    {
       "id": "agent-update-listen",
       "platform": "Voice agent",
       "headline": "Teach it a word mid-call.",
