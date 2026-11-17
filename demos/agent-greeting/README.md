@@ -64,4 +64,14 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+agent.greeting: the agent speaks first. Checked live 2026-11-16 on the Agent API with no user
+audio at all, Flux and Nova-3 listening:
+  Welcome, SettingsApplied, then the first agent audio frame and, in the same millisecond,
+  ConversationText role assistant with the greeting word for word (60 to 150 ms after
+  SettingsApplied), then History, then AgentAudioDone 1.3 to 1.9 s later. Leave greeting out and
+  nothing follows SettingsApplied: the agent stays silent until the caller talks.
+Verified live 2026-11-16: ONLY=agent-greeting pnpm verify:live passed; all four Settings (three greetings and no greeting) came back SettingsApplied on Flux and Nova-3, and a Flux call with flux-wes-en returned Welcome, SettingsApplied, audio, ConversationText assistant "Hey there! What can I do for you?", History, AgentAudioDone.
+```

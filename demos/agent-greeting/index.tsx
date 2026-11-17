@@ -1,9 +1,10 @@
 // agent.greeting: the agent speaks first. Checked live 2026-11-16 on the Agent API with no user
 // audio at all, Flux and Nova-3 listening:
-//   Welcome, SettingsApplied, then the first agent audio and ConversationText role assistant with
-//   the greeting word for word (about 60 ms after SettingsApplied), then History, then
-//   AgentAudioDone about 1.3 s later. Leave greeting out and nothing follows SettingsApplied: the
-//   agent stays silent until the caller talks.
+//   Welcome, SettingsApplied, then the first agent audio frame and, in the same millisecond,
+//   ConversationText role assistant with the greeting word for word (60 to 150 ms after
+//   SettingsApplied), then History, then AgentAudioDone 1.3 to 1.9 s later. Leave greeting out and
+//   nothing follows SettingsApplied: the agent stays silent until the caller talks.
+// Verified live 2026-11-16: ONLY=agent-greeting pnpm verify:live passed; all four Settings (three greetings and no greeting) came back SettingsApplied on Flux and Nova-3, and a Flux call with flux-wes-en returned Welcome, SettingsApplied, audio, ConversationText assistant "Hey there! What can I do for you?", History, AgentAudioDone.
 import type { AgentPanelProps } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'
