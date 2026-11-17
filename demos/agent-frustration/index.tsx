@@ -12,6 +12,7 @@
 //   docs do not say; agent_backchannel_sensitivity 0 did not. So this page leaves presence checks on.
 //   No aside comes with it: no ConversationText carries a frustration conversational_behavior, and
 //   the LLM's reply ("I understand your frustration") came back the same with detection on or off.
+// Verified live 2026-11-16: verify:live sent all three Settings variants (frustration_max_count 1, 2 and 3) with Flux and Nova-3 listen, all came back SettingsApplied; docs links resolved. Earlier probes with spoken clips got FrustrationDetected on angry turns only, escalated true at the set count.
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'
 

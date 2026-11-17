@@ -19,4 +19,4 @@ Probed 2026-11-16 with one calm and three angry macOS `say` clips, nine runs, Fl
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: verify:live sent all three Settings variants (frustration_max_count 1, 2 and 3) with Flux and Nova-3 listen, all came back SettingsApplied; docs links resolved. Earlier probes with spoken clips got FrustrationDetected on angry turns only, escalated true at the set count.
