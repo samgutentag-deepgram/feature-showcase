@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "summarize",
+      "platform": "LLM",
+      "headline": "What did that voicemail say?",
+      "param": "summarize=v2",
+      "flux": "intelligence"
     }
   ]
 }
