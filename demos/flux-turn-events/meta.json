@@ -1,0 +1,5 @@
+{
+  "title": "Flux turn events | Deepgram",
+  "description": "Say two sentences with a pause and watch Flux's TurnInfo events, StartOfTurn, Update, and EndOfTurn, move a live turn state diagram.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-turn-events/"
+}
