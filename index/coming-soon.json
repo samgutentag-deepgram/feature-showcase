@@ -35,7 +35,7 @@
       "what": "Transcribe speech that switches languages mid-sentence, with per-word language tags.",
       "models": "Nova-3, Nova-2, Nova-3 Medical, flux-general-multi",
       "docs": "https://developers.deepgram.com/docs/multilingual-code-switching",
-      "built": false
+      "built": true
     },
     {
       "id": "language-hint",

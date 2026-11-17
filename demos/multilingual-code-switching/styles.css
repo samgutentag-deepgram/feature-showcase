@@ -1,0 +1,32 @@
+/* Words colored by language. var() only: literals live in styles/packs/. Same colors as language-hint. */
+.cs [data-slot] { --slot: var(--dg-text-disabled); }
+.cs [data-slot='1'] { --slot: var(--dg-voice-1); }
+.cs [data-slot='2'] { --slot: var(--dg-voice-2); }
+.cs [data-slot='other'] { --slot: var(--dg-voice-other); }
+
+.cs__words { line-height: 2.1; }
+.cs__word {
+  display: inline-block;
+  margin-right: 0.3em;
+  border-bottom: 3px solid var(--slot);
+  position: relative;
+}
+.cs__code {
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  color: var(--slot);
+  margin-right: 3px;
+  vertical-align: super;
+}
+
+.cs__legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+.cs__legend-label { font-size: 14px; color: var(--dg-text-label); }
+.cs__chip {
+  background: var(--slot);
+  color: var(--dg-text-on-accent);
+  border-radius: var(--dg-shape-pill);
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: var(--dg-weight-medium);
+}
+.cs__chip code { font-family: var(--dg-font-code); font-size: 12px; opacity: 0.85; }
