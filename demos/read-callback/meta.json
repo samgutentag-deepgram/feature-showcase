@@ -1,0 +1,5 @@
+{
+  "title": "Text Intelligence Callback | Deepgram",
+  "description": "Send text to /v1/read, get a request_id at once, and watch Deepgram deliver the summary to a webhook that checks Basic Auth credentials in the callback URL.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/read-callback/"
+}
