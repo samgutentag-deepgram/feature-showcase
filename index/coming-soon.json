@@ -782,7 +782,7 @@
       "what": "Ordered TTS fallback chain across providers.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-tts-models",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-greeting",
