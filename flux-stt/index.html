@@ -1,0 +1,42 @@
+<!doctype html>
+<!-- /flux-stt/: the Flux speech-to-text demos. index/render.ts renderCollection() fills the sections from
+     index/collections/flux-stt.json. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>Flux speech-to-text demos | Deepgram</title>
+    <meta name="description" content="%COUNT% live Flux speech-to-text demos: turn detection, eager end of turn, keyterms mid-call, and more. One setting per page, with the exact request." />
+    <link rel="canonical" href="%URL%/flux-stt/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Deepgram" />
+    <meta property="og:title" content="Flux speech-to-text demos" />
+    <meta property="og:description" content="%COUNT% live Flux speech-to-text demos: turn detection, eager end of turn, keyterms mid-call, and more. One setting per page, with the exact request." />
+    <meta property="og:url" content="%URL%/flux-stt/" />
+    <meta property="og:image" content="%URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="/shared/styles/index.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="masthead">
+        <a href="/"><img src="/deepgram-logo.svg" alt="Deepgram" /></a>
+        <a class="btn btn--primary" href="https://console.deepgram.com/signup?utm_source=dg-devrel-demos&amp;utm_medium=demo&amp;utm_campaign=devrel-demos&amp;utm_content=sam_gutentag_flux_stt_header_signup">Free API key</a>
+      </header>
+      <section class="hero">
+        <span class="hero__kicker">Flux speech-to-text</span>
+        <h1>Know when your caller is done talking.</h1>
+        <p>%COUNT% small live demos, one Flux speech-to-text setting each. Talk into your mic and watch Flux decide when your turn ends, start a reply before you finish, and spell the product names you give it. The exact request is on every page.</p>
+      </section>
+<!-- SECTIONS -->
+      <p class="collection__more">Flux listens on <code>/v2/listen</code>. Nova-3 is still on <code>/v1/listen</code>, and many of these demos compare the two. <a href="/flux-tts/">Flux text-to-speech demos →</a> <a href="/">See every demo →</a></p>
+      <footer class="foot">
+        <a href="https://developers.deepgram.com/?utm_source=dg-devrel-demos&amp;utm_medium=demo&amp;utm_campaign=devrel-demos&amp;utm_content=sam_gutentag_flux_stt_footer_docs">Docs</a>
+        <a href="https://dpgr.am/discord">Discord</a>
+      </footer>
+    </main>
+  </body>
+</html>

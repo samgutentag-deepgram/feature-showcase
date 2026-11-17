@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { FLUX, PRODUCTS, readCollection, readDemoEntries, readSoonEntries, renderCollection, renderIndex, soonTitle, validate } from '../index/render'
-import { listDemos, readMeta } from '../vite.config'
+import { COLLECTIONS, listDemos, readMeta } from '../vite.config'
 
 const entries = readDemoEntries()
 const soon = readSoonEntries()
@@ -65,25 +65,27 @@ describe('the index page', () => {
   })
 })
 
-describe('the /flux-tts/ collection page', () => {
-  const html = renderCollection(readFileSync('flux-tts/index.html', 'utf8'), readCollection('flux-tts'), {
+describe.each(COLLECTIONS)('the /%s/ collection page', (id) => {
+  const html = renderCollection(readFileSync(`${id}/index.html`, 'utf8'), readCollection(id), {
     built: listDemos(),
     readMeta,
   })
-  const ids = readCollection('flux-tts').sections.flatMap((s) => s.ids)
+  const ids = readCollection(id).sections.flatMap((s) => s.ids)
 
   it('lists only demos that are in demos.json, each once', () => {
     expect(new Set(ids).size).toBe(ids.length)
-    for (const id of ids) expect(entries.map((d) => d.id)).toContain(id)
+    for (const d of ids) expect(entries.map((e) => e.id)).toContain(d)
   })
 
   it('fills every slot and shows one tile per demo, in collection order', () => {
     expect(html).not.toMatch(/<!-- SECTIONS -->|%COUNT%/)
     const hrefs = [...html.matchAll(/<a class="tile" href="([^"]+)"/g)].map((m) => m[1])
-    expect(hrefs).toEqual(ids.filter((id) => listDemos().includes(id)).map((id) => `/demos/${id}/`))
+    expect(hrefs).toEqual(ids.filter((d) => listDemos().includes(d)).map((d) => `/demos/${d}/`))
   })
+})
 
-  it('is linked from /', () => {
+describe('links to the collection pages', () => {
+  it('/ links to /flux-tts/', () => {
     expect(template).toContain('href="/flux-tts/"')
   })
 })

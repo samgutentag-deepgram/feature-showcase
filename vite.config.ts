@@ -39,7 +39,7 @@ export const demoUrl = (name: string) => `${SITE}/demos/${name}/`
 export const promptFile = (name: string) => path.join(featureDir(name), 'prompt.md')
 
 // Hand-picked pages of demos at /<id>/: <id>/index.html, filled from index/collections/<id>.json.
-export const COLLECTIONS = ['flux-tts']
+export const COLLECTIONS = ['flux-tts', 'flux-stt']
 
 const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 

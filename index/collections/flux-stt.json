@@ -1,0 +1,20 @@
+{
+  "_comment": "The /flux-stt/ page (flux-stt/index.html): Flux speech-to-text demos. Sections and demos in page order; every id must be in index/demos.json.",
+  "sections": [
+    {
+      "heading": "Know when they're done talking",
+      "intro": "Flux decides when a turn ends from what was said, not only from silence. Watch the turn events, start a reply early, cap the wait, or end the turn yourself.",
+      "ids": ["turn-detection", "flux-turn-events", "flux-eager-eot", "flux-eot-timeout", "flux-force-end-turn"]
+    },
+    {
+      "heading": "Get the words right",
+      "intro": "Spell product names and jargon right, teach Flux a new word without reconnecting, and turn spoken numbers into digits.",
+      "ids": ["keyterm", "flux-configure-midstream", "numerals", "model-picker"]
+    },
+    {
+      "heading": "Run it in production",
+      "intro": "Close the stream without losing the last words, name raw audio formats, and keep usage records tidy.",
+      "ids": ["close-stream", "raw-audio-format", "redact-usage", "tag-usage", "mip-opt-out"]
+    }
+  ]
+}
