@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-update-listen",
+      "platform": "Voice agent",
+      "headline": "Teach it a word mid-call.",
+      "param": "UpdateListen + ListenUpdated",
+      "flux": "agent"
     }
   ]
 }

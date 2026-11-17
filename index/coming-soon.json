@@ -836,7 +836,7 @@
       "what": "Swap STT model, language, or keyterms mid-call.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-update-listen",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-update-think",
