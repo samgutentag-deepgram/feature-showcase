@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "flux-eot-timeout",
+      "platform": "Speech-to-text",
+      "headline": "How long will Flux wait for you?",
+      "param": "eot_timeout_ms=3000",
+      "flux": "flux-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
