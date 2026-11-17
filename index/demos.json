@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-latency-report",
+      "platform": "Voice agent",
+      "headline": "Where does the time go?",
+      "param": "LatencyReport",
+      "flux": "agent"
     }
   ]
 }

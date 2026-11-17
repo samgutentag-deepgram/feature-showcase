@@ -1,0 +1,38 @@
+/* The per-turn latency panel. var() only: literals live in styles/packs/. */
+.lat { display: flex; flex-direction: column; gap: 10px; padding: 14px 0 0; border-top: 1px solid var(--dg-border); }
+.lat__head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.lat__title { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.lat__meta { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.lat__empty { margin: 0; font-size: 14px; color: var(--dg-text-label); }
+.lat__scroll { overflow-x: auto; }
+.lat__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.lat__table th {
+  text-align: left;
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  font-weight: var(--dg-weight-medium);
+  letter-spacing: var(--dg-type-label-tracking);
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+  padding: 4px 10px 6px 0;
+  border-bottom: 1px solid var(--dg-border);
+  white-space: nowrap;
+}
+.lat__table td { padding: 8px 10px 8px 0; border-bottom: 1px solid var(--dg-border); vertical-align: top; color: var(--dg-text-body); }
+.lat__table tr.is-open td { color: var(--dg-text-label); }
+.lat__turn { min-width: 140px; max-width: 240px; }
+.lat__num { font-family: var(--dg-font-code); color: var(--dg-text-primary); margin-right: 8px; }
+.lat__said { font-size: 13px; }
+.lat__val { font-family: var(--dg-font-code); white-space: nowrap; color: var(--dg-text-primary); }
+.lat__of { display: block; font-size: 11px; color: var(--dg-text-label); }
+.lat__wide { width: 30%; min-width: 160px; }
+.lat-bar { position: relative; height: 14px; margin-top: 2px; }
+.lat-bar__total { position: absolute; inset: 0 auto 0 0; border: 1px solid var(--dg-text-label); border-radius: var(--dg-shape-control); }
+.lat-bar__seg { position: absolute; top: 3px; bottom: 3px; border-radius: var(--dg-shape-control); }
+.lat-bar__seg--stt, .lat__key--stt { background: var(--dg-voice-2); }
+.lat-bar__seg--llm, .lat__key--llm { background: var(--dg-accent); }
+.lat-bar__seg--tts, .lat__key--tts { background: var(--dg-voice-other); }
+.lat__legend { margin: 0; font-size: 12px; color: var(--dg-text-label); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.lat__key { display: inline-block; width: 12px; height: 8px; border-radius: var(--dg-shape-control); margin-left: 6px; }
+.lat__key--total { background: none; border: 1px solid var(--dg-text-label); }
+.lat__raw { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); overflow-wrap: anywhere; }
