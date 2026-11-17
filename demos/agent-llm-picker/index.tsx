@@ -20,6 +20,11 @@
 // claude-sonnet-5-5, gemini-2.5-flash-lite, gemini-3.1-pro-preview, gemini-3.8-flash,
 // nvidia/nemotron-3.5-lightning-30b-a3b, all of which replied) and leaves out the deepgram models.
 // think-fast sends Warning VOICE_PROMPT_ADDED after SettingsApplied; phonellm-mini does not.
+// Verified live 2026-11-16: ONLY=agent-llm-picker pnpm verify:live passed. One Settings per provider
+// (deepgram think-fast, open_ai gpt-4o-mini, anthropic claude-haiku-4-5, google gemini-2.5-flash, groq
+// openai/gpt-oss-20b, nvidia nemotron-3.5-lightning) came back SettingsApplied with Flux and Nova-3
+// listening, think-fast with Warning VOICE_PROMPT_ADDED; InjectUserMessage came back ConversationText
+// on each; the prompt.md Settings worked with a granted token, and the docs link resolved.
 import { useEffect, useRef, useState } from 'react'
 import { defineAgentFeature, type AgentMessage, type AgentPanelProps } from '../../shared/agent/feature'
 import { modelName, PROVIDERS, providerOf } from './models'

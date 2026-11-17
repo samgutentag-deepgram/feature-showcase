@@ -71,4 +71,14 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=agent-llm-picker pnpm verify:live passed. One Settings per provider
+(deepgram think-fast, open_ai gpt-4o-mini, anthropic claude-haiku-4-5, google gemini-2.5-flash, groq
+openai/gpt-oss-20b, nvidia nemotron-3.5-lightning) came back SettingsApplied with Flux and Nova-3
+listening, think-fast with Warning VOICE_PROMPT_ADDED; InjectUserMessage came back ConversationText
+on each; the prompt.md Settings worked with a granted token, and the docs link resolved.
+```
+
+Before that, a one-off script opened one session per model in `models.ts` (and the failing ones listed above): Settings, then InjectUserMessage, then the spoken reply and a LatencyReport `total_latency` for every model offered.
