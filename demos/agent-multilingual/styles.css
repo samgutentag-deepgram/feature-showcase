@@ -1,0 +1,13 @@
+/* Voice picker and language-per-turn list. var() only: literals live in styles/packs/. */
+.ml-voice { display: flex; flex-direction: column; gap: 8px; }
+.ml-voice__label,
+.ml-turns__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+
+.ml-turns { display: flex; flex-direction: column; gap: 8px; }
+.ml-turns ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.ml-turns li { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 2px 10px; align-items: baseline; }
+.ml-turns__lang { font-family: var(--dg-font-code); font-size: 13px; text-transform: uppercase; color: var(--dg-accent); }
+.ml-turns__line { font-size: 17px; color: var(--dg-text-primary); padding-left: 10px; border-left: 3px solid var(--dg-accent); }
+.ml-turns__facts { grid-column: 2; font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.ml-turns__reply { grid-column: 2; font-size: 15px; color: var(--dg-text-body); padding-left: 10px; border-left: 3px solid var(--dg-border); }
+.ml-turns__reply em { font-style: normal; font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
