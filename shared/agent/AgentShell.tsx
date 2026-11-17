@@ -7,7 +7,8 @@ import { MAX_SECONDS, clock, fetchToken } from '../common/config'
 import type { Json } from '../common/feature'
 import { LINKS, dgLink, sourceLink, type Button, type Placement } from '../common/links'
 import { pcm16ToFloat } from '../tts/speak'
-import { AGENT_URL, LISTEN_MODELS, OUTPUT_RATE, settingsMessage, type AgentFeature } from './feature'
+import { AGENT_URL, audioOf, listenModelsOf, settingsMessage, type AgentFeature, type AgentMessage } from './feature'
+import { decodeAgent, encodeMic } from './codec'
 import './agent.css'
 import { TakeHome } from '../common/TakeHome'
 
@@ -32,18 +33,27 @@ interface Fired {
   note: string
 }
 
-// Messages too chatty for the timeline.
+// Messages too chatty for the timeline, unless a feature names them in events.
 const QUIET = new Set(['History', 'LatencyReport'])
+const compact = (m: Json) => JSON.stringify({ ...m, type: undefined }).slice(1, -1).slice(0, 160)
 
 export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
   const [state, setState] = useState<S>(feature.initialState)
-  const [listen, setListen] = useState(LISTEN_MODELS[0].id)
+  const models = listenModelsOf(feature)
+  const [listen, setListen] = useState(models[0]?.id ?? '')
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
   const [runs, setRuns] = useState<Run[]>([])
   const [lastEvent, setLastEvent] = useState<Json | null>(null)
   const [elapsed, setElapsed] = useState(0)
   const [fired, setFired] = useState<Record<string, Fired>>({})
+  // For the feature's Panel: every server message of the current run, playback, reply starts.
+  const [messages, setMessages] = useState<AgentMessage[]>([])
+  const [playing, setPlaying] = useState(false)
+  const [audioStarts, setAudioStarts] = useState<number[]>([])
+  // Mic audio goes out while this is on; an action with mic: 'off' stops it, e.g. for KeepAlive.
+  const micOn = useRef(true)
+  const repeat = useRef<number | undefined>(undefined)
   const clearFired = useRef<Record<string, number>>({})
 
   const ws = useRef<WebSocket | null>(null)
@@ -60,6 +70,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
   const busy = status !== 'idle'
   const link = (href: string, placement: Placement, button: Button) => dgLink(href, placement, button)
   const settings = settingsMessage(feature, state, listen)
+  const audio = audioOf(feature, state)
   const actions = feature.actions?.(state) ?? []
   // Set while a conversation is live, so the mid-call buttons can log to the current run.
   const send = useRef<((a: (typeof actions)[number]) => void) | null>(null)
@@ -107,6 +118,8 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
     send.current = null
     setFired({})
     window.clearInterval(timer.current)
+    window.clearInterval(repeat.current)
+    setPlaying(false)
     capture.current?.stop()
     capture.current = null
     const s = ws.current
@@ -127,7 +140,13 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
     out.current = ctx
     await ctx.resume()
     const id = (runs[0]?.id ?? 0) + 1
-    const label = `${LISTEN_MODELS.find((m) => m.id === listen)?.label}, ${feature.runLabel(state)}`
+    const model = models.find((m) => m.id === listen)
+    const label = model ? `${model.label}, ${feature.runLabel(state)}` : feature.runLabel(state)
+    const runAudio = audio
+    micOn.current = true
+    setMessages([])
+    setAudioStarts([])
+    let inReply = false
     setRuns((rs) => [{ id, label, lines: [], events: [] }, ...rs].slice(0, 2))
     const add = (e: Omit<Event, 'ms'>) =>
       setRuns((rs) => rs.map((r) => (r.id === id ? { ...r, events: [...r.events, { ...e, ms: performance.now() - t0 }] } : r)))
@@ -150,7 +169,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
     let socket: WebSocket | null = null
     setStatus('mic')
     try {
-      const cap = await startCapture({ kind: 'mic' }, (pcm) => ready && socket?.readyState === 1 && socket.send(pcm), () => {})
+      const cap = await startCapture({ kind: 'mic' }, (pcm) => ready && micOn.current && socket?.readyState === 1 && socket.send(encodeMic(pcm, runAudio.input)), () => {})
       if (!current()) {
         cap.stop()
         return
@@ -190,10 +209,16 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
     }
     sock.onmessage = (e) => {
       if (typeof e.data !== 'string') {
-        // Agent speech: 16-bit PCM at 24 kHz, queued back to back.
-        const samples = pcm16ToFloat(new Uint8Array(e.data as ArrayBuffer))
+        // Agent speech: 16-bit PCM at 24 kHz unless the feature asked for other audio, queued back to back.
+        const bytes = new Uint8Array(e.data as ArrayBuffer)
+        const samples = runAudio.output.encoding === 'linear16' ? pcm16ToFloat(bytes) : decodeAgent(bytes, runAudio.output.encoding)
         if (!samples.length) return
-        const buf = ctx.createBuffer(1, samples.length, OUTPUT_RATE)
+        if (!inReply) {
+          inReply = true
+          const at = performance.now() - t0
+          setAudioStarts((all) => [...all, at])
+        }
+        const buf = ctx.createBuffer(1, samples.length, runAudio.output.sample_rate)
         buf.copyToChannel(samples, 0)
         const src = ctx.createBufferSource()
         src.buffer = buf
@@ -211,6 +236,8 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
       }
       const m = JSON.parse(e.data as string) as Json
       const type = String(m.type)
+      if (feature.Panel) setMessages((all) => [...all, { ms: performance.now() - t0, msg: m }])
+      if (type === 'AgentAudioDone') inReply = false
       // Think Live tags its own lines: "ConversationText backchannel", "ConversationText presence_check".
       const behavior = type === 'ConversationText' && m.conversational_behavior && m.conversational_behavior !== 'default' ? String(m.conversational_behavior) : ''
       const label = behavior ? `${type} ${behavior}` : type
@@ -236,14 +263,31 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
           if (sock.readyState !== 1) return
           const left = a.flush ? flush(0.25) : 0
           sock.send(JSON.stringify(a.message))
-          pending = [...pending.filter((p) => p.label !== a.label), { label: a.label, ack: a.ack, line: lineOf(a.message), then: a.then, at: performance.now() }]
-          showFired(a.label, { kind: 'wait', note: 'sent, waiting' })
+          if (a.ack.length) {
+            pending = [...pending.filter((p) => p.label !== a.label), { label: a.label, ack: a.ack, line: lineOf(a.message), then: a.then, at: performance.now() }]
+            showFired(a.label, { kind: 'wait', note: 'sent, waiting' })
+          } else showFired(a.label, { kind: 'ok', note: 'sent' })
           add({ type: `${String(a.message.type)} (sent)`, detail: [a.label, left > 0.05 ? `${left.toFixed(1)} s of queued audio dropped` : ''].filter(Boolean).join(', ') })
+          if (a.mic === 'on' || a.mic === 'off') {
+            micOn.current = a.mic === 'on'
+            window.clearInterval(repeat.current)
+            add({ type: a.mic === 'on' ? 'mic on' : 'mic off', detail: a.mic === 'on' ? 'streaming audio again' : 'no audio is sent' })
+          }
+          if (a.repeatMs && !micOn.current) {
+            const again = JSON.stringify(a.message)
+            repeat.current = window.setInterval(() => {
+              if (sock.readyState !== 1 || micOn.current) return window.clearInterval(repeat.current)
+              sock.send(again)
+              add({ type: `${String(a.message.type)} (sent)`, detail: `${a.label}, every ${(a.repeatMs! / 1000).toFixed(0)} s` })
+            }, a.repeatMs)
+          }
         }
         const began = performance.now()
         timer.current = window.setInterval(() => {
           const s = (performance.now() - began) / 1000
           setElapsed(s)
+          const on = !!out.current && next.current > out.current.currentTime
+          setPlaying((was) => (was === on ? was : on))
           if (s >= MAX_SECONDS) stop()
         }, 250)
         return
@@ -291,6 +335,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
         return
       }
       if (!QUIET.has(type)) add({ type })
+      else if (feature.events.includes(type)) add({ type, detail: compact(m) })
     }
   }
 
@@ -298,6 +343,11 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
   const marked = (line: string) => feature.highlight.some((k) => line.includes(`"${k}"`))
   const { Controls } = feature
   const phrases = feature.phrases(state)
+  const { Panel } = feature
+  const fire = (label: string, patch?: Json) => {
+    const a = actions.find((x) => x.label === label)
+    if (a) send.current?.(patch ? { ...a, message: { ...a.message, ...patch } } : a)
+  }
 
   return (
     <main className="page">
@@ -325,10 +375,11 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
       </section>
 
       <section className="panel controls">
+        {models.length > 1 && (
         <div className="toolbar">
           <span className="agent-listen">Listen model</span>
           <div className="segmented" role="radiogroup" aria-label="Listen model">
-            {LISTEN_MODELS.map((m) => (
+            {models.map((m) => (
               <button
                 key={m.id}
                 role="radio"
@@ -342,6 +393,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
             ))}
           </div>
         </div>
+        )}
 
         <Controls state={state} setState={setState} busy={busy} />
 
@@ -368,7 +420,7 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
               Start talking
             </button>
           )}
-          {actions.map((a) => {
+          {actions.filter((a) => !a.hidden).map((a) => {
             const f = fired[a.label]
             return (
               <button
@@ -386,6 +438,8 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
             {clock(elapsed)} / {clock(MAX_SECONDS)}
           </span>
         </div>
+
+        {Panel && <Panel state={state} status={status} messages={messages} playing={playing} audioStarts={audioStarts} fire={fire} />}
 
         {error && <p className="error" role="alert">{error}</p>}
 

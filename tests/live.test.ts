@@ -29,7 +29,8 @@ function probeListen(): Promise<string> {
     ws.onclose = (e) => (clearTimeout(timer), resolve([1000, 1005].includes(e.code) ? 'ok' : `closed ${e.code} ${e.reason}`))
   })
 }
-import { AGENT_URL, INPUT_RATE, LISTEN_MODELS, settingsMessage, type AgentAction, type AgentFeature } from '../shared/agent/feature'
+import { AGENT_URL, INPUT_RATE, listenIdsOf, settingsMessage, type AgentAction, type AgentAudio, type AgentFeature } from '../shared/agent/feature'
+import { encodeMic } from '../shared/agent/codec'
 import { existsSync, readFileSync } from 'node:fs'
 import { promptRequests, TOKEN_TTL_SECONDS } from '../shared/common/prompt'
 
@@ -345,38 +346,50 @@ async function speakEveryVariant(feature: TtsFeature<unknown>) {
 }
 
 // Voice agent: every variant with every listen model is sent as the first message, exactly as the
-// page sends it, and must come back SettingsApplied with no Error.
+// page sends it, and must come back SettingsApplied with no Error. A variant with expects.error must
+// come back that Error code instead; one with expects.warning must also get that Warning code.
 async function settleEveryVariant(feature: AgentFeature<unknown>) {
-  const one = (settings: unknown) =>
+  const one = (settings: unknown, expects: { error?: string; warning?: string } = {}) =>
     new Promise<string>((resolve) => {
       const ws = new WebSocket(AGENT_URL, ['token', process.env.DEEPGRAM_API_KEY ?? ''])
-      const timer = setTimeout(() => {
+      let applied = false
+      const warnings: string[] = []
+      const end = (r: string) => {
+        clearTimeout(timer)
         ws.close()
-        resolve('timed out')
-      }, 15_000)
+        resolve(r)
+      }
+      const timer = setTimeout(() => end(applied ? `no Warning ${expects.warning} in 5 s, got ${warnings.join(',') || 'none'}` : 'timed out'), 15_000)
       ws.onopen = () => ws.send(JSON.stringify(settings))
       ws.onmessage = (e) => {
         if (typeof e.data !== 'string') return
         const m = JSON.parse(e.data)
-        if (m.type === 'SettingsApplied' || m.type === 'Error') {
+        if (m.type === 'Warning') warnings.push(m.code)
+        if (m.type === 'Error') return end(expects.error && m.code === expects.error ? 'ok' : `Error: ${m.code} ${m.description ?? m.message}`)
+        if (m.type === 'SettingsApplied') {
+          if (expects.error) return end(`SettingsApplied, expected Error ${expects.error}`)
+          applied = true
+          if (!expects.warning) return end('ok')
           clearTimeout(timer)
-          ws.close()
-          resolve(m.type === 'Error' ? `Error: ${m.description ?? m.message}` : 'ok')
+          setTimeout(() => end(`no Warning ${expects.warning} in 5 s, got ${warnings.join(',') || 'none'}`), 5_000)
         }
+        if (applied && expects.warning && warnings.includes(expects.warning)) end('ok')
       }
       ws.onerror = () => {}
       ws.onclose = (e) => resolve(`closed ${e.code} ${e.reason}`)
     })
   const results = await Promise.all(
     feature.variants.flatMap((state) =>
-      LISTEN_MODELS.map(async (m) => ({ what: `${m.id} ${JSON.stringify(state)}`, r: await one(settingsMessage(feature, state, m.id)) })),
+      listenIdsOf(feature).map(async (id) => ({ what: `${id || 'own listen'} ${JSON.stringify(state)}`, r: await one(settingsMessage(feature, state, id), feature.expects?.(state)) })),
     ),
   )
   expect(results.filter((x) => x.r !== 'ok').map((x) => `${x.what} -> ${x.r}`)).toEqual([])
 }
 
 // Mid-call buttons: each action is sent after SettingsApplied (with mic silence flowing, as on the
-// page) and one of its ack messages must come back before any Error.
+// page) and one of its ack messages must come back before any Error. An action with ack [] expects
+// nothing back: no Error or Warning within 3 s is a pass. mic: 'off' stops the silence, as the page
+// stops the mic.
 async function sendEveryAction(feature: AgentFeature<unknown>) {
   const one = (settings: unknown, action: AgentAction) =>
     new Promise<string>((resolve) => {
@@ -390,16 +403,20 @@ async function sendEveryAction(feature: AgentFeature<unknown>) {
       }
       const timer = setTimeout(() => end(`no ${action.ack.join(' or ')} in 15 s`), 15_000)
       let sent = false
+      const silent = action.ack.length === 0
       ws.onopen = () => ws.send(JSON.stringify(settings))
       ws.onmessage = (e) => {
         if (typeof e.data !== 'string') return
         const m = JSON.parse(e.data)
         if (m.type === 'Error') return end(`Error: ${m.description ?? m.message}`)
+        if (sent && silent && m.type === 'Warning') return end(`Warning: ${m.code} ${m.description}`)
         if (m.type === 'SettingsApplied') {
           silence = setInterval(() => ws.readyState === 1 && ws.send(new Uint8Array(INPUT_RATE / 10 * 2)), 100)
           setTimeout(() => {
             sent = true
             ws.send(JSON.stringify(action.message))
+            if (action.mic === 'off') clearInterval(silence)
+            if (silent) setTimeout(() => end('ok'), 3_000)
           }, 1_500)
           return
         }
@@ -409,11 +426,13 @@ async function sendEveryAction(feature: AgentFeature<unknown>) {
       ws.onclose = (e) => end(`closed ${e.code} ${e.reason}`)
     })
   const results = await Promise.all(
-    feature.variants.flatMap((state) =>
-      LISTEN_MODELS.flatMap((m) =>
-        (feature.actions?.(state) ?? []).map(async (a) => ({ what: `${m.id} ${a.label}`, r: await one(settingsMessage(feature, state, m.id), a) })),
+    feature.variants
+      .filter((state) => !feature.expects?.(state)?.error)
+      .flatMap((state) =>
+        listenIdsOf(feature).flatMap((id) =>
+          (feature.actions?.(state) ?? []).map(async (a) => ({ what: `${id || 'own listen'} ${a.label}`, r: await one(settingsMessage(feature, state, id), a) })),
+        ),
       ),
-    ),
   )
   expect(results.filter((x) => x.r !== 'ok').map((x) => `${x.what} -> ${x.r}`)).toEqual([])
 }
@@ -536,9 +555,12 @@ function converse(settings: unknown, token: string, audio: ArrayBuffer, answer?:
       if (m.type === 'Error') return done(`Error: ${m.description ?? m.message}`)
       if (m.type === 'SettingsApplied') {
         if (!answer) return done()
-        const step = (INPUT_RATE * 2) / 10
-        const all = new Uint8Array(audio.byteLength + INPUT_RATE * 4)
-        all.set(new Uint8Array(audio))
+        // 16 kHz linear16 speech plus 2 s of silence, encoded to whatever audio.input the Settings names.
+        const pcm = new Uint8Array(audio.byteLength + INPUT_RATE * 4)
+        pcm.set(new Uint8Array(audio))
+        const input = (settings as { audio?: { input?: AgentAudio['input'] } }).audio?.input
+        const all = new Uint8Array(input ? encodeMic(pcm.buffer, input) : pcm.buffer)
+        const step = Math.round(all.length / (pcm.length / ((INPUT_RATE * 2) / 10)))
         for (let i = 0; i < all.length; i += step) {
           if (ws.readyState !== WebSocket.OPEN) return
           ws.send(all.slice(i, i + step))
@@ -548,6 +570,8 @@ function converse(settings: unknown, token: string, audio: ArrayBuffer, answer?:
       if (m.type === 'FunctionCallRequest' && answer) {
         for (const f of m.functions ?? []) {
           call = { name: f.name, args: JSON.parse(f.arguments || '{}') }
+          // A function with an endpoint is answered by that server, not by the page.
+          if (f.client_side === false) continue
           ws.send(JSON.stringify({ type: 'FunctionCallResponse', id: f.id, name: f.name, content: JSON.stringify(answer(f.name, call.args as Record<string, unknown>)) }))
         }
       }
@@ -685,4 +709,62 @@ describe.skipIf(!LIVE || withPrompt.length === 0).each(withPrompt)('live: prompt
     }
     expect(failed).toEqual([])
   }, 90_000)
+})
+
+// The optional agent hooks (2026-11-16), checked live on a stand-in feature so they stay covered
+// before any demo uses them: listen provider fields, top-level Settings fields, phone audio, a
+// stored agent config id, an expected Error and Warning, and mid-call messages with nothing to ack
+// (KeepAlive with the mic off), plus UpdateListen, UpdateThink, UpdateThink_Live, InjectUserMessage
+// and a dynamic InjectAgentMessage. Runs with no ONLY, or ONLY=agent-hooks.
+describe.skipIf(!LIVE || (only && !only.includes('agent-hooks')))('live: agent shell hooks', () => {
+  type H = { v: 'keyterms' | 'phone' | 'stored' | 'think-fast' | 'bad' }
+  const think = { provider: { type: 'open_ai', model: 'gpt-4o-mini' }, prompt: 'You are terse.' }
+  const speak = { provider: { type: 'deepgram', model: 'aura-2-thalia-en' } }
+  const thinkLive = { provider: { type: 'deepgram', version: 'v1', presence_check_max_count: 0 } }
+  // The one agent config stored in the demo key's project (GET /v1/projects/{id}/agents, 2026-11-16).
+  const STORED = '377c136a-5516-4824-8f54-0220d5ce2920'
+  const feature: AgentFeature<H> = {
+    kind: 'agent',
+    copy: { headline: '', lede: '', ctaTitle: '', ctaBody: '' },
+    links: { docs: '' },
+    initialState: { v: 'keyterms' },
+    variants: [{ v: 'keyterms' }, { v: 'phone' }, { v: 'think-fast' }, { v: 'bad' }],
+    listenModels: [{ id: 'flux-general-en', label: 'Flux' }],
+    listen: () => ({ version: 'v2', keyterms: ['Deepgram'], eot_threshold: 0.8, eager_eot_threshold: 0.5, eot_timeout_ms: 3000 }),
+    settings: () => ({ tags: ['devrel-demos-check'], flags: { history: false } }),
+    audio: ({ v }) => (v === 'phone' ? { input: { encoding: 'mulaw', sample_rate: 8000 }, output: { encoding: 'mulaw', sample_rate: 8000, container: 'none' } } : { input: { encoding: 'linear16', sample_rate: 16000 }, output: { encoding: 'linear16', sample_rate: 24000, container: 'none' } }),
+    agent: ({ v }) =>
+      v === 'stored'
+        ? STORED
+        : {
+            think: v === 'think-fast' ? { provider: { type: 'deepgram', model: 'think-fast' }, prompt: 'You are terse.' } : think,
+            speak: v === 'bad' ? { provider: { type: 'deepgram', model: 'aura-2-thalia-en', language: 'en' } } : speak,
+            think_live: thinkLive,
+          },
+    expects: ({ v }) => (v === 'think-fast' ? { warning: 'VOICE_PROMPT_ADDED' } : v === 'bad' ? { error: 'UNPARSABLE_CLIENT_MESSAGE' } : {}),
+    actions: () => [
+      { label: 'mute', message: { type: 'KeepAlive' }, ack: [], mic: 'off', repeatMs: 8000 },
+      { label: 'listen', message: { type: 'UpdateListen', listen: { provider: { type: 'deepgram', version: 'v2', model: 'flux-general-en', keyterms: ['Aura'] } } }, ack: ['ListenUpdated'] },
+      { label: 'think', message: { type: 'UpdateThink', think }, ack: ['ThinkUpdated'] },
+      { label: 'think live', message: { type: 'UpdateThink_Live', think_live: thinkLive }, ack: ['ThinkLiveUpdated'] },
+      { label: 'type', message: { type: 'InjectUserMessage', content: 'Say hi.' }, ack: ['ConversationText'], hidden: true },
+      // With nothing said yet the filler is often not worded: DYNAMIC_FILLER_UNAVAILABLE (2 of 3 in a
+      // probe, 2026-11-16). Either answer means the message was understood.
+      { label: 'filler', message: { type: 'InjectAgentMessage', behavior: 'default', is_dynamic: true }, ack: ['ConversationText', 'Warning'] },
+    ],
+    highlight: [],
+    events: [],
+    flushOnUserSpeech: () => true,
+    runLabel: () => '',
+    phrases: () => [],
+    Controls: () => null,
+  }
+
+  it('applies every Settings shape and acks every mid-call message', async () => {
+    expect(process.env.DEEPGRAM_API_KEY, 'DEEPGRAM_API_KEY missing from .env').toBeTruthy()
+    await settleEveryVariant(feature as AgentFeature<unknown>)
+    await sendEveryAction({ ...feature, variants: [{ v: 'keyterms' }] } as AgentFeature<unknown>)
+    // A stored config carries its own listen: no listen block, no toggle.
+    await settleEveryVariant({ ...feature, listenModels: [], variants: [{ v: 'stored' }] } as AgentFeature<unknown>)
+  }, 120_000)
 })

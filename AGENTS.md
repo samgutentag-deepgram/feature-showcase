@@ -56,7 +56,7 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 | `shared/common/` | Used by every kind: the contract types, request config, token fetch, mic capture, links, prompt builder, `demo.ts` (which page this is) |
 | `shared/stt/` | Speech-to-text page, socket stream, transcript pieces |
 | `shared/tts/` | Text-to-speech page, speak/socket/session/token helpers, shared voice lineups |
-| `shared/agent/` | Voice agent page and contract |
+| `shared/agent/` | Voice agent page and contract; `codec.ts` (mu-law and A-law for phone audio) |
 | `shared/main.tsx` | `mount(feature, info)`: picks the page from the feature's `kind`; each page's generated entry calls it |
 | `shared/page.html` | The HTML every demo page is filled from |
 | `index.html`, `index/` | The site root: `index/render.ts` fills `index.html` from `index/demos.json` (live tiles, in order) and `index/coming-soon.json` (backlog cards); `index/main.ts` is the chip and search filter; styles in `shared/styles/index.css` |

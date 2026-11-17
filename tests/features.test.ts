@@ -5,7 +5,7 @@ import { PLUMBING, describeRequest, requestParams, toQuery } from '../shared/com
 import type { Feature } from '../shared/common/feature'
 import type { TtsFeature } from '../shared/tts/feature'
 import { closeMidLine } from '../shared/tts/close'
-import { LISTEN_MODELS, settingsMessage, type AgentFeature } from '../shared/agent/feature'
+import { LISTEN_MODELS, listenIdsOf, listenModelsOf, settingsMessage, type AgentFeature } from '../shared/agent/feature'
 import { FEATURE, demoUrl, listDemos, readMeta } from '../vite.config'
 
 // Every folder under demos/ must be a complete demo: one folder is one page on the site.
@@ -166,25 +166,48 @@ describe.each(names.filter((n) => kinds[n] === 'tts'))('text-to-speech feature %
 })
 
 describe.each(names.filter((n) => kinds[n] === 'agent'))('voice agent feature %s', (name) => {
-  it('builds a whole Settings message for every variant and both listen models, Flux first', async () => {
+  it('builds a whole Settings message for every variant and every listen model, Flux first', async () => {
     const feature = (await import(`../demos/${name}/index.tsx`)).default as AgentFeature<unknown>
     expect(LISTEN_MODELS[0].id).toBe('flux-general-en')
+    const models = listenModelsOf(feature)
+    // Flux first whenever a demo offers it at all.
+    if (models.some((m) => m.id.startsWith('flux'))) expect(models[0].id).toMatch(/^flux/)
     for (const state of feature.variants) {
-      for (const m of LISTEN_MODELS) {
-        const s = settingsMessage(feature, state, m.id) as { type: string; agent: Record<string, unknown> }
+      for (const id of listenIdsOf(feature)) {
+        const s = settingsMessage(feature, state, id) as { type: string; agent: Record<string, unknown> | string }
         expect(s.type).toBe('Settings')
-        expect(s.agent.listen).toEqual({ provider: { type: 'deepgram', model: m.id } })
+        if (typeof s.agent === 'string') {
+          // A stored agent configuration: the id is the whole agent.
+          expect(s.agent).toMatch(/^[0-9a-f-]{36}$/)
+          continue
+        }
+        if (id && !feature.listen) expect(s.agent.listen).toEqual({ provider: { type: 'deepgram', model: id } })
+        if (id) expect(s.agent.listen).toMatchObject({ provider: { type: 'deepgram', model: id } })
+        else expect(s.agent.listen).toBeTruthy()
         expect(s.agent.think).toBeTruthy()
         expect(s.agent.speak).toBeTruthy()
       }
     }
   })
 
-  it('answers every function it offers', async () => {
+  it('answers every client-side function it offers', async () => {
     const feature = (await import(`../demos/${name}/index.tsx`)).default as AgentFeature<unknown>
     for (const state of feature.variants) {
-      const think = feature.agent(state).think as { functions?: Array<{ name: string }> }
-      for (const f of think.functions ?? []) expect(feature.onFunctionCall?.(f.name, {}, state)).toBeTruthy()
+      const agent = feature.agent(state)
+      if (typeof agent === 'string') continue
+      // think may be one provider or a fallback chain; functions with an endpoint run on that server.
+      const thinks = ([] as Array<{ functions?: Array<{ name: string; endpoint?: unknown }> }>).concat(agent.think as never)
+      for (const t of thinks)
+        for (const f of t.functions ?? []) if (!f.endpoint) expect(feature.onFunctionCall?.(f.name, {}, state)).toBeTruthy()
+    }
+  })
+
+  it('names every hidden action in a Panel that can fire it', async () => {
+    const feature = (await import(`../demos/${name}/index.tsx`)).default as AgentFeature<unknown>
+    for (const state of feature.variants) {
+      const hidden = (feature.actions?.(state) ?? []).filter((a) => a.hidden)
+      if (hidden.length) expect(feature.Panel, hidden.map((a) => a.label).join(', ')).toBeTruthy()
+      for (const a of feature.actions?.(state) ?? []) if (a.repeatMs) expect(a.mic, `${a.label}: repeatMs only runs while the mic is off`).toBe('off')
     }
   })
 })
