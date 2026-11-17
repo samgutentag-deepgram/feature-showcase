@@ -1,5 +1,5 @@
 <!-- Generated from the feature's index.tsx by shared/common/prompt.ts. Do not edit by hand. -->
-# Add Frustration Detection to a web app with Deepgram
+# Add Frustration detection to a web app with Deepgram
 
 Think Live reads every caller turn for frustration. Ask a calm question, then complain like it is your third call. Each annoyed turn sends FrustrationDetected with a running count, and once the count reaches your limit, escalated flips to true: your cue to hand the call to a person.
 

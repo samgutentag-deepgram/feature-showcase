@@ -1,5 +1,5 @@
 <!-- Generated from the feature's index.tsx by shared/llm/prompt.ts. Do not edit by hand. -->
-# Add Text Intelligence Callback to a web app with Deepgram
+# Add Text Intelligence callback to a web app with Deepgram
 
 Type or keep the support email. Deepgram answers the POST at once with a request_id, then delivers the summary to a webhook on this page's server, which checks the Basic Auth password it put in the callback URL.
 

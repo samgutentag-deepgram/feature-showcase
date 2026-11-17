@@ -84,7 +84,7 @@ export default defineAgentFeature<State>({
           Opt out of the voice prompt (<code>voice_prompt_opt_out</code>)
         </label>
         <p className="note">
-          <span className="vpo-tag">Early Access</span> Think-Fast only. In our runs the phone number came out spelled most
+          <span className="vpo-tag">Early access</span> Think-Fast only. In our runs the phone number came out spelled most
           times either way; the order number and time are where the opt-out shows.
         </p>
       </>

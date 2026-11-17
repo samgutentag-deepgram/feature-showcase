@@ -1,4 +1,4 @@
-# Text Intelligence Callback
+# Text Intelligence callback
 
 **Send the text. Get the summary later.** Type a support email, or keep the one in the box. Deepgram
 answers the `/v1/read` POST at once with a `request_id`, then delivers the summary to a webhook on

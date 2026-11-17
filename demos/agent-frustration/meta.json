@@ -1,5 +1,5 @@
 {
-  "title": "Frustration Detection | Deepgram",
+  "title": "Frustration detection | Deepgram",
   "description": "Complain to a Deepgram voice agent and watch Think Live count each frustrated turn, then flag the call for escalation at the limit you set.",
   "url": "https://dg-devrel-demos.fly.dev/demos/agent-frustration/"
 }
