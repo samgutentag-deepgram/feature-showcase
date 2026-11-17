@@ -1,0 +1,17 @@
+/* Think controls: the setting pickers and the replies table. var() only: literals live in styles/packs/. */
+.tc__field { display: flex; flex-direction: column; gap: 6px; }
+.tc__label { font-family: var(--dg-font-code); font-size: 13px; color: var(--dg-text-label); }
+.tc { display: flex; flex-direction: column; gap: 12px; padding: 14px 0 0; border-top: 1px solid var(--dg-border); }
+.tc__head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.tc__hint, .tc__empty { margin: 0; font-size: 13px; color: var(--dg-text-label); }
+.tc__table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tc__table th { text-align: left; font-weight: var(--dg-weight-medium); font-size: 12px; color: var(--dg-text-label); padding: 4px 8px 6px 0; border-bottom: 1px solid var(--dg-border); }
+.tc__table td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--dg-border); vertical-align: baseline; }
+.tc__num, .tc__setting { font-family: var(--dg-font-code); font-size: 12px; white-space: nowrap; color: var(--dg-text-label); }
+.tc__lat { position: relative; width: 9em; font-family: var(--dg-font-code); font-size: 12px; white-space: nowrap; }
+.tc__lat span:last-child { position: relative; }
+.tc__bar { position: absolute; left: 0; top: 50%; height: 14px; transform: translateY(-50%); background: var(--dg-accent-dim); border-radius: 2px; max-width: calc(100% - 8px); }
+.tc__text { color: var(--dg-text-body); }
+@media (max-width: 560px) {
+  .tc__table th:first-child, .tc__num { display: none; }
+}

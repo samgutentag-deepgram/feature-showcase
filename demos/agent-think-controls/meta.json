@@ -1,0 +1,5 @@
+{
+  "title": "Think controls | Deepgram",
+  "description": "Ask a Deepgram voice agent the same question at different LLM temperatures and reasoning efforts, and see the replies and first-token times change.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-think-controls/"
+}

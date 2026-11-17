@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-think-controls",
+      "platform": "Voice agent",
+      "headline": "Same question, new settings.",
+      "param": "agent.think.provider.temperature + reasoning_mode",
+      "flux": "agent"
     }
   ]
 }
