@@ -1,0 +1,16 @@
+/* Cancelled-orders panel. var() only: literals live in styles/packs/. */
+.deot-controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.deot { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.deot__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.deot__title { font-weight: var(--dg-weight-bold); }
+.deot__count { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.deot__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.deot__row { display: grid; grid-template-columns: 52px 76px 1fr; gap: 10px; align-items: baseline; font-size: 15px; overflow-wrap: anywhere; }
+.deot__ms { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.deot__order { font-family: var(--dg-font-mono); font-weight: var(--dg-weight-bold); }
+.deot__row--early .deot__order, .deot__row--early b { color: var(--dg-danger); }
+.deot__row b { font-weight: var(--dg-weight-medium); }
+@media (max-width: 520px) {
+  .deot__row { grid-template-columns: 44px 1fr; }
+  .deot__row > :last-child { grid-column: 1 / -1; }
+}

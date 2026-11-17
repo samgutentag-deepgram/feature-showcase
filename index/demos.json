@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-defer-until-eot",
+      "platform": "Voice agent",
+      "headline": "Cancel the right order.",
+      "param": "defer_until_eot",
+      "flux": "agent"
+    },
+    {
       "id": "agent-frustration",
       "platform": "Voice agent",
       "headline": "It knows when you are fed up.",

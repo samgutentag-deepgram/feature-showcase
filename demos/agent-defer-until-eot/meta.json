@@ -1,0 +1,5 @@
+{
+  "title": "Agent defer until end of turn | Deepgram",
+  "description": "Correct an order number mid-sentence and see whether the voice agent's cancel_order call goes out before you finish, with defer_until_eot off or on.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-defer-until-eot/"
+}
