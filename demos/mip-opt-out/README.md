@@ -41,4 +41,8 @@ FEATURE=mip-opt-out pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: pnpm verify:live opened /v2/listen (flux-general-en) and /v1/listen (nova-3) with mip_opt_out=false and =true, all four accepted; prompt.md and the docs link resolved.
+```

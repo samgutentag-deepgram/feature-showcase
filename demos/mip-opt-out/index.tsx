@@ -6,6 +6,7 @@
 //   the same transcript; mip_opt_out=banana fails the handshake on both, so the value is parsed.
 //   No Connected, TurnInfo, Results, or Metadata message mentions mip_opt_out.
 //   /v1/listen pre-recorded: true and false give the same transcript and the same metadata fields.
+// Verified live 2026-11-16: pnpm verify:live opened /v2/listen (flux-general-en) and /v1/listen (nova-3) with mip_opt_out=false and =true, all four accepted; prompt.md and the docs link resolved.
 import { defineFeature, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import { finalTranscript } from '../../shared/stt/stream'
