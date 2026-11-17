@@ -935,7 +935,7 @@
       "what": "Show the session request_id and when settings land.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-welcome-message",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-errors-warnings",

@@ -1,0 +1,29 @@
+/* The handshake panel. var() only: literals live in styles/packs/. */
+.hs { display: grid; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--dg-line-hairline); }
+.hs__head { display: grid; gap: 2px; }
+.hs__title { font-weight: var(--dg-weight-bold); color: var(--dg-ink-primary); }
+.hs__buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.hs__btn { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.hs__code { font-family: var(--dg-font-mono); font-size: 11px; text-transform: none; color: var(--dg-signal-ga); }
+.hs__code.is-error { color: var(--dg-accent); }
+.hs__run { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--dg-line-hairline); border-radius: var(--dg-radius-md); background: var(--dg-surface-raised); }
+.hs__what { margin: 0; color: var(--dg-ink-secondary); }
+.hs__times { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.hs__times div { display: grid; gap: 2px; }
+.hs__times dt { font-family: var(--dg-font-mono); font-size: 11px; color: var(--dg-ink-muted); }
+.hs__times dd { margin: 0; font-weight: var(--dg-weight-bold); color: var(--dg-ink-primary); }
+.hs__id { margin: 0; font-size: 14px; color: var(--dg-ink-secondary); overflow-wrap: anywhere; }
+.hs__steps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 14px; }
+.hs__step { display: grid; grid-template-columns: 64px 96px auto 1fr; gap: 8px; align-items: baseline; }
+.hs__ms, .hs__dir { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.hs__label { font-family: var(--dg-font-mono); font-weight: var(--dg-weight-bold); color: var(--dg-ink-primary); }
+.hs__step.is-error .hs__label { color: var(--dg-accent); }
+.hs__detail { color: var(--dg-ink-secondary); overflow-wrap: anywhere; }
+.hs__live { margin: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .hs__times { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hs__step { grid-template-columns: 56px 1fr; }
+  .hs__dir { display: none; }
+  .hs__detail { grid-column: 1 / -1; }
+}
