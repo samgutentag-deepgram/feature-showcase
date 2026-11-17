@@ -1,0 +1,42 @@
+/* Utterances as timed rows. var() only: literals live in styles/packs/. */
+
+.utt__head {
+  margin: 0 0 12px;
+  font-family: var(--dg-font-mono);
+  font-size: 13px;
+  color: var(--dg-text-label);
+}
+.utt__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.utt__row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  border-left: 3px solid var(--dg-voice-1);
+  padding-left: 12px;
+}
+.utt__item:nth-child(even) .utt__row { border-left-color: var(--dg-voice-2); }
+.utt__time,
+.utt__conf,
+.utt__gap {
+  font-family: var(--dg-font-mono);
+  font-size: 12px;
+  color: var(--dg-text-label);
+  white-space: nowrap;
+}
+.utt__gap { margin: 0 0 6px 15px; white-space: normal; }
+.utt__text {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+.runs--compare .utt__row { grid-template-columns: minmax(0, 1fr) auto; }
+.runs--compare .utt__time { grid-column: 1 / -1; }
+.runs--compare .utt__text { font-size: 17px; }
+
+@media (max-width: 760px) {
+  .utt__row { grid-template-columns: minmax(0, 1fr) auto; }
+  .utt__time { grid-column: 1 / -1; }
+  .utt__text { font-size: 17px; }
+}

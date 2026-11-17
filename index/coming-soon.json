@@ -116,7 +116,7 @@
       "what": "Segment audio into utterances and slide the pause length that splits them.",
       "models": "Pre-recorded only",
       "docs": "https://developers.deepgram.com/docs/utterances",
-      "built": false
+      "built": true
     },
     {
       "id": "diarize",

@@ -1,0 +1,5 @@
+{
+  "title": "Utterances | Deepgram",
+  "description": "Record a few lines with short and long pauses, and see Nova-3 split them into timed utterances at the utt_split you pick.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/utterances/"
+}
