@@ -1,0 +1,39 @@
+/* Two language pickers and the tag on each run. var() only: literals live in styles/packs/. */
+
+.ls-pickers { flex-direction: row; gap: 12px; flex-wrap: wrap; }
+
+.ls-picker { display: flex; flex-direction: column; gap: 6px; flex: 1 1 220px; }
+.ls-picker[data-slot='spoken'] { --slot: var(--dg-voice-1); }
+.ls-picker[data-slot='sent'] { --slot: var(--dg-voice-2); }
+.ls-picker__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ls-picker select {
+  font: inherit;
+  font-size: 16px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--slot);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.ls-picker select:disabled { color: var(--dg-text-label); }
+
+/* ---- one run ------------------------------------------------------------ */
+.ls-tag { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
+.ls-chip {
+  background: var(--slot);
+  color: var(--dg-text-on-accent);
+  border-radius: var(--dg-shape-pill);
+  padding: 3px 12px;
+  font-size: 14px;
+  font-weight: var(--dg-weight-medium);
+}
+.ls-chip[data-slot='spoken'] { --slot: var(--dg-voice-1); }
+.ls-chip[data-slot='sent'] { --slot: var(--dg-voice-2); font-family: var(--dg-font-code); }
+/* A wrong pick turns the sent chip orange. */
+.ls-tag[data-match='false'] .ls-chip[data-slot='sent'] { --slot: var(--dg-voice-other); }
+
+.ls-verdict { margin: 12px 0 0; font-size: 15px; color: var(--dg-text-label); }
+
+/* A whole sentence, so it wraps between words. */
+.ls-echo { white-space: normal; }

@@ -26,7 +26,7 @@
       "what": "Switch the transcription language and watch accuracy change on foreign audio.",
       "models": "Nova-3, Nova-2 (v1 only)",
       "docs": "https://developers.deepgram.com/docs/language",
-      "built": false
+      "built": true
     },
     {
       "id": "multilingual-code-switching",
