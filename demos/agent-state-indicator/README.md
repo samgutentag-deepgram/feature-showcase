@@ -72,4 +72,19 @@ FEATURE=agent-state-indicator pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Agent state indicator: a live listening / user speaking / thinking / agent speaking light, driven
+only by what the Voice Agent API actually sends. Checked live 2026-11-16 with one short exchange
+per listen model (greeting, then a 2.3 s spoken question), every server message timed:
+  Flux:   Welcome, SettingsApplied, audio, ConversationText (assistant), History, AgentAudioDone,
+          UserStartedSpeaking, ConversationText (user), History, EndOfTurn (same ms), audio 0.6 s
+          later with ConversationText (assistant), AgentAudioDone.
+  Nova-3: the same order without EndOfTurn.
+AgentThinking and AgentStartedSpeaking never arrived on either model, though the outputs page and
+the API reference list them. EndOfTurn arrives on Flux but is not documented. So thinking starts at
+EndOfTurn or the user's ConversationText, whichever comes first, and speaking is the page's own
+first audio chunk (audioStarts) until local playback runs out.
+Verified live 2026-11-16: verify:live sent the Settings message with Flux and Nova-3 listen, both came back SettingsApplied; docs links resolved.
+```

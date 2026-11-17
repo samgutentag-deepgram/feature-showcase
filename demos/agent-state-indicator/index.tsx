@@ -9,6 +9,7 @@
 // the API reference list them. EndOfTurn arrives on Flux but is not documented. So thinking starts at
 // EndOfTurn or the user's ConversationText, whichever comes first, and speaking is the page's own
 // first audio chunk (audioStarts) until local playback runs out.
+// Verified live 2026-11-16: verify:live sent the Settings message with Flux and Nova-3 listen, both came back SettingsApplied; docs links resolved.
 import type { AgentMessage } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
 import './styles.css'
