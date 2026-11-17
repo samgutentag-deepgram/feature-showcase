@@ -818,7 +818,7 @@
       "what": "Change agent instructions mid-conversation.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-update-prompt",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-update-speak",

@@ -1,0 +1,15 @@
+/* Prompt panel: style buttons, the prompt in effect, and replies tagged with it. */
+.prompt-panel { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+.prompt-panel__styles { display: flex; flex-wrap: wrap; gap: 10px; }
+.prompt-panel__prompt { display: flex; flex-direction: column; gap: 6px; }
+.prompt-panel__prompt p { margin: 0 0 8px; font-size: 15px; line-height: 1.45; color: var(--dg-ink-primary); overflow-wrap: anywhere; }
+.prompt-panel__label { font-family: var(--dg-font-mono); font-size: 12px; letter-spacing: var(--dg-tracking-label); text-transform: uppercase; color: var(--dg-ink-muted); }
+.prompt-panel__prompt p.prompt-panel__added { background: var(--dg-accent-dim); border-radius: var(--dg-radius-sm); padding: 6px 10px; }
+.prompt-panel__prompt p.prompt-panel__none { color: var(--dg-ink-muted); }
+.prompt-panel__replies { list-style: none; margin: 0; padding: 12px 0 0; border-top: 1px solid var(--dg-line-hairline); display: flex; flex-direction: column; gap: 8px; }
+.prompt-panel__replies li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; align-items: baseline; font-size: 15px; color: var(--dg-ink-primary); overflow-wrap: anywhere; }
+.prompt-panel__tag { font-family: var(--dg-font-mono); font-size: 11px; text-transform: uppercase; color: var(--dg-ink-muted); border: 1px solid var(--dg-line-hairline); border-radius: var(--dg-radius-pill); padding: 2px 8px; justify-self: start; }
+.prompt-panel__tag.is-added { color: var(--dg-ink-primary); border-color: var(--dg-accent); background: var(--dg-accent-dim); }
+@media (max-width: 520px) {
+  .prompt-panel__replies li { grid-template-columns: 1fr; gap: 4px; }
+}

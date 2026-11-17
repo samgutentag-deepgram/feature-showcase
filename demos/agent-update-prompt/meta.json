@@ -1,0 +1,5 @@
+{
+  "title": "UpdatePrompt | Deepgram",
+  "description": "Change a Deepgram voice agent's instructions mid-call with UpdatePrompt: make it a pirate, a Spanish speaker or terse, and ask again without reconnecting.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-update-prompt/"
+}

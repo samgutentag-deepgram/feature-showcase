@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-update-prompt",
+      "platform": "Voice agent",
+      "headline": "Rewrite its instructions mid-call.",
+      "param": "UpdatePrompt",
+      "flux": "agent"
     }
   ]
 }
