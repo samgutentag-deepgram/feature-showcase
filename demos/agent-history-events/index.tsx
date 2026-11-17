@@ -9,6 +9,7 @@
 //   and agent.context still works.
 //   The docs nest it as settings.flags.history, which fails UNPARSABLE_CLIENT_MESSAGE; top-level
 //   flags.history is what works.
+// Verified live 2026-11-16: pnpm verify:live applied both Settings (flags.history true and false) on Flux and Nova-3, the docs link resolved, and the prompt's phrase spoken to the agent came back as get_store_hours {"store":"Portland"}.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentMessage } from '../../shared/agent/feature'
 import './styles.css'

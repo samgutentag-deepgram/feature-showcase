@@ -68,4 +68,6 @@ FEATURE=agent-history-events pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: pnpm verify:live applied both Settings (flags.history true and false) on Flux and Nova-3, the docs link resolved, and the prompt's phrase spoken to the agent came back as get_store_hours {"store":"Portland"}.
+```
