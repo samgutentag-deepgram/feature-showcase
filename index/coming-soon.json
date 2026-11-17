@@ -17,7 +17,7 @@
       "what": "Pin an older model version and diff it against latest.",
       "models": "Nova and older (pre-recorded, streaming v1)",
       "docs": "https://developers.deepgram.com/docs/version",
-      "built": false
+      "built": true
     },
     {
       "id": "nova3-medical",
