@@ -50,4 +50,4 @@ FEATURE=agent-multilingual pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: verify:live sent the Settings message for both voices (aura-2-javier-es v1, flux-carmen-es v2) with both listen models (flux-general-multi with language_hints en and es, nova-3 with language multi), all came back SettingsApplied, and the prompt.md Settings applied with a granted token. A say-clip call on the default Settings heard "What time do you open on Saturday?" as languages ["en"] and answered "We open at eleven on Saturday.", then "¿A qué hora abren el sábado?" as languages ["es"] and answered "Abrimos a las once el sábado.", both in aura-2-javier-es.

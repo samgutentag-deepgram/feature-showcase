@@ -13,6 +13,7 @@
 // is aura-2-javier-es, one of the five Aura-2 voices the docs list as switching between English and
 // Spanish. Before "Write numbers and times as words" went into the prompt, aura-2-selena-es and
 // flux-carmen-es both read "11 AM" in an English reply as "once de la mañana".
+// Verified live 2026-11-16: verify:live sent the Settings message for both voices (aura-2-javier-es v1, flux-carmen-es v2) with both listen models (flux-general-multi with language_hints en and es, nova-3 with language multi), all came back SettingsApplied, and the prompt.md Settings applied with a granted token. A say-clip call on the default Settings heard "What time do you open on Saturday?" as languages ["en"] and answered "We open at eleven on Saturday.", then "¿A qué hora abren el sábado?" as languages ["es"] and answered "Abrimos a las once el sábado.", both in aura-2-javier-es.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
 import './styles.css'
