@@ -28,6 +28,9 @@ export interface AgentFeature<S> {
   flushOnUserSpeech(state: S): boolean
   // Answers a client-side function call. The result is sent back as FunctionCallResponse.content.
   onFunctionCall?(name: string, args: Json, state: S): Json
+  // Wait this many ms before sending that FunctionCallResponse, e.g. to stand in for a slow lookup
+  // so Think Live filler has a wait to cover. The answer is still worked out at once. Default 0.
+  functionDelayMs?(name: string, state: S): number
   // The call the test phrase should produce. prompt.md shows it with its answer, and verify:live
   // speaks the phrase to the agent and checks this call comes back.
   functionExample?: { name: string; args: Json }
