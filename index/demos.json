@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-speculative-replies",
+      "platform": "Voice agent",
+      "headline": "Does the agent think before you finish?",
+      "param": "eager_eot_threshold",
+      "flux": "agent"
+    },
+    {
       "id": "agent-reusable-config",
       "platform": "Voice agent",
       "headline": "Send an id, not the whole agent.",
