@@ -719,7 +719,7 @@
       "what": "Block words the agent must never say.",
       "models": "Think Live",
       "docs": "https://developers.deepgram.com/docs/voice-agent-think-live",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-function-filler",

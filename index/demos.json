@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-restricted-terms",
+      "platform": "Voice agent",
+      "headline": "Keep words out of its mouth.",
+      "param": "agent.think_live.provider.restricted_terms",
+      "flux": "agent"
     }
   ]
 }
