@@ -1,0 +1,34 @@
+/* Keyterm input and the heard panel. var() only: literals live in styles/packs/. */
+
+.kt-field { gap: 10px; }
+.kt-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+.kt-input:disabled { color: var(--dg-text-label); border-left-color: var(--dg-border-hover); }
+
+.kt-heard { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; }
+.kt-heard__line { margin: 0; font-size: 18px; line-height: 1.45; color: var(--dg-text-primary); }
+.kt-heard__line mark {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
+.kt-heard__tally { margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.kt-tag {
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-shape-pill);
+  padding: 2px 8px;
+  color: var(--dg-text-label);
+}
+.kt-tag.is-hit { background: var(--dg-accent-dim); color: var(--dg-text-primary); }

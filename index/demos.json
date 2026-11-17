@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-keyterms",
+      "platform": "Voice agent",
+      "headline": "Did it hear Kallistrum?",
+      "param": "listen.provider.keyterms",
+      "flux": "agent"
     }
   ]
 }
