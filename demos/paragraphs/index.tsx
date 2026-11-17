@@ -7,6 +7,10 @@
 // macOS `say` clips, Deepgram started a new paragraph after every fifth sentence: a 6 s pause or a
 // change of subject inside five sentences did not start one. So each topic in the phrase is five
 // sentences, and the break lands on the change of subject.
+// Verified live 2026-11-16: POST /v1/listen?model=nova-3&punctuate=true&paragraphs=true on a macOS say
+// clip of the phrase (20 s) came back as 2 paragraphs of 5 sentences each, the break at 9.04 s to
+// 10.33 s on the change of subject; paragraphs=false came back with the same punctuated transcript and
+// no paragraphs. ONLY=paragraphs pnpm verify:live passed both variants.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { EmptyTranscript, PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

@@ -64,4 +64,11 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: POST /v1/listen?model=nova-3&punctuate=true&paragraphs=true on a macOS say
+clip of the phrase (20 s) came back as 2 paragraphs of 5 sentences each, the break at 9.04 s to
+10.33 s on the change of subject; paragraphs=false came back with the same punctuated transcript and
+no paragraphs. ONLY=paragraphs pnpm verify:live passed both variants.
+```
