@@ -31,7 +31,7 @@ FEATURE=agent-function-filler pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: verify:live sent both Settings variants (filler on and off) with Flux and Nova-3 listen, all came back SettingsApplied, and the spoken order question came back as FunctionCallRequest get_order_status {"order_id":"4815"}; docs links resolved.
 
 Probed 2026-11-16 (Agent API, gpt-4o-mini, answer held 3 s): filler on gave a ConversationText
 tagged `filler` 0.24 to 0.50 s after `FunctionCallRequest` in 7 of 7 runs, Flux and Nova-3

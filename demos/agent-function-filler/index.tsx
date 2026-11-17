@@ -10,6 +10,7 @@
 //   "Function 'get_order_status': agent filler needs agent.think_live".
 //   The filler line does not always fit: twice it said "using your email address" when the caller
 //   had given an order number.
+// Verified live 2026-11-16: verify:live sent both Settings variants (filler on and off) with Flux and Nova-3 listen, all came back SettingsApplied, and the spoken order question came back as FunctionCallRequest get_order_status {"order_id":"4815"}; docs links resolved.
 import { useRef } from 'react'
 import type { Json } from '../../shared/common/feature'
 import type { AgentMessage } from '../../shared/agent/feature'
