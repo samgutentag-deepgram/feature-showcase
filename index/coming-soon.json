@@ -593,7 +593,7 @@
       "what": "Make the agent hear product names correctly.",
       "models": "Nova-3 and Flux",
       "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-flux-turn-tuning",

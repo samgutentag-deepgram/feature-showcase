@@ -1,0 +1,5 @@
+{
+  "title": "Agent keyterms | Deepgram",
+  "description": "Say a made-up product name to a Deepgram voice agent, then send it as a listen keyterm and hear the agent repeat it back right, on Flux or Nova-3.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-keyterms/"
+}
