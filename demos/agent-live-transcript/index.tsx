@@ -6,13 +6,18 @@
 //   audio chunk of that sentence (same 10 ms tick), not when its audio ends. A two-sentence reply
 //   came as two messages 2.0 s apart; the greeting (two short sentences) came as one.
 //   User text arrives once per turn, after the user stops: Flux sent it with EndOfTurn, 1.2 to
-//   3.1 s after the turn's first UserStartedSpeaking (the speaking itself included). No interim user ConversationText arrived on either model.
+//   3.1 s after the turn's first UserStartedSpeaking (the speaking itself included).
+//   No interim user ConversationText arrived on either model.
 //   Nova-3 split "Stop. What is two plus two?" into two user lines; Flux sent it as one. Flux user
 //   lines also carry "words": [] (not in the docs).
 //   Barge-in (talking 1.9 s into a four-sentence reply): UserStartedSpeaking and AgentAudioDone
 //   came together after 3.35 s of reply audio. The sentence that was playing had already been sent
 //   in full, and no ConversationText came for the sentences after it, on both models. The next
 //   reply came as usual.
+// Verified live 2026-11-16: ONLY=agent-live-transcript pnpm verify:live passed. Both Settings
+// variants (long and one-sentence answers) came back SettingsApplied on Flux and Nova-3, and the
+// docs link resolved. ConversationText timing and barge-in behavior above come from separate live
+// probes the same day.
 // The panel groups assistant sentences into one reply and marks a reply interrupted when
 // UserStartedSpeaking arrives before its AgentAudioDone, or while its audio is still playing here.
 import { useRef } from 'react'

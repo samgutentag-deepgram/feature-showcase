@@ -63,4 +63,9 @@ FEATURE=agent-live-transcript pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=agent-live-transcript pnpm verify:live passed. Both Settings
+variants (long and one-sentence answers) came back SettingsApplied on Flux and Nova-3, and the
+docs link resolved. ConversationText timing and barge-in behavior above come from separate live
+probes the same day.
+```
