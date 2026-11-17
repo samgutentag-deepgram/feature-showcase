@@ -890,7 +890,7 @@
       "what": "Push-to-talk agent: release the button to end your turn.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-force-end-turn",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-barge-in",

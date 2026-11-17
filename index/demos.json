@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-force-end-turn",
+      "platform": "Voice agent",
+      "headline": "Let go to end your turn.",
+      "param": "ForceEndTurn",
+      "flux": "agent"
+    },
+    {
       "id": "agent-audio-io",
       "platform": "Voice agent",
       "headline": "Talk to the agent over a phone line.",

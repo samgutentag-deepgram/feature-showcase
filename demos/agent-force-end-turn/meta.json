@@ -1,0 +1,5 @@
+{
+  "title": "Agent force end turn | Deepgram",
+  "description": "Hold a button while you talk to a voice agent and let go to end your turn: ForceEndTurn makes the agent answer at once.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-force-end-turn/"
+}
