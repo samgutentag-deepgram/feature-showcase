@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "stt-keepalive",
+      "platform": "Speech-to-text",
+      "headline": "Go quiet for 12 seconds. Is Deepgram still listening?",
+      "param": "KeepAlive",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",

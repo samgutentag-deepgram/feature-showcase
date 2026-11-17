@@ -314,7 +314,7 @@
       "what": "Keep a silent stream open past the 10 second timeout.",
       "models": "Nova streaming only",
       "docs": "https://developers.deepgram.com/docs/audio-keep-alive",
-      "built": false
+      "built": true
     },
     {
       "id": "finalize",
