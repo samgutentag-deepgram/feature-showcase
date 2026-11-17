@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "raw-audio-format",
+      "platform": "Speech-to-text",
+      "headline": "Raw audio has no header. Say what it is.",
+      "param": "encoding=mulaw&sample_rate=8000",
+      "flux": "works"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
