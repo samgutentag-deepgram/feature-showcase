@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-speak-controls",
+      "platform": "Voice agent",
+      "headline": "Set how fast it talks, and how lively.",
+      "param": "speak.provider.speed + expressivity",
+      "flux": "agent"
     }
   ]
 }
