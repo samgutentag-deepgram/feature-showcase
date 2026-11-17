@@ -17,6 +17,7 @@
 // and talking again cancels it (barge-in). On nova-3 the agent split the line into turns and made no
 // early call, so this page offers Flux only.
 // The server also echoes each FunctionCallResponse back to the client.
+// Verified live 2026-11-16: ONLY=agent-defer-until-eot pnpm verify:live passed. Both Settings (cancel_order with and without defer_until_eot, flux-general-en v2) came back SettingsApplied, the docs link resolved, and the prompt's phrase spoken to the prompt.md Settings (defer_until_eot true) came back as cancel_order {"order_id":"B5678"}. The early-call and FunctionCallCancelled timings above come from separate live probes the same day.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentMessage } from '../../shared/agent/feature'
 import './styles.css'

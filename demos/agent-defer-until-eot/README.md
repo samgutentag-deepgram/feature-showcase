@@ -74,4 +74,6 @@ FEATURE=agent-defer-until-eot pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=agent-defer-until-eot pnpm verify:live passed. Both Settings (cancel_order with and without defer_until_eot, flux-general-en v2) came back SettingsApplied, the docs link resolved, and the prompt's phrase spoken to the prompt.md Settings (defer_until_eot true) came back as cancel_order {"order_id":"B5678"}. The early-call and FunctionCallCancelled timings above come from separate live probes the same day.
+```
