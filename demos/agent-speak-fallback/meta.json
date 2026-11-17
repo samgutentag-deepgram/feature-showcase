@@ -1,0 +1,5 @@
+{
+  "title": "Speak fallback | Deepgram",
+  "description": "Break the first voice in a Deepgram agent.speak array and hear the next one take over, with the SPEAK_REQUEST_FAILED warnings and timing.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-speak-fallback/"
+}

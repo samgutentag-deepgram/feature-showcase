@@ -1,0 +1,44 @@
+/* The fallback chain panel. var() only: literals live in styles/packs/. */
+.sf-order { display: flex; flex-direction: column; gap: 4px; }
+.sf { display: flex; flex-direction: column; gap: 10px; padding: 14px 0 0; border-top: 1px solid var(--dg-border); }
+.sf__head { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+.sf__title { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.sf__meta { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.sf__chain { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.sf__chain li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-radius-sm);
+  color: var(--dg-text-body);
+}
+.sf__chain li.is-failed { border-color: var(--dg-state-error); }
+.sf__chain li.is-failed .sf__model { text-decoration: line-through; }
+.sf__chain li.is-failed .sf__state { color: var(--dg-state-error); }
+.sf__chain li.is-spoke { border-color: var(--dg-state-live); }
+.sf__chain li.is-spoke .sf__state { color: var(--dg-text-primary); font-weight: var(--dg-weight-medium); }
+.sf__pos { font-family: var(--dg-font-code); color: var(--dg-text-primary); }
+.sf__name { font-size: 14px; color: var(--dg-text-primary); }
+.sf__model { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.sf__state { margin-left: auto; font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.sf__times { margin: 0; font-size: 13px; color: var(--dg-text-body); }
+.sf__scroll { overflow-x: auto; }
+.sf__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sf__table th {
+  text-align: left;
+  font-family: var(--dg-font-code);
+  font-size: 11px;
+  font-weight: var(--dg-weight-medium);
+  letter-spacing: var(--dg-type-label-tracking);
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+  padding: 4px 10px 6px 0;
+  border-bottom: 1px solid var(--dg-border);
+  white-space: nowrap;
+}
+.sf__table td { padding: 6px 10px 6px 0; border-bottom: 1px solid var(--dg-border); color: var(--dg-text-body); }
+.sf__num, .sf__val { font-family: var(--dg-font-code); white-space: nowrap; color: var(--dg-text-primary); }
+.sf__legend { margin: 0; font-size: 12px; color: var(--dg-text-label); }

@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-speak-fallback",
+      "platform": "Voice agent",
+      "headline": "Keep talking when a voice fails.",
+      "param": "agent.speak as an array",
+      "flux": "agent"
     }
   ]
 }
