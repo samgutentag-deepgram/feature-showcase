@@ -5,6 +5,7 @@
 // the socket stayed open. Without it, speech_final came after 1.21 s of silence. endpointing=1500 or
 // 2000 never sent speech_final on the words (an is_final without it, then nothing), so the page
 // uses 1000. Flux answers Finalize with Error UNPARSABLE_CLIENT_MESSAGE and closes the socket.
+// Verified live 2026-11-16: verify:live opened /v1/listen?model=nova-3&endpointing=1000, streamed the phrase, sent {"type":"Finalize"} and got Results from_finalize back on an open socket; in a scripted probe with a macOS say clip, Finalize answered in 38 to 113 ms, speech_final alone after 1.21 s of silence.
 import { defineFeature, type Json, type Params, type Run, type SttEvent } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
