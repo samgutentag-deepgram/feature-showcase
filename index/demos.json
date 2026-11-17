@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "mip-opt-out",
+      "platform": "Speech-to-text",
+      "headline": "Opt out. Same transcript.",
+      "param": "mip_opt_out",
+      "flux": "works"
+    },
+    {
       "id": "search",
       "platform": "Speech-to-text",
       "headline": "Did they say Kallistrum? Search can tell.",

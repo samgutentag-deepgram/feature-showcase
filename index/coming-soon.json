@@ -278,7 +278,7 @@
       "what": "Opt a request out of the Model Improvement Program. Also on TTS, agent, LLM.",
       "models": "All endpoints (pricing impact)",
       "docs": "https://developers.deepgram.com/docs/the-deepgram-model-improvement-partnership-program",
-      "built": false
+      "built": true
     },
     {
       "id": "turn-detection",
