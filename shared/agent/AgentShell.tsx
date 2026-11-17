@@ -324,8 +324,16 @@ export function AgentShell<S>({ feature }: { feature: AgentFeature<S> }) {
           }
           const content = JSON.stringify(feature.onFunctionCall(String(f.name), args, runState))
           const reply = { type: 'FunctionCallResponse', id: f.id, name: f.name, content }
-          sock.send(JSON.stringify(reply))
-          add({ type: 'FunctionCallResponse (sent)', detail: content })
+          const answer = () => {
+            if (sock.readyState !== WebSocket.OPEN) return
+            sock.send(JSON.stringify(reply))
+            add({ type: 'FunctionCallResponse (sent)', detail: content })
+          }
+          const wait = feature.functionDelayMs?.(String(f.name), runState) ?? 0
+          if (wait > 0) {
+            add({ type: 'FunctionCallResponse (held)', detail: `answering in ${(wait / 1000).toFixed(1)} s` })
+            setTimeout(answer, wait)
+          } else answer()
         }
         return
       }
