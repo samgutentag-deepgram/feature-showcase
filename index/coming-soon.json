@@ -386,7 +386,7 @@
       "what": "Cap how long silence can last before a turn is forced to end.",
       "models": "Flux only",
       "docs": "https://developers.deepgram.com/docs/flux/configuration",
-      "built": false
+      "built": true
     },
     {
       "id": "flux-force-end-turn",

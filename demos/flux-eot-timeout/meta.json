@@ -1,0 +1,5 @@
+{
+  "title": "Flux end-of-turn timeout | Deepgram",
+  "description": "Trail off and stay quiet: see how much silence Flux allows before eot_timeout_ms forces EndOfTurn, and whether the model or the timeout ended it.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-eot-timeout/"
+}
