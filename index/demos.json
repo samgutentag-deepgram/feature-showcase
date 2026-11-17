@@ -430,6 +430,13 @@
       "flux": "agent"
     },
     {
+      "id": "think-generation-controls",
+      "platform": "LLM",
+      "headline": "Same question twice. Same answer?",
+      "param": "\"temperature\": 0",
+      "flux": "think"
+    },
+    {
       "id": "think-tools",
       "platform": "LLM",
       "headline": "Let the model call your functions.",
