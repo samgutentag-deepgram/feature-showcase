@@ -5,6 +5,7 @@
 // router text: extended returned Deepgram's own topics plus "shipping delay" in one segment; strict
 // returned only custom topics, at most one, never "password reset" (not in the text), and came back
 // with empty segments on some repeats of the same request.
+// Verified live 2026-11-16: ONLY=custom-topics pnpm verify:live passed (both modes on /v1/read and /v1/listen, plus prompt.md). By hand with topics "refund, shipping delay, password reset": /v1/read on the router text, extended gave Router delivery, shipping delay 32%, Refund request 79%; strict gave shipping delay 25% on one try and empty segments on the next. /v1/listen on the spoken phrase, extended gave Router shipment and Refund request 17%; strict gave refund 57%. password reset never came back in strict.
 import { defineLlmFeature } from '../../shared/llm/feature'
 import { analysis, type Segment } from '../../shared/llm/request'
 import type { Params } from '../../shared/common/feature'
