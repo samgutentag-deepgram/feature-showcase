@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "multilingual-code-switching",
+      "platform": "Speech-to-text",
+      "headline": "Two languages, one sentence?",
+      "param": "language=multi",
+      "flux": "built-in"
+    },
+    {
       "id": "nova3-medical",
       "platform": "Speech-to-text",
       "headline": "Lisinopril, or listen?",
