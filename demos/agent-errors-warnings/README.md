@@ -64,4 +64,6 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=agent-errors-warnings pnpm verify:live passed. With Flux and Nova-3 listening, the unknown think model came back Error INVALID_SETTINGS, greeting 42 came back Error UNPARSABLE_CLIENT_MESSAGE, think-fast came back SettingsApplied with Warning VOICE_PROMPT_ADDED, the fallback and inject Settings applied, and each mid-call message was answered (Ask a question with a Warning, Ask for a story and Inject while it talks with ConversationText or a Warning); the prompt.md Settings worked with a granted token.
+
+The per-case probes behind the table above are recorded at the top of [`index.tsx`](index.tsx).

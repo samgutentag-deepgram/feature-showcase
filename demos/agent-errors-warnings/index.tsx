@@ -16,6 +16,12 @@
 // UNPARSABLE_CLIENT_MESSAGE, and a second Settings gave SETTINGS_ALREADY_APPLIED, each closing the
 // socket at once, but pnpm verify:live has no way to expect an Error from a mid-call message yet.
 // Docs mismatch: VOICE_PROMPT_ADDED is not in the docs' Warning table.
+// Verified live 2026-11-16: ONLY=agent-errors-warnings pnpm verify:live passed. With Flux and Nova-3
+//   listening, the unknown think model came back Error INVALID_SETTINGS, greeting 42 came back Error
+//   UNPARSABLE_CLIENT_MESSAGE, think-fast came back SettingsApplied with Warning VOICE_PROMPT_ADDED, the
+//   fallback and inject Settings applied, and each mid-call message was answered (Ask a question with a
+//   Warning, Ask for a story and Inject while it talks with ConversationText or a Warning); the
+//   prompt.md Settings worked with a granted token.
 import { useEffect, useRef, useState } from 'react'
 import { defineAgentFeature, type AgentAction, type AgentMessage } from '../../shared/agent/feature'
 import './styles.css'
