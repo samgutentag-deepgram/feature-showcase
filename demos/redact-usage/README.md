@@ -71,4 +71,21 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+redact_usage on Flux and Nova-3: Deepgram stores [REDACTED] in its usage record in place of the
+text you passed in keyterm (and keywords, replace, search, extra, custom_topic, custom_intent).
+The transcript and every socket message are the same either way, so the page shows the param on
+the Request card, the request_id on the Response card, and what the record for that request
+stores, which you read back with the Management API.
+Checked 2026-11-16 with a 1 s macOS say clip ("Call Jane Doe at Acme.") and
+keyterm=Acme&keyterm=Jane%20Doe, then GET /v1/projects/<id>/requests/<request_id> for each:
+  pre-recorded /v1/listen nova-3, redact_usage=false: path keeps keyterm=Acme&keyterm=Jane+Doe.
+  pre-recorded, streaming /v1/listen nova-3, and /v2/listen flux-general-en, redact_usage=true:
+  path reads keyterm=%5BREDACTED%5D&keyterm=%5BREDACTED%5D&redact_usage=%5BREDACTED%5D.
+  Transcripts match with and without it. response.details.features still lists "keyterm".
+  Flux Configure {"redact_usage": true, "keyterms": [...]} gets a ConfigureSuccess echoing
+  "redact_usage": true; the URL's keyterm=Acme stays visible in the record, as the docs say.
+Verified live 2026-11-16: pnpm verify:live opened /v2/listen (flux-general-en) and /v1/listen (nova-3) with keyterm=Jane+Doe&keyterm=Acme and redact_usage=false and =true, all four accepted; checked by hand, the Management API stored keyterm=%5BREDACTED%5D for every keyterm only when redact_usage=true, with the same transcript both ways.
+```

@@ -11,6 +11,7 @@
 //   Transcripts match with and without it. response.details.features still lists "keyterm".
 //   Flux Configure {"redact_usage": true, "keyterms": [...]} gets a ConfigureSuccess echoing
 //   "redact_usage": true; the URL's keyterm=Acme stays visible in the record, as the docs say.
+// Verified live 2026-11-16: pnpm verify:live opened /v2/listen (flux-general-en) and /v1/listen (nova-3) with keyterm=Jane+Doe&keyterm=Acme and redact_usage=false and =true, all four accepted; checked by hand, the Management API stored keyterm=%5BREDACTED%5D for every keyterm only when redact_usage=true, with the same transcript both ways.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 
