@@ -47,4 +47,8 @@ FEATURE=agent-keyterms pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=agent-keyterms pnpm verify:live passed. Settings with and without keyterms came back SettingsApplied on flux-general-en (version v2) and nova-3, the docs link resolved, and the prompt.md Settings applied with a granted token.
+```

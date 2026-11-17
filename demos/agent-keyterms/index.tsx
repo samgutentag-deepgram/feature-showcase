@@ -5,6 +5,7 @@
 //   flux-general-en, keyterms ["Kallistrum"]: user "Kallistrum" twice, agent "Kallistrum Pro".
 //   nova-3, no keyterms: "Colistrum" twice. nova-3 with keyterms: "Kallistrum" twice.
 // Same result on Flux with version v2. Settings with keyterms came back SettingsApplied on both models.
+// Verified live 2026-11-16: ONLY=agent-keyterms pnpm verify:live passed. Settings with and without keyterms came back SettingsApplied on flux-general-en (version v2) and nova-3, the docs link resolved, and the prompt.md Settings applied with a granted token.
 import type { FC } from 'react'
 import type { AgentPanelProps } from '../../shared/agent/feature'
 import { defineAgentFeature } from '../../shared/agent/feature'
