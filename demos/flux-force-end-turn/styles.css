@@ -1,0 +1,35 @@
+/* ForceEndTurn demo: the who-ends-it picker and one row per turn. var() only: literals live in styles/packs/. */
+
+.fet-field { gap: 10px; }
+.fet-label { font-size: 14px; color: var(--dg-text-label); }
+
+.fet-echo { white-space: normal; overflow-wrap: anywhere; }
+
+.fet-rows { display: flex; flex-direction: column; gap: 10px; }
+.fet-turn {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr);
+  gap: 4px 12px;
+  align-items: baseline;
+  padding: 8px 12px;
+  background: var(--dg-bg-well);
+  border-radius: var(--dg-shape-control);
+  border-left: 4px solid var(--dg-border-hover);
+}
+.fet-turn__tag {
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+}
+.fet-turn__text { margin: 0; }
+.fet-turn__meta {
+  grid-column: 2;
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  color: var(--dg-text-label);
+}
+.fet-turn.is-manual { border-left-color: var(--dg-accent); }
+.fet-turn.is-manual .fet-turn__tag { color: var(--dg-accent); }
+.fet-turn.is-warning { border-left-color: var(--dg-danger); }
+.fet-turn.is-open { background: transparent; }

@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "flux-force-end-turn",
+      "platform": "Speech-to-text",
+      "headline": "You say when the turn ends",
+      "param": "ForceEndTurn + eot_threshold=1.0",
+      "flux": "flux-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
