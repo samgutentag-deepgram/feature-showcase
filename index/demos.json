@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-keepalive",
+      "platform": "Voice agent",
+      "headline": "Put the caller on hold.",
+      "param": "KeepAlive",
+      "flux": "agent"
     }
   ]
 }

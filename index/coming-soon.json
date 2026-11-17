@@ -872,7 +872,7 @@
       "what": "Keep an agent session alive while the mic is muted.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/agent-keep-alive",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-force-end-turn",
