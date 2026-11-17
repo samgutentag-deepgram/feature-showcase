@@ -6,6 +6,7 @@
 // en 0.998, es 0.999, fr 0.995, de 0.9998, ja 0.999, hi 0.9999, each transcribed in that language.
 // Restricting with repeated values works: detect_language=en&detect_language=es on the Spanish clip
 // gives es 0.999; on the French clip it gives en with confidence 0.0006 and an empty transcript.
+// Verified live 2026-11-16: ONLY=detect-language pnpm verify:live passed (both POSTs, detect_language=true and detect_language=en&detect_language=es, and the prompt), and say clips came back en 0.998, es 0.999, fr 0.995, de 0.9998, ja 0.999, hi 0.9999.
 import { defineFeature, type Json, type Params, type Run } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'

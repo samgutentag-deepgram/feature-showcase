@@ -60,4 +60,6 @@ FEATURE=detect-language pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+```text
+Verified live 2026-11-16: ONLY=detect-language pnpm verify:live passed (both POSTs, detect_language=true and detect_language=en&detect_language=es, and the prompt), and say clips came back en 0.998, es 0.999, fr 0.995, de 0.9998, ja 0.999, hi 0.9999.
+```
