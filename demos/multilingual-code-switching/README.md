@@ -59,4 +59,14 @@ FEATURE=multilingual-code-switching pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Multilingual code-switching: language=multi on Nova-3, flux-general-multi on Flux. One sentence
+that changes language partway through, transcribed as one stream, each Nova-3 word tagged.
+Checked 2026-11-16 on /v1/listen streaming (model=nova-3&language=multi&endpointing=100) with a
+Spanish-then-English clip: one final result came back "español/es ok/en now/en", the switch
+inside a single result. flux-general-multi on /v2/listen gave the same turn with
+languages ["es","en"] and no per-word tags; language=multi there is a 400 (unknown query parameter).
+Verified live 2026-11-16: pnpm verify:live opened every request the page makes (Flux flux-general-multi and Nova-3 language=multi, both variants) and the docs link resolved.
+```
