@@ -374,6 +374,13 @@
       "flux": "agent"
     },
     {
+      "id": "topics",
+      "platform": "LLM",
+      "headline": "What was this call about?",
+      "param": "topics",
+      "flux": "intelligence"
+    },
+    {
       "id": "summarize",
       "platform": "LLM",
       "headline": "What did that voicemail say?",
