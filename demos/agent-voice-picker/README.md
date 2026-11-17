@@ -62,4 +62,12 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: pnpm verify:live sent the Settings for flux-wes-en (version v2) and
+aura-2-thalia-en with Flux and Nova-3 listening, and the prompt.md Settings with a granted token;
+each came back SettingsApplied, and the docs link resolved.
+```
+
+Before that, a one-off script opened one session per voice in the lists (36 Flux, 41 Aura-2): every one came back SettingsApplied and spoke its greeting, first audio in 0.19 to 0.44 s.

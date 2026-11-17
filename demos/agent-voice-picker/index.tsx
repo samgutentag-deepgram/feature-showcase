@@ -8,6 +8,9 @@
 // The voice lists are the English rows of the Flux and Aura-2 catalogs the two voice tours use.
 // Third-party providers (OpenAI, ElevenLabs, Cartesia BYO, Polly) need the visitor's own keys in
 // agent.speak.endpoint, so they are left out.
+// Verified live 2026-11-16: pnpm verify:live sent the Settings for flux-wes-en (version v2) and
+// aura-2-thalia-en with Flux and Nova-3 listening, and the prompt.md Settings with a granted token;
+// each came back SettingsApplied, and the docs link resolved.
 import { defineAgentFeature } from '../../shared/agent/feature'
 import { DEFAULT_VOICE } from '../../shared/tts/voices'
 import { VOICES as AURA_CATALOG } from '../aura-voice-picker/voices'
