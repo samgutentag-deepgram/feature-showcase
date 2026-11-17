@@ -64,4 +64,10 @@ FEATURE=flux-configure-midstream pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=flux-configure-midstream pnpm verify:live passed. /v2/listen?model=flux-general-en&eot_threshold=0.7 opened in both variants; Send Configure (keyterms, plus eot_threshold 0.8 and numerals true) and Clear keyterms came back ConfigureSuccess, Send an invalid Configure came back ConfigureFailure, with no Error; prompt.md URL accepted.
+```
+
+Also checked by hand on one socket with a macOS voice clip read twice: before Configure, "colistrum" and "Vexmor"; after `{"type":"Configure","keyterms":["Kallistrum","Vexmoor"]}`, both right. `{"type":"Configure","numerals":"true"}` got an Error and Flux closed the socket.

@@ -14,6 +14,7 @@
 //   "eager_eot_threshold cannot be greater than eot_threshold.", and the socket kept transcribing.
 //   {"type":"Configure","numerals":"true"}: Error, UNPARSABLE_CLIENT_MESSAGE ("expected a boolean"),
 //   and Flux closed the socket (1005).
+// Verified live 2026-11-16: ONLY=flux-configure-midstream pnpm verify:live passed. /v2/listen?model=flux-general-en&eot_threshold=0.7 opened in both variants; Send Configure (keyterms, plus eot_threshold 0.8 and numerals true) and Clear keyterms came back ConfigureSuccess, Send an invalid Configure came back ConfigureFailure, with no Error; prompt.md URL accepted.
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
