@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "diarize-model-v2",
+      "platform": "Speech-to-text",
+      "headline": "Same call, two diarizers.",
+      "param": "diarize_model=v1|v2",
+      "flux": "nova-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
