@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "flux-eager-eot",
+      "platform": "Speech-to-text",
+      "headline": "Start the reply before they finish",
+      "param": "eager_eot_threshold=0.4",
+      "flux": "flux-only"
+    },
+    {
       "id": "utterances",
       "platform": "Speech-to-text",
       "headline": "How long a pause starts a new utterance?",

@@ -1,0 +1,47 @@
+/* Turn tracks, drafts, and the head start. var() only: literals live in styles/packs/. */
+.eot-field { gap: 10px; }
+.eot-field__label { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.eot-field .segmented { align-self: flex-start; }
+.eot-field .note { margin: 0; }
+
+.eot { display: flex; flex-direction: column; gap: 22px; }
+.eot-turn { display: flex; flex-direction: column; gap: 12px; }
+.eot-turn__text {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.45;
+  letter-spacing: var(--dg-type-display-tracking);
+  color: var(--dg-text-primary);
+}
+
+/* One turn on a line: ticks placed by when each event arrived. */
+.eot-track { position: relative; height: 28px; margin: 0 8px; }
+.eot-track__line { position: absolute; left: 0; right: 0; top: 13px; height: 2px; background: var(--dg-border); }
+.eot-track__gain { position: absolute; top: 9px; height: 10px; border-radius: var(--dg-radius-pill); background: var(--dg-signal-ga); opacity: 0.55; }
+.eot-tick { position: absolute; top: 4px; width: 4px; height: 20px; margin-left: -2px; border-radius: var(--dg-radius-sm); }
+.eot-tick--eager { background: var(--dg-accent); }
+.eot-tick--eager.is-cancelled { opacity: 0.45; }
+.eot-tick--resumed { background: var(--dg-danger); }
+.eot-tick--end { background: var(--dg-text-primary); width: 6px; margin-left: -3px; }
+
+.eot-drafts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.eot-draft { font-size: 14px; color: var(--dg-text-body); }
+.eot-draft__tag { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-accent); }
+.eot-draft.is-cancelled .eot-draft__text { text-decoration: line-through; color: var(--dg-text-label); }
+.eot-draft__then { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+
+.eot-stats { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 0; }
+.eot-stats div { display: flex; flex-direction: column; gap: 2px; }
+.eot-stats dt { font-family: var(--dg-font-code); font-size: 11px; text-transform: uppercase; color: var(--dg-text-label); }
+.eot-stats dd { margin: 0; font-size: 20px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.eot-stats .is-gain dd { color: var(--dg-accent); }
+
+.eot-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; font-family: var(--dg-font-code); font-size: 11px; color: var(--dg-text-label); }
+.eot-key::before { content: ''; display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: var(--dg-radius-sm); vertical-align: -1px; }
+.eot-key--eager::before { background: var(--dg-accent); }
+.eot-key--resumed::before { background: var(--dg-danger); }
+.eot-key--end::before { background: var(--dg-text-primary); }
+.eot-key--gain::before { background: var(--dg-signal-ga); opacity: 0.55; }
+
+.runs--compare .eot-turn__text { font-size: 19px; }
+@media (max-width: 760px) { .eot-turn__text { font-size: 19px; } }

@@ -1,0 +1,5 @@
+{
+  "title": "Flux eager end of turn | Deepgram",
+  "description": "Read a line with a hesitation and watch Flux send EagerEndOfTurn early, cancel with TurnResumed, and confirm with EndOfTurn.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-eager-eot/"
+}
