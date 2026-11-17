@@ -72,4 +72,18 @@ Then open <http://localhost:8080>. Deploys go through `bash scripts/deploy.sh si
 
 ## Verified live
 
-TODO
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=read-callback pnpm verify:live POSTs the 116-word email to /v1/read?language=en&summarize=v2&callback=https://example.com/read-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery and its Authorization header not observed before deploy.
+```
+
+Before that, checked with curl: `/v1/read` with `summarize=v2` and a callback is 200 with only a
+`request_id` in about 0.1 s; with `deepgram:<password>@` in the URL, and with
+`callback_method=put`, also 200; an unresolvable host is 400 "Failed to resolve callback."; a
+localhost callback is 400 "Invalid callback URL.". Without a callback, the same text returns
+`results.summary.text`.
+
+Not verified before deploy: a real delivery, its body shape, its method, and whether it carries the
+`Authorization` header. No request inspector was used. Check them on the deployed page: the Response
+card shows all of them.

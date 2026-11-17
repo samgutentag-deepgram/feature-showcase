@@ -6,6 +6,7 @@
 // callback_method=put, also 200; an unresolvable host is 400 "Failed to resolve callback."; a
 // localhost callback is 400 "Invalid callback URL.". Not yet seen: a real delivery, its shape, and
 // whether it carries the Authorization header. Those need the deployed page (no request inspector was used).
+// Verified live 2026-11-16: ONLY=read-callback pnpm verify:live POSTs the 116-word email to /v1/read?language=en&summarize=v2&callback=https://example.com/read-callback, with and without callback_method=put, and the prompt.md request with a granted token: each 200 with a request_id. Delivery and its Authorization header not observed before deploy.
 import { useEffect, useState } from 'react'
 import { demoPath } from '../../shared/common/demo'
 import { defineLlmFeature, type Lane, type LlmRun } from '../../shared/llm/feature'
