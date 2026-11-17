@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-live-transcript",
+      "platform": "Voice agent",
+      "headline": "Read the call as it happens.",
+      "param": "ConversationText",
+      "flux": "agent"
     }
   ]
 }
