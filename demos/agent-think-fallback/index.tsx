@@ -1,26 +1,32 @@
 // Think fallback: agent.think as an ordered list. Break the first provider and the second answers.
 // Probed live 2026-11-16, Flux listening, silence streaming, InjectUserMessage as the question:
-//   How to break the first provider with no key and no endpoint of our own: open_ai gpt-4o-mini with
-//     endpoint.url https://example.com/v1/chat/completions (RFC 2606 reserved domain). It applies, and
-//     each try answers 405 Method Not Allowed. Rejected: https://example.invalid/... and
-//     https://192.0.2.1/... both came back Error INVALID_SETTINGS at Settings ("Failed to resolve
-//     endpoint", "Invalid endpoint"), so the server checks the URL up front. The older trick, model
-//     gpt-4.1-nano (404 upstream), also works but stops working if the model comes back.
-//   Broken, [gpt-4o-mini at example.com, anthropic claude-haiku-4-5]: three Warning THINK_REQUEST_FAILED
-//     ("Code: 405 Method Not Allowed") within about 0.2 s of the question, then the reply. Asked
-//     "Which company trained you?", the reply said "Anthropic"; with both up, it said "OpenAI".
+//   How to break the first provider and keep every request inside managed providers Deepgram
+//     already uses: open_ai gpt-4o-mini with temperature 5. Settings applies, and OpenAI refuses
+//     each try with 400 "Invalid 'temperature': decimal above maximum value. Expected a value <= 2"
+//     (OpenAI's documented range is 0 to 2). No key, no endpoint, and the model is a current one.
+//     Anthropic claude-haiku-4-5 with temperature 5 fails the same way (400 invalid_request_error).
+//   Tried and dropped: endpoint.url https://example.com/v1/chat/completions (RFC 2606) failed at think
+//     time with 405, but it sends every visitor question and the prompt to a host we do not control.
+//     https://example.invalid/... and https://192.0.2.1/... came back Error INVALID_SETTINGS at
+//     Settings ("Failed to resolve endpoint", "Invalid endpoint"). A made-up model on a managed
+//     provider (anthropic claude-does-not-exist, google gemini-does-not-exist) is INVALID_SETTINGS at
+//     Settings too. open_ai gpt-4.1-nano fails at think time (404 upstream) but would start working
+//     if the model came back.
+//   Broken, [gpt-4o-mini at temperature 5, anthropic claude-haiku-4-5]: three Warning
+//     THINK_REQUEST_FAILED (400 Bad Request) within about 0.5 s of the question, then the reply.
+//     Asked "Which company trained you?", it said "Anthropic"; with both up, it said "OpenAI".
 //   Later turns in the same session: no Warnings, and Anthropic still answered, at normal speed.
 //   On the failover turn the fallback got the first provider's prompt: with a prompt per provider
 //     that names it, turn 1 began "OpenAI here." although Anthropic answered; turns 2 and 3 began
 //     "Anthropic here.".
 //   Cost of the detour, first reply, total_latency from LatencyReport: gpt-4o-mini alone 0.47 to
-//     0.58 s, claude-haiku-4-5 alone 0.42 to 0.45 s, broken then claude-haiku-4-5 0.68 to 0.81 s,
-//     broken then gpt-4o-mini 0.74 to 0.84 s. About 0.25 to 0.4 s, once.
+//     0.58 s, claude-haiku-4-5 alone 0.42 to 0.45 s, broken then claude-haiku-4-5 0.88 to 0.98 s.
+//     About half a second, once: the three refused tries are real round trips to OpenAI.
 // Docs mismatches (https://developers.deepgram.com/docs/voice-agent-llm-models): the docs say each
 // new turn starts again from the first provider, but later turns went straight to the fallback with
 // no Warnings; the docs describe one Warning per failure, but each failed provider sent three.
 // Verified live 2026-11-16: ONLY=agent-think-fallback pnpm verify:live passed. With Flux and
-//   Nova-3 listening, both Settings (first LLM at example.com, and both up) came back
+//   Nova-3 listening, both Settings (first LLM at temperature 5, and both up) came back
 //   SettingsApplied with no Error, Ask who answered came back AgentAudioDone in both (with the first
 //   LLM broken, only the Anthropic fallback could have replied), and the prompt.md Settings worked
 //   with a granted token.
@@ -32,8 +38,8 @@ interface State {
   broken: boolean
 }
 
-// Reserved for examples (RFC 2606): it resolves and answers, but no LLM is behind it.
-export const DEAD_URL = 'https://example.com/v1/chat/completions'
+// Above OpenAI's 0 to 2 range: Settings applies, and OpenAI refuses every request with a 400.
+export const BAD_TEMPERATURE = 5
 const PROMPT = 'You are a helpful voice assistant. Answer in one short sentence.'
 const QUESTION = 'Which company trained you? Answer in a few words.'
 const FIRST = 'OpenAI gpt-4o-mini'
@@ -80,12 +86,12 @@ export default defineAgentFeature<State>({
   kind: 'agent',
   copy: {
     headline: 'Break the first LLM. The agent still answers.',
-    lede: 'Here agent.think is a list: OpenAI gpt-4o-mini first, Anthropic claude-haiku-4-5 second. Tick Break the first LLM to point the first one at example.com, a domain reserved for examples with no LLM behind it. Start talking and ask a question: three THINK_REQUEST_FAILED Warnings arrive, then the second provider answers. The panel shows each Warning, who answered, and what the detour cost.',
+    lede: 'Here agent.think is a list: OpenAI gpt-4o-mini first, Anthropic claude-haiku-4-5 second. Tick Break the first LLM to give the first one temperature 5, outside the 0 to 2 that OpenAI accepts, so OpenAI refuses every request. Start talking and ask a question: three THINK_REQUEST_FAILED Warnings arrive, then the second provider answers. The panel shows each Warning, who answered, and what the detour cost.',
     ctaTitle: 'Give think a backup.',
     ctaBody: (
       <>
         Send <code>agent.think</code> as an array, with the fallback on other infrastructure. A dead primary
-        then costs three <code>Warning</code>s and about a quarter of a second, not the turn. New accounts start
+        then costs three <code>Warning</code>s and about half a second, not the turn. New accounts start
         with $200 in free credit.
       </>
     ),
@@ -95,13 +101,13 @@ export default defineAgentFeature<State>({
   variants: [{ broken: true }, { broken: false }],
   agent: ({ broken }) => ({
     think: [
-      { provider: { type: 'open_ai', model: 'gpt-4o-mini' }, ...(broken ? { endpoint: { url: DEAD_URL } } : {}), prompt: PROMPT },
+      { provider: { type: 'open_ai', model: 'gpt-4o-mini', ...(broken ? { temperature: BAD_TEMPERATURE } : {}) }, prompt: PROMPT },
       { provider: { type: 'anthropic', model: 'claude-haiku-4-5' }, prompt: PROMPT },
     ],
     speak: { provider: { type: 'deepgram', model: 'flux-wes-en' } },
   }),
   actions: () => [{ label: 'Ask who answered', message: { type: 'InjectUserMessage', content: QUESTION }, ack: ['AgentAudioDone'], primary: true }],
-  highlight: ['think', 'endpoint', 'url'],
+  highlight: ['think', 'temperature'],
   events: ['Warning', 'Error'],
   flushOnUserSpeech: () => true,
   runLabel: ({ broken }) => (broken ? 'first LLM broken' : 'both LLMs up'),
@@ -119,7 +125,7 @@ export default defineAgentFeature<State>({
             <strong>{FIRST}</strong>
             {state.broken ? (
               <>
-                {' '}at <code>{DEAD_URL}</code>, which answers 405
+                {' '}with <code>temperature: {BAD_TEMPERATURE}</code>, which OpenAI refuses with a 400
               </>
             ) : (
               ', managed by Deepgram'
@@ -208,8 +214,8 @@ export default defineAgentFeature<State>({
         </div>
         <p className="note atf__empty">
           Deepgram does not name the provider that answered; the page infers it from the Warnings. Ask "Which company
-          trained you?" to hear it from the model. Run both settings to compare. In testing the first reply took 0.68 to
-          0.81 s with the first LLM broken, and 0.47 to 0.58 s with both up.
+          trained you?" to hear it from the model. Run both settings to compare. In testing the first reply took 0.88 to
+          0.98 s with the first LLM broken, and 0.47 to 0.58 s with both up.
         </p>
       </div>
     )

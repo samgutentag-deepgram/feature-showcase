@@ -1,6 +1,6 @@
 # Agent think fallback
 
-**Break the first LLM. The agent still answers.** `agent.think` is a list here: OpenAI `gpt-4o-mini` first, Anthropic `claude-haiku-4-5` second. Tick **Break the first LLM** to point the first one at `https://example.com/v1/chat/completions`, then press Start talking and ask a question. Three `THINK_REQUEST_FAILED` Warnings arrive, then Anthropic answers. The panel lists each Warning, says which provider answered, and keeps the first reply's latency from each setting so you can see what the detour costs.
+**Break the first LLM. The agent still answers.** `agent.think` is a list here: OpenAI `gpt-4o-mini` first, Anthropic `claude-haiku-4-5` second. Tick **Break the first LLM** to give the first one `temperature: 5`, which OpenAI refuses, then press Start talking and ask a question. Three `THINK_REQUEST_FAILED` Warnings arrive, then Anthropic answers. The panel lists each Warning, says which provider answered, and keeps the first reply's latency from each setting so you can see what the detour costs.
 
 - **Live:** https://dg-devrel-demos.fly.dev/demos/agent-think-fallback/
 - **Kind:** Voice agent
@@ -14,16 +14,23 @@
 
 ## How the first provider is broken
 
-`example.com` is reserved for examples (RFC 2606). It resolves and answers every request, but there is no LLM behind it, so each try comes back `405 Method Not Allowed`. No key, no endpoint of our own, and nothing that changes if a model is retired. Two other ideas did not work: a `.invalid` host and a TEST-NET IP address were both refused at Settings with `Error` `INVALID_SETTINGS` ("Failed to resolve endpoint", "Invalid endpoint"), so the server checks the URL before the call starts.
+The first provider gets `temperature: 5`. OpenAI accepts 0 to 2, so Settings applies and then every request comes back `400 Bad Request` ("Invalid 'temperature': decimal above maximum value. Expected a value <= 2"). No key, no endpoint, a current model, and every request stays with providers Deepgram already manages. It keeps working as long as OpenAI keeps its 0 to 2 range and Deepgram does not start checking it at Settings.
+
+Tried and dropped:
+
+- `endpoint.url: https://example.com/v1/chat/completions` (a domain reserved for examples). It failed at think time with `405`, but Deepgram's server would POST every visitor question and the prompt to a host we do not control.
+- A `.invalid` host and a TEST-NET IP address: refused at Settings with `Error` `INVALID_SETTINGS` ("Failed to resolve endpoint", "Invalid endpoint").
+- A made-up model on a managed provider (`claude-does-not-exist`, `gemini-does-not-exist`): `INVALID_SETTINGS` at Settings, before any turn.
+- `gpt-4.1-nano`: fails at think time today (404 upstream), but would start answering if the model came back.
 
 ## What came back in testing
 
 | Setting | Warnings on the first turn | Who answered | First reply `total_latency` |
 |---|---|---|---|
 | Both up | none | OpenAI `gpt-4o-mini` | 0.47 to 0.58 s |
-| First LLM broken | three `THINK_REQUEST_FAILED`, `405 Method Not Allowed`, within about 0.2 s | Anthropic `claude-haiku-4-5` | 0.68 to 0.81 s |
+| First LLM broken | three `THINK_REQUEST_FAILED`, `400 Bad Request`, within about 0.5 s | Anthropic `claude-haiku-4-5` | 0.88 to 0.98 s |
 
-`claude-haiku-4-5` on its own answered in 0.42 to 0.45 s, so the detour itself cost about 0.25 to 0.4 s, once. Later turns in a broken session had no Warnings and normal latency.
+`claude-haiku-4-5` on its own answered in 0.42 to 0.45 s, so the detour cost about half a second, once: the three refused tries are real round trips to OpenAI. Later turns in a broken session had no Warnings and normal latency.
 
 **Docs differences.**
 
@@ -73,6 +80,6 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-Verified live 2026-11-16: ONLY=agent-think-fallback pnpm verify:live passed. With Flux and Nova-3 listening, both Settings (first LLM at example.com, and both up) came back SettingsApplied with no Error, Ask who answered came back AgentAudioDone in both (with the first LLM broken, only the Anthropic fallback could have replied), and the prompt.md Settings worked with a granted token.
+Verified live 2026-11-16: ONLY=agent-think-fallback pnpm verify:live passed. With Flux and Nova-3 listening, both Settings (first LLM at temperature 5, and both up) came back SettingsApplied with no Error, Ask who answered came back AgentAudioDone in both (with the first LLM broken, only the Anthropic fallback could have replied), and the prompt.md Settings worked with a granted token.
 
 The probes behind the tables above are recorded at the top of [`index.tsx`](index.tsx).

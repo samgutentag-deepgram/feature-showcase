@@ -1,7 +1,7 @@
 <!-- Generated from the feature's index.tsx by shared/common/prompt.ts. Do not edit by hand. -->
 # Add Agent think fallback to a web app with Deepgram
 
-Here agent.think is a list: OpenAI gpt-4o-mini first, Anthropic claude-haiku-4-5 second. Tick Break the first LLM to point the first one at example.com, a domain reserved for examples with no LLM behind it. Start talking and ask a question: three THINK_REQUEST_FAILED Warnings arrive, then the second provider answers. The panel shows each Warning, who answered, and what the detour cost.
+Here agent.think is a list: OpenAI gpt-4o-mini first, Anthropic claude-haiku-4-5 second. Tick Break the first LLM to give the first one temperature 5, outside the 0 to 2 that OpenAI accepts, so OpenAI refuses every request. Start talking and ask a question: three THINK_REQUEST_FAILED Warnings arrive, then the second provider answers. The panel shows each Warning, who answered, and what the detour cost.
 
 Build a page with a Start button that opens a voice conversation with a Deepgram voice agent
 configured by the Settings message below. Live demo: https://dg-devrel-demos.fly.dev/demos/agent-think-fallback/
@@ -30,10 +30,8 @@ API before this file ships and comes back `SettingsApplied`.
       {
         "provider": {
           "type": "open_ai",
-          "model": "gpt-4o-mini"
-        },
-        "endpoint": {
-          "url": "https://example.com/v1/chat/completions"
+          "model": "gpt-4o-mini",
+          "temperature": 5
         },
         "prompt": "You are a helpful voice assistant. Answer in one short sentence."
       },
