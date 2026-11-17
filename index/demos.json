@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-greeting",
+      "platform": "Voice agent",
+      "headline": "Let the agent say hello first.",
+      "param": "agent.greeting",
+      "flux": "agent"
     }
   ]
 }

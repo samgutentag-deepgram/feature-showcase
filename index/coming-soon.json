@@ -782,7 +782,7 @@
       "what": "The agent speaks first with a configured greeting.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-history-restore",
