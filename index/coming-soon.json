@@ -341,7 +341,7 @@
       "what": "Close cleanly and receive the final Metadata summary.",
       "models": "Nova and Flux streaming",
       "docs": "https://developers.deepgram.com/docs/close-stream",
-      "built": false
+      "built": true
     },
     {
       "id": "stt-configure-midstream",

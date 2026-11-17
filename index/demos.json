@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "close-stream",
+      "platform": "Speech-to-text",
+      "headline": "Say goodbye, or just hang up?",
+      "param": "CloseStream",
+      "flux": "works"
+    },
+    {
       "id": "stt-keepalive",
       "platform": "Speech-to-text",
       "headline": "Go quiet for 12 seconds. Is Deepgram still listening?",
