@@ -1,0 +1,5 @@
+{
+  "title": "Punctuate | Deepgram",
+  "description": "Read a question and two sentences, then compare Nova-3 with punctuate off and on, and Flux, live from your mic.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/punctuate/"
+}

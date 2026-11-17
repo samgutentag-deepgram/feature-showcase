@@ -98,7 +98,7 @@
       "what": "Raw lowercase transcript versus punctuated, capitalized output.",
       "models": "Nova (pre-recorded, streaming v1)",
       "docs": "https://developers.deepgram.com/docs/punctuation",
-      "built": false
+      "built": true
     },
     {
       "id": "paragraphs",
