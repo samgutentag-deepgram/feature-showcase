@@ -3,7 +3,7 @@
 ## What this is
 
 Every one-feature Deepgram demo, in one private repo: one shared page per kind (speech-to-text,
-text-to-speech, voice agent) and one folder per demo under `demos/`. One build makes one HTML page
+text-to-speech, voice agent, LLM) and one folder per demo under `demos/`. One build makes one HTML page
 per folder, served by one Fly app at `https://dg-devrel-demos.fly.dev/demos/<demo>/`, with the index
 at `/`. A new demo is a new folder plus its entry in `index/demos.json` (and `"built": true` on its
 card in `index/coming-soon.json`); `scripts/new.sh` adds both. The 30 demos that predate the single
@@ -57,6 +57,8 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 | `shared/stt/` | Speech-to-text page, socket stream, transcript pieces; `events.ts` (timeline names), `batch.ts` (pre-recorded POST, callback slot client), `audio.ts` (mulaw/alaw/8 kHz, WAV) |
 | `shared/tts/` | Text-to-speech page, speak/socket/session/token helpers, shared voice lineups |
 | `shared/agent/` | Voice agent page and contract; `codec.ts` (mu-law and A-law for phone audio) |
+| `shared/llm/` | LLM page (Audio and Text Intelligence on `/v1/listen` and `/v1/read`, Deepgram LLMs on `/v1/think`): contract, `plan()` and send code, callback client, prompt builder |
+| `shared/llm-starters/` | The two starters `scripts/new.sh <id> llm` and `think` copy; not demos, but `pnpm test` and `verify:live` run them |
 | `shared/main.tsx` | `mount(feature, info)`: picks the page from the feature's `kind`; each page's generated entry calls it |
 | `shared/page.html` | The HTML every demo page is filled from |
 | `index.html`, `index/` | The site root: `index/render.ts` fills `index.html` from `index/demos.json` (live tiles, in order) and `index/coming-soon.json` (backlog cards); `index/main.ts` is the chip and search filter; styles in `shared/styles/index.css` |
@@ -66,7 +68,7 @@ a 403 from Deepgram, the server returns 500, and the page says it "could not sta
 | `redirect/` | The old per-demo apps' image: Caddy, 301 to `/demos/<id>/`; `apps.txt` lists the 30 |
 | `scripts/` | `new`, `build`, `check`, `deploy`, `probe`, and `og/` for share cards |
 | `sets/` | Hand-picked sets of demos for build, check, and probe |
-| `tests/` | Shared tests over every folder, plus `<demo>.test.ts` for demos with their own |
+| `tests/` | Shared tests over every folder, plus `<demo>.test.ts` for demos with their own; `llm-live.ts` holds the LLM live checks |
 
 ## Safeguards
 

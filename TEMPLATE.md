@@ -16,6 +16,7 @@ picks the page:
 | (none) speech-to-text | `shared/` | talks; sees the transcript | `demos/smart-format/` |
 | `'tts'` text-to-speech | `shared/tts/` | types or picks a line; hears it, sees timings and a spectrum | `demos/telephone-audio/` |
 | `'agent'` voice agent | `shared/agent/` | talks with an agent; sees the transcript and a timed event log | `demos/barge-in/` |
+| `'llm'` text intelligence and LLMs | `shared/llm/` | speaks (recorded, sent once) or types; sees the analysis or the reply | `shared/llm-starters/` (`new.sh <id> llm` or `think`) |
 
 `demos/language-hint/` is the original, bigger speech-to-text demo (three modes, uploads,
 language rows). Start from the smaller examples above. Each is under 100 lines.
@@ -181,6 +182,48 @@ All optional on `Feature<S>`; a demo that sets none behaves exactly as before. C
 - `promptState`: the setting `prompt.md` shows, instead of the variant that sends the most.
 - A legacy page may be Nova-2 only: its note starts `Nova-2 only. Nova-3 and Flux ` and its
   `index/demos.json` `flux` is `nova-2`.
+
+### LLM demos (`kind: 'llm'`)
+
+One page (`shared/llm/LlmShell.tsx`) for two APIs, picked with `api`. Start with
+`bash scripts/new.sh <id> llm` (Audio and Text Intelligence) or `bash scripts/new.sh <id> think`
+(`/v1/think`); each copies a working starter from `shared/llm-starters/`. Every request is one HTTP
+POST from the browser with a granted token as `Authorization: Bearer`; CORS allows it on
+`api.deepgram.com` and `agent.deepgram.com` (checked 2026-11-16). No demo server is needed, except
+for a callback.
+
+- `api: 'intelligence'`, `params(state)`: summarize, topics, intents, sentiment, `custom_*`. The same
+  params go to `POST /v1/read` (text, body `{"text": ...}`) and `POST /v1/listen` (audio). The shell
+  puts `language=en` first (a 400 on `/v1/read` without it), and on `/v1/listen` also
+  `model=nova-3&smart_format=true`, all on the card. `callback: true` adds a webhook (read-callback;
+  protocol in `shared/llm/callback.ts`, the receiver is the demo's own `server.js`).
+- `api: 'think'`, `think(state, text)`: the whole `/v1/think` body (`ThinkBody`). Return an array to
+  run each body as its own lane at once (model compare). `stream: true` needs
+  `stream_options: {include_usage: true}`; the shell reads the events, folds tool-call deltas, and
+  shows time to first token. `onToolCall(name, args, state)` answers tool calls; the shell sends the
+  result back and shows every request on the card. `toolExample` is the call the first text must
+  produce, checked live.
+- `inputs`: tabs, each `source` `mic`, `text`, or `sample`. **Text and mic for Audio/Text
+  Intelligence, mic first**: the params are the same on both endpoints, so both tabs show the real
+  shape of the feature; mic is the house rule, and typing is the natural input of `/v1/read`. The
+  mic is recorded (up to `MAX_SECONDS`) and sent once as a 16 kHz WAV, because the streaming
+  `/v1/listen` socket refuses `topics`, `intents` and `summarize` at the handshake and returns nothing
+  for `sentiment`. `sample` is a bundled clip (`import clip from './sample.mp3?url'`, then
+  `sample: { url: clip, label, script }`), allowed for batch-only features; the page says it is
+  bundled. Summaries need more than 50 words, or Deepgram returns the input as the summary, so a
+  summarize demo wants a long `texts` entry and a sample clip. **Text only for `/v1/think`**: it
+  takes messages; a spoken question would add a transcription request that is not the feature
+  (voice in front of an LLM is what the voice agent demos show). `pnpm test` enforces this.
+- `texts(state)`: suggested text, the first prefilled, the rest as chips; `verify:live` sends the
+  first. `phrases(state)`: what to read on the mic tab; `verify:live` speaks it with Aura-2.
+- `Response`, `Result`: optional. The defaults show the fields that matter (`DefaultResponse`) and the
+  transcript plus each analysis (`AnalysisView`) or the reply, tool calls, first token, and tokens
+  per lane (`ThinkView`), from `shared/llm/Results.tsx`. `analysis(json)` reads either endpoint
+  (`/v1/listen` puts the summary in `summary.short`, `/v1/read` in `summary.text`);
+  `splitReasoning` separates phoneLLM mini's reasoning (ends in `</think>`) from its reply.
+- The card and the request both come from `plan()` in `shared/llm/request.ts`, and `verify:live` sends
+  through the same code (`tests/llm-live.ts`). `pnpm test` (`tests/llm.test.ts`) fails if a card
+  differs from what is sent.
 
 ## Link tags
 

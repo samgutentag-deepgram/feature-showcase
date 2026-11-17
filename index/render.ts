@@ -43,6 +43,9 @@ export const FLUX: Record<string, [string, string]> = {
   'tts-aura': ['Aura-2 only', 'Aura-2 voices only: Flux does not take this.'],
   agent: ['Flux or Nova-3 listening', 'Voice agent; pick the speech-to-text model it listens with.'],
   'nova-2': ['Nova-2 only', 'Older models only; Nova-3 and Flux use keyterm.'],
+  // LLM kind (shared/llm/).
+  intelligence: ['Nova-3 audio or text', 'Recorded audio on /v1/listen with Nova-3, or typed text on /v1/read.'],
+  think: ['Deepgram LLM, Early Access', 'Think-Fast or phoneLLM mini on /v1/think. Early Access.'],
 }
 
 // Run from the repo root, as vite.config.ts and vitest are.
