@@ -1,0 +1,22 @@
+/* Think Live lines between updates. var() only: literals live in styles/packs/. */
+.utl { display: grid; gap: 10px; margin-top: 18px; }
+.utl__part {
+  padding: 12px 14px;
+  border: 1px solid var(--dg-line-hairline);
+  border-radius: var(--dg-radius-md);
+  background: var(--dg-surface-raised);
+}
+.utl__part + .utl__part { border-left: 3px solid var(--dg-accent); }
+.utl__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: var(--dg-weight-bold);
+  color: var(--dg-ink-primary);
+}
+.utl__count { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); white-space: nowrap; }
+.utl__lines { margin: 8px 0 0; padding-left: 20px; font-size: 14px; color: var(--dg-ink-secondary); }
+.utl__ms { font-family: var(--dg-font-mono); color: var(--dg-ink-muted); }
+.utl__empty { margin-top: 18px; }

@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-update-think-live",
+      "platform": "Voice agent",
+      "headline": "Hush the small talk mid-call.",
+      "param": "UpdateThink_Live + ThinkLiveUpdated",
+      "flux": "agent"
     }
   ]
 }
