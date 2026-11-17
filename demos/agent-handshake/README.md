@@ -73,4 +73,19 @@ FEATURE=agent-handshake pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Agent handshake: the opening of every Voice Agent session, step by step, with timings. Probed live
+2026-11-16, one short socket each, no audio played:
+  Handshake: open 80 to 350 ms after the socket was made, Welcome with request_id in the same ms,
+  SettingsApplied 30 to 110 ms after Settings. Settings sent on open (before Welcome) also works.
+  Binary audio before Settings: Error NON_SETTINGS_MESSAGE_BEFORE_SETTINGS, socket closed.
+  Audio straight after Settings, before SettingsApplied: accepted, SettingsApplied, no Error.
+  KeepAlive before Settings: accepted (the errors page says any message before Settings fails).
+  Settings twice: SettingsApplied, then Error SETTINGS_ALREADY_APPLIED, socket closed.
+  Malformed Settings (top-level greeting, unknown field, string sample_rate, broken JSON): Error
+  UNPARSABLE_CLIENT_MESSAGE naming the field. Unknown listen model: FAILED_TO_START_LISTENING.
+The panel runs these on sockets of its own (no mic). Start talking runs the real conversation.
+Verified live 2026-11-16: verify:live sent the valid Settings with Flux and Nova-3 listen (both SettingsApplied) and the malformed one (both Error UNPARSABLE_CLIENT_MESSAGE); docs links resolved. The panel's five scenarios in handshake.ts ran live from Node, with a token from the dev server, and returned the codes above.
+```

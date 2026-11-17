@@ -9,6 +9,7 @@
 //   Malformed Settings (top-level greeting, unknown field, string sample_rate, broken JSON): Error
 //   UNPARSABLE_CLIENT_MESSAGE naming the field. Unknown listen model: FAILED_TO_START_LISTENING.
 // The panel runs these on sockets of its own (no mic). Start talking runs the real conversation.
+// Verified live 2026-11-16: verify:live sent the valid Settings with Flux and Nova-3 listen (both SettingsApplied) and the malformed one (both Error UNPARSABLE_CLIENT_MESSAGE); docs links resolved. The panel's five scenarios in handshake.ts ran live from Node, with a token from the dev server, and returned the codes above.
 import { useState } from 'react'
 import { fetchToken } from '../../shared/common/config'
 import { AGENT_URL, defineAgentFeature, settingsMessage, type AgentMessage } from '../../shared/agent/feature'
