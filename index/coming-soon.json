@@ -20,6 +20,15 @@
       "built": false
     },
     {
+      "id": "nova3-medical",
+      "platform": "Speech-to-text",
+      "param": "model",
+      "what": "Read drug names and doses, then run the same phrase on nova-3-medical and plain nova-3 side by side.",
+      "models": "Nova-3 only (nova-3-medical, nova-3); Flux has no medical model",
+      "docs": "https://developers.deepgram.com/docs/model",
+      "built": true
+    },
+    {
       "id": "language-select",
       "platform": "Speech-to-text",
       "param": "language",
