@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "custom-intents",
+      "platform": "LLM",
+      "headline": "Does the caller want one of your intents?",
+      "param": "custom_intent + custom_intent_mode",
+      "flux": "intelligence"
     }
   ]
 }
