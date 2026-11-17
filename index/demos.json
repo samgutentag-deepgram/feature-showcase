@@ -486,6 +486,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-think-controls",
+      "platform": "Voice agent",
+      "headline": "Same question, new settings.",
+      "param": "agent.think.provider.temperature + reasoning_mode",
+      "flux": "agent"
+    },
+    {
       "id": "agent-speak-fallback",
       "platform": "Voice agent",
       "headline": "Keep talking when a voice fails.",

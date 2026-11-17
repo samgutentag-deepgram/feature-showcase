@@ -638,7 +638,7 @@
       "what": "Hear how temperature and reasoning effort change replies and latency.",
       "models": "Provider dependent",
       "docs": "https://developers.deepgram.com/docs/configure-voice-agent",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-byo-llm",
