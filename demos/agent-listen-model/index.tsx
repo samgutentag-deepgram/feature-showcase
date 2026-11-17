@@ -10,6 +10,7 @@
 //   Flux kept it as one user line and sent EndOfTurn {"trigger":"model"} with it.
 //   Nova-3 split it into two user lines at the pause and sent no EndOfTurn.
 //   Flux sent an stt_latency LatencyReport about every 250 ms; Nova-3 sent one per call.
+// Verified live 2026-11-16: verify:live sent the Settings message with all four listen models (flux-general-en, flux-general-multi, nova-3, nova-2), each with its own provider fields, and all four came back SettingsApplied; the prompt.md Settings applied with a granted token.
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
 import './styles.css'

@@ -54,4 +54,4 @@ FEATURE=agent-listen-model pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: verify:live sent the Settings message with all four listen models (flux-general-en, flux-general-multi, nova-3, nova-2), each with its own provider fields, and all four came back SettingsApplied; the prompt.md Settings applied with a granted token.
