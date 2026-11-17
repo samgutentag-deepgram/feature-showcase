@@ -1,0 +1,5 @@
+{
+  "title": "Agent greeting | Deepgram",
+  "description": "Pick or type a greeting, start a Deepgram voice agent call, and watch the greeting come back as the first ConversationText before you say a word.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-greeting/"
+}
