@@ -1,0 +1,15 @@
+/* History log panel: rows built from History messages only. */
+.history-log { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.history-log__head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.history-log__title { font-weight: var(--dg-weight-bold); }
+.history-log__count { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.history-log__rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.history-log__row { display: grid; grid-template-columns: 52px 76px 1fr; gap: 10px; align-items: baseline; font-size: 15px; overflow-wrap: anywhere; }
+.history-log__ms, .history-log__role { font-family: var(--dg-font-mono); font-size: 12px; color: var(--dg-ink-muted); }
+.history-log__row--assistant .history-log__role { color: var(--dg-accent); }
+.history-log__row--call .history-log__role { color: var(--dg-accent-alt); }
+.history-log__row code { font-size: 13px; }
+@media (max-width: 520px) {
+  .history-log__row { grid-template-columns: 44px 1fr; }
+  .history-log__row > :last-child { grid-column: 1 / -1; }
+}
