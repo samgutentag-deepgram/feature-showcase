@@ -79,4 +79,4 @@ FEATURE=agent-speculative-replies pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=agent-speculative-replies pnpm verify:live passed. All four Settings variants (eager_eot_threshold 0.3, not set, 0.5, 0.8, on flux-general-en v2) came back SettingsApplied, the prompt.md Settings applied with a granted token, and the docs link resolved. The reply-start timings above come from separate live probes the same day.

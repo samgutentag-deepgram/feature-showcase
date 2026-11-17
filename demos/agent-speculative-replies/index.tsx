@@ -18,6 +18,7 @@
 // Limits: 0.2 and 0.95 fail INVALID_SETTINGS; 0.8 alone is accepted but 0.9 alone fails "cannot be
 // greater than eot_threshold", so the agent's eot default looks like 0.8, not the documented 0.7.
 // eager_eot_threshold on nova-3 fails UNPARSABLE_CLIENT_MESSAGE: Flux only.
+// Verified live 2026-11-16: ONLY=agent-speculative-replies pnpm verify:live passed. All four Settings variants (eager_eot_threshold 0.3, not set, 0.5, 0.8, on flux-general-en v2) came back SettingsApplied, the prompt.md Settings applied with a granted token, and the docs link resolved. The reply-start timings above come from separate live probes the same day.
 import { useEffect, useRef, useState } from 'react'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
 import './styles.css'
