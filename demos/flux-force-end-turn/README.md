@@ -67,7 +67,7 @@ FEATURE=flux-force-end-turn pnpm dev
 From the top of `index.tsx`:
 
 ```text
-TODO
+Verified live 2026-11-16: ONLY=flux-force-end-turn pnpm verify:live passed. /v2/listen?model=flux-general-en&eot_threshold=1.0&eot_timeout_ms=30000 and &eot_threshold=0.7 opened; End turn now ({"type":"ForceEndTurn"}) came back EndOfTurn on both, with no Error; prompt.md URL accepted and its ForceEndTurn stop returned an EndOfTurn with words.
 ```
 
 Also checked by hand with a macOS voice clip ("So for the trip I was thinking we could maybe, um",

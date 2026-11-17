@@ -12,6 +12,7 @@
 //   eot_threshold=0.7, no ForceEndTurn: EndOfTurn at 5.10 s, "trigger":"model", confidence 0.71
 //   eot_threshold=0.7, ForceEndTurn at 3.30 s: EndOfTurn at 3.48 s, "trigger":"manual", confidence
 //      0.03, 1.6 s before the model ended the same line on its own
+// Verified live 2026-11-16: ONLY=flux-force-end-turn pnpm verify:live passed. /v2/listen?model=flux-general-en&eot_threshold=1.0&eot_timeout_ms=30000 and &eot_threshold=0.7 opened; End turn now ({"type":"ForceEndTurn"}) came back EndOfTurn on both, with no Error; prompt.md URL accepted and its ForceEndTurn stop returned an EndOfTurn with words.
 import { defineFeature, type Json, type Params, type SttEvent } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import './styles.css'
