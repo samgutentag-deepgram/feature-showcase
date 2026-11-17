@@ -479,6 +479,13 @@
       "flux": "agent"
     },
     {
+      "id": "agent-update-think",
+      "platform": "Voice agent",
+      "headline": "Swap its brain mid-call.",
+      "param": "UpdateThink",
+      "flux": "agent"
+    },
+    {
       "id": "agent-inject-user-message",
       "platform": "Voice agent",
       "headline": "Type to a voice agent mid-call.",

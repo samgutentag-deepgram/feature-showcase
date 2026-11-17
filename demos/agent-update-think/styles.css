@@ -1,0 +1,20 @@
+/* The LLM switch panel. var() only: literals live in styles/packs/. */
+.ut { display: flex; flex-direction: column; gap: 12px; padding: 14px 0 0; border-top: 1px solid var(--dg-border); }
+.ut__buttons { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ut__title { font-size: 15px; font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); margin-right: 4px; }
+.ut__empty, .ut__none { margin: 0; font-size: 13px; color: var(--dg-text-label); }
+.ut__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ut__seg { padding: 10px 0 0; border-top: 1px solid var(--dg-border); display: flex; flex-direction: column; gap: 6px; }
+.ut__seg.is-waiting { color: var(--dg-text-label); }
+.ut__head { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.ut__model { font-weight: var(--dg-weight-medium); color: var(--dg-text-primary); }
+.ut__ack, .ut__note { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); }
+.ut__note { color: var(--dg-accent); }
+.ut__replies { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.ut__replies li { display: grid; grid-template-columns: 9.5em 7em 1fr; gap: 8px; align-items: baseline; }
+.ut__lat { font-family: var(--dg-font-code); font-size: 12px; color: var(--dg-text-label); white-space: nowrap; }
+.ut__text { color: var(--dg-text-body); }
+@media (max-width: 560px) {
+  .ut__replies li { grid-template-columns: 1fr 1fr; }
+  .ut__text { grid-column: 1 / -1; }
+}

@@ -1,0 +1,5 @@
+{
+  "title": "UpdateThink | Deepgram",
+  "description": "Swap a Deepgram voice agent's LLM mid-call with UpdateThink, from OpenAI to Anthropic, Google, Groq or Think-Fast, and compare first-token times.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-update-think/"
+}

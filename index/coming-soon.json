@@ -854,7 +854,7 @@
       "what": "Swap the LLM, prompt, and functions mid-call.",
       "models": "n/a",
       "docs": "https://developers.deepgram.com/docs/voice-agent-update-think",
-      "built": false
+      "built": true
     },
     {
       "id": "agent-inject-message",
