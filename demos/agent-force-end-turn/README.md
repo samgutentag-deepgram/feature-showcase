@@ -78,4 +78,8 @@ FEATURE=agent-force-end-turn pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Verified live 2026-11-16: ONLY=agent-force-end-turn pnpm verify:live passed. Settings with Flux listen at eot_threshold 1 (eot_timeout_ms 30000) and at 0.7 both came back SettingsApplied; {"type":"ForceEndTurn"} sent with no turn in progress got no Error or Warning in 3 s; docs links resolved. A one-off probe the same day: ForceEndTurn after a 2.9 s spoken line returned EndOfTurn trigger manual in 100 ms and reply audio at 0.72 s.
+```
