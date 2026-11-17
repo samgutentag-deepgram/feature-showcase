@@ -24,4 +24,4 @@ FEATURE=intents pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=intents pnpm verify:live passed; intents=true on /v1/read (the call text) and /v1/listen (Nova-3, the call spoken by Aura-2) both returned results.intents. By hand on /v1/read, the call came back as one segment with Cancel subscription 0.89, Update credit card 0.97, Request refund 0.77; on /v1/listen (a macOS say clip of the same call) Cancel subscription 0.89, Update credit card 0.97, and "Request refund for extra charge" at 0.01. The flight chip: Book flight 0.47, Add checked bag 0.92, Receive hotel voucher 0.01. Flux: /v2/listen?intents=true is a 400 at the handshake; the Nova-3 socket is a 403.
