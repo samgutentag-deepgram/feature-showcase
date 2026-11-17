@@ -161,7 +161,7 @@ Deploys are Sam's. The site is one Fly app, `dg-devrel-demos`, deployed from the
 
 **The site.** Runs `check.sh --all` (types, tests, each page's build, live API checks) and deploys
 only if every demo passes, then runs `probe.sh --all`: each page 200, its `og.png` 200,
-`/api/token?demo=<id>` 200 same-origin and 403 cross-site. `--no-live` skips the live API checks,
+`/api/token?demo=<id>` 200 same-origin, and one cross-site token request 403. `--no-live` skips the live API checks,
 `--skip-checks` skips them all. It refuses an app with no `DEEPGRAM_API_KEY` secret and never
 creates apps or secrets.
 
