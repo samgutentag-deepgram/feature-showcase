@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "agent-llm-picker",
+      "platform": "Voice agent",
+      "headline": "Pick the brain behind your voice agent.",
+      "param": "agent.think.provider (type, model)",
+      "flux": "agent"
     }
   ]
 }

@@ -1,0 +1,5 @@
+{
+  "title": "Agent LLM picker | Deepgram",
+  "description": "Pick the LLM a Deepgram voice agent thinks with, from Deepgram, OpenAI, Anthropic, Google, Groq or NVIDIA, talk to it, and compare reply latency across models.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/agent-llm-picker/"
+}
