@@ -1,0 +1,46 @@
+/* Configure demo: the keyterm input and the before/after rows. var() only: literals live in styles/packs/. */
+
+.fcm-field { gap: 10px; }
+.fcm-label { font-size: 14px; color: var(--dg-text-label); }
+.fcm-input {
+  font: inherit;
+  font-family: var(--dg-font-code);
+  font-size: 15px;
+  color: var(--dg-text-primary);
+  background: var(--dg-bg-app);
+  border: 1px solid var(--dg-border-hover);
+  border-left: 6px solid var(--dg-accent);
+  border-radius: var(--dg-shape-control);
+  padding: 12px 14px;
+}
+
+.fcm-echo { white-space: normal; overflow-wrap: anywhere; }
+
+.fcm-rows { display: flex; flex-direction: column; gap: 10px; }
+.fcm-turn,
+.fcm-msg { display: grid; grid-template-columns: minmax(64px, auto) minmax(0, 1fr); gap: 12px; align-items: baseline; }
+.fcm-turn__tag,
+.fcm-msg__tag {
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--dg-text-label);
+}
+.fcm-turn__text { margin: 0; }
+.fcm-turn.is-after .fcm-turn__tag { color: var(--dg-accent); }
+.fcm-turn__text mark {
+  background: var(--dg-accent-dim);
+  color: var(--dg-text-primary);
+  border-radius: var(--dg-shape-control);
+  padding: 0 4px;
+}
+.fcm-msg {
+  font-size: 13px;
+  color: var(--dg-text-body);
+  background: var(--dg-bg-well);
+  border-radius: var(--dg-shape-control);
+  padding: 8px 12px;
+}
+.fcm-msg code { font-family: var(--dg-font-code); overflow-wrap: anywhere; }
+.fcm-msg.is-ok { border-left: 4px solid var(--dg-accent); }
+.fcm-msg.is-bad { border-left: 4px solid var(--dg-danger); }

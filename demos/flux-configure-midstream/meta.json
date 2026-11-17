@@ -1,0 +1,5 @@
+{
+  "title": "Flux Configure mid-stream | Deepgram",
+  "description": "Read a line with made-up product names, send one Configure message on the open Flux socket, and read it again: the keyterms apply without reconnecting.",
+  "url": "https://dg-devrel-demos.fly.dev/demos/flux-configure-midstream/"
+}

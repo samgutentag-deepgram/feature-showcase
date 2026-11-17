@@ -94,6 +94,13 @@
       "flux": "nova-only"
     },
     {
+      "id": "flux-configure-midstream",
+      "platform": "Speech-to-text",
+      "headline": "Teach Flux a new word mid-call",
+      "param": "Configure",
+      "flux": "flux-only"
+    },
+    {
       "id": "telephone-audio",
       "platform": "Text-to-speech",
       "headline": "What does it sound like on a phone line?",
