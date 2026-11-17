@@ -6,6 +6,7 @@
 // "tags": [...] only in the Metadata message at the close (not in Results.metadata); pre-recorded
 // /v1/listen returns metadata.tags. GET /v1/projects/<id>/requests/<request_id> lists the tags
 // under response.details.tags for all three requests.
+// Verified live 2026-11-16: pnpm verify:live opened all 4 tag variants on flux-general-en and nova-3 (handshake accepted, docs link resolves); the Management API listed the test tags under response.details.tags and /usage?tag= counted only the tagged requests.
 import { defineFeature, type Json, type Params } from '../../shared/common/feature'
 import { PlainTranscript } from '../../shared/stt/PlainTranscript'
 

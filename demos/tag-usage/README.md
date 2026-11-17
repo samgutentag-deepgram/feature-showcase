@@ -71,5 +71,13 @@ The page around it is shared: [`shared/stt/Shell.tsx`](../../shared/stt/Shell.ts
 From the top of `index.tsx`:
 
 ```text
-TODO
+tag on Flux and Nova-3: label a request so usage reports can filter by it. The transcript does
+not change, and neither socket echoes the tag in its transcript messages, so the page shows the
+tags on the Request card and the request_id they are filed under on the Response card.
+Checked 2026-11-16 with tag=showcase-flux&tag=tag-usage-test (and the Nova-3 equivalent):
+/v2/listen flux-general-en opens and sends no tags in any message; /v1/listen nova-3 puts
+"tags": [...] only in the Metadata message at the close (not in Results.metadata); pre-recorded
+/v1/listen returns metadata.tags. GET /v1/projects/<id>/requests/<request_id> lists the tags
+under response.details.tags for all three requests.
+Verified live 2026-11-16: pnpm verify:live opened all 4 tag variants on flux-general-en and nova-3 (handshake accepted, docs link resolves); the Management API listed the test tags under response.details.tags and /usage?tag= counted only the tagged requests.
 ```
