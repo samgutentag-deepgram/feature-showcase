@@ -267,6 +267,13 @@
       "headline": "Change its voice mid-call.",
       "param": "UpdateSpeak",
       "flux": "agent"
+    },
+    {
+      "id": "think-model-compare",
+      "platform": "LLM",
+      "headline": "Which LLM should answer the phone?",
+      "param": "/v1/think model",
+      "flux": "think"
     }
   ]
 }
