@@ -374,6 +374,13 @@
       "flux": "agent"
     },
     {
+      "id": "summarize",
+      "platform": "LLM",
+      "headline": "What did that voicemail say?",
+      "param": "summarize=v2",
+      "flux": "intelligence"
+    },
+    {
       "id": "agent-latency-report",
       "platform": "Voice agent",
       "headline": "Where does the time go?",

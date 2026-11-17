@@ -971,7 +971,7 @@
       "what": "One-paragraph summary of a call or a block of text.",
       "models": "English; /v1/listen pre-recorded and /v1/read",
       "docs": "https://developers.deepgram.com/docs/summarization",
-      "built": false
+      "built": true
     },
     {
       "id": "topics",
