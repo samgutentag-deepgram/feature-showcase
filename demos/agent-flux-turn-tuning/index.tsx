@@ -12,6 +12,7 @@
 //   matched Patient. The default (0.7, 5000) cut in at 2.0 s, just before the second half.
 // EndOfTurn carries only trigger, and ConversationText has no word times, so the panel times "you
 // stopped" from the mic level on this page, ignoring frames while the agent's audio plays.
+// Verified live 2026-11-16: ONLY=agent-flux-turn-tuning pnpm verify:live passed. Both Settings variants (Patient eot_threshold 0.9 + eot_timeout_ms 8000, Snappy 0.5 + 1000) came back SettingsApplied on flux-general-en, the prompt.md Settings applied with a granted token, and the docs link resolved. The cut-in timings above come from separate live probes the same day.
 import { useEffect, useRef, useState } from 'react'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'
 import './styles.css'

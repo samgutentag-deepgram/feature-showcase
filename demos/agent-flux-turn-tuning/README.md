@@ -58,4 +58,4 @@ FEATURE=agent-flux-turn-tuning pnpm dev
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+Verified live 2026-11-16: ONLY=agent-flux-turn-tuning pnpm verify:live passed. Both Settings variants (Patient eot_threshold 0.9 + eot_timeout_ms 8000, Snappy 0.5 + 1000) came back SettingsApplied on flux-general-en, the prompt.md Settings applied with a granted token, and the docs link resolved. The cut-in timings above come from separate live probes the same day.
