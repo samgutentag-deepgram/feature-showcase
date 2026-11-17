@@ -1,0 +1,15 @@
+{
+  "_comment": "The /flux-tts/ page (flux-tts/index.html), for the Flux TTS promo. Sections and demos in page order; every id must be in index/demos.json.",
+  "sections": [
+    {
+      "heading": "Make it sound right",
+      "intro": "Pick the voice, set the delivery and the pace, leave room for numbers, and fix the words it gets wrong.",
+      "ids": ["flux-tts-voices", "tts-expressivity", "tts-speed", "tts-pause-markers", "tts-pronunciation"]
+    },
+    {
+      "heading": "Put it in a voice agent",
+      "intro": "Flux on one socket: stream LLM tokens in, let the caller cut in, change the pace mid-call, and see what each turn costs.",
+      "ids": ["tts-ws-flush", "tts-streaming", "tts-interrupt", "flux-tts-configure", "flux-tts-turns", "flux-tts-session-metadata"]
+    }
+  ]
+}

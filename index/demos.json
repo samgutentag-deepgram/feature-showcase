@@ -2,6 +2,41 @@
   "_comment": "One entry per one-feature demo, in page order. The index page at / (index/render.ts) reads each demo's title and description from demos/<id>/meta.json and its card from /demos/<id>/og.png. An entry whose folder does not exist yet is skipped with a build warning.",
   "demos": [
     {
+      "id": "flux-tts-voices",
+      "platform": "Text-to-speech",
+      "headline": "Hear every Flux voice.",
+      "param": "model (flux-{voice}-{lang})",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-expressivity",
+      "platform": "Text-to-speech",
+      "headline": "Calm for support, bright for good news.",
+      "param": "expressivity",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-speed",
+      "platform": "Text-to-speech",
+      "headline": "Slow down for the numbers.",
+      "param": "speed",
+      "flux": "tts"
+    },
+    {
+      "id": "tts-pause-markers",
+      "platform": "Text-to-speech",
+      "headline": "Give them time to write it down.",
+      "param": "{pause:1s}",
+      "flux": "tts-flux"
+    },
+    {
+      "id": "tts-pronunciation",
+      "platform": "Text-to-speech",
+      "headline": "Say the drug name right.",
+      "param": "inline IPA pronunciation",
+      "flux": "tts-flux"
+    },
+    {
       "id": "language-hint",
       "platform": "Speech-to-text",
       "headline": "Which language was that?",
@@ -346,13 +381,6 @@
       "flux": "tts"
     },
     {
-      "id": "tts-speed",
-      "platform": "Text-to-speech",
-      "headline": "Slow down for the numbers.",
-      "param": "speed",
-      "flux": "tts"
-    },
-    {
       "id": "tts-normalize-volume",
       "platform": "Text-to-speech",
       "headline": "Every voice at the same volume.",
@@ -365,20 +393,6 @@
       "headline": "Let the caller cut in.",
       "param": "Interrupt",
       "flux": "tts"
-    },
-    {
-      "id": "tts-expressivity",
-      "platform": "Text-to-speech",
-      "headline": "Calm for support, bright for good news.",
-      "param": "expressivity",
-      "flux": "tts-flux"
-    },
-    {
-      "id": "flux-tts-voices",
-      "platform": "Text-to-speech",
-      "headline": "Hear every Flux voice.",
-      "param": "model (flux-{voice}-{lang})",
-      "flux": "tts-flux"
     },
     {
       "id": "aura-voice-picker",
@@ -428,20 +442,6 @@
       "headline": "Hang up without cutting off the last line.",
       "param": "Close",
       "flux": "tts"
-    },
-    {
-      "id": "tts-pause-markers",
-      "platform": "Text-to-speech",
-      "headline": "Give them time to write it down.",
-      "param": "{pause:1s}",
-      "flux": "tts-flux"
-    },
-    {
-      "id": "tts-pronunciation",
-      "platform": "Text-to-speech",
-      "headline": "Say the drug name right.",
-      "param": "inline IPA pronunciation",
-      "flux": "tts-flux"
     },
     {
       "id": "barge-in",

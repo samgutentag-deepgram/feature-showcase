@@ -129,6 +129,43 @@ body { letter-spacing: var(--dg-type-body-tracking); }
 .foot { display: flex; gap: 8px 24px; justify-content: center; flex-wrap: wrap; font-size: 14px; }
 .foot a { color: var(--dg-text-body); }
 
+/* The Flux TTS banner on / and the collection pages (/flux-tts/). */
+.promo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  padding: 16px 20px;
+  background: var(--dg-bg-panel);
+  border: 1px solid var(--dg-accent);
+  border-radius: var(--dg-shape-surface);
+  box-shadow: var(--dg-elevation-soft);
+  color: var(--dg-text-primary);
+  text-decoration: none;
+}
+.promo strong { font-size: 17px; font-weight: var(--dg-weight-medium); flex: 1 1 320px; }
+.promo__kicker,
+.promo__go,
+.hero__kicker {
+  font-family: var(--dg-font-code);
+  font-size: 12px;
+  letter-spacing: var(--dg-type-label-tracking);
+  text-transform: uppercase;
+}
+.promo__kicker,
+.hero__kicker { color: var(--dg-accent); }
+.promo__go { color: var(--dg-text-body); }
+.promo:hover .promo__go,
+.promo:focus-visible .promo__go { color: var(--dg-accent); }
+
+.collection { display: flex; flex-direction: column; gap: 16px; }
+.collection__head h2 { margin: 0; color: var(--dg-text-primary); font-size: 28px; font-weight: var(--dg-type-strong); letter-spacing: var(--dg-type-display-tracking); }
+.collection__head p { margin: 4px 0 0; color: var(--dg-text-body); max-width: 720px; line-height: 1.5; }
+.collection + .collection { border-top: 1px solid var(--dg-border-hover); padding-top: 28px; }
+.collection__more { margin: 0; color: var(--dg-text-body); line-height: 1.5; }
+.collection__more code { font-family: var(--dg-font-code); font-size: 14px; }
+.collection__more a { color: var(--dg-text-primary); }
+
 @media (max-width: 760px) {
   .masthead img { height: 20px; }
   .tile h2 { font-size: 21px; }

@@ -3,7 +3,7 @@ import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-import { renderIndex } from './index/render.ts'
+import { readCollection, renderCollection, renderIndex } from './index/render.ts'
 
 // One site, one page per demo: every folder under demos/ builds to dist/demos/<id>/index.html with
 // its own title, description, and og.png from its meta.json, served at SITE/demos/<id>/.
@@ -37,6 +37,9 @@ export function readMeta(name: string): Meta {
 
 export const demoUrl = (name: string) => `${SITE}/demos/${name}/`
 export const promptFile = (name: string) => path.join(featureDir(name), 'prompt.md')
+
+// Hand-picked pages of demos at /<id>/: <id>/index.html, filled from index/collections/<id>.json.
+export const COLLECTIONS = ['flux-tts']
 
 const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
@@ -78,6 +81,7 @@ function demoPages(names: string[]): Plugin {
         rollupOptions: {
           input: Object.fromEntries([
             ['index', path.join(ROOT, 'index.html')],
+            ...COLLECTIONS.map((c) => [c, path.join(ROOT, c, 'index.html')]),
             ...names.map((n) => [`demos/${n}`, pageId(n)]),
           ]),
         },
@@ -100,10 +104,13 @@ function demoPages(names: string[]): Plugin {
     // Vite leaves the tile images alone: each is the og.png the demo's page already serves.
     transformIndexHtml: {
       order: 'post',
-      handler: (html, ctx) =>
-        ctx.path === '/index.html'
-          ? renderIndex(html, { built: names, demosOnDisk: listDemos(), readMeta, warn }).replaceAll('%URL%', SITE)
-          : html,
+      handler: (html, ctx) => {
+        if (ctx.path === '/index.html') {
+          return renderIndex(html, { built: names, demosOnDisk: listDemos(), readMeta, warn }).replaceAll('%URL%', SITE)
+        }
+        const c = COLLECTIONS.find((id) => ctx.path === `/${id}/index.html`)
+        return c ? renderCollection(html, readCollection(c), { built: names, readMeta }).replaceAll('%URL%', SITE) : html
+      },
     },
     configureServer(server) {
       const send = (res: ServerResponse, type: string, body: string | Buffer) => {

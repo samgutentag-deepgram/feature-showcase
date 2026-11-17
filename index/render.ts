@@ -87,6 +87,28 @@ export function validate(demos: DemoEntry[], soon: SoonEntry[]): void {
   }
 }
 
+// One live demo tile, shared by / and the collection pages.
+export function tileHtml(d: DemoEntry, meta: DemoMeta): string {
+  const name = meta.title.replace(/ \| Deepgram$/, '')
+  let [models, modelsTitle] = FLUX[d.flux]
+  if (d.flux_note) models = models.replace('Flux partly', `Flux ${d.flux_note}`)
+  const headline = d.headline ?? ''
+  const hook = headline ? `\n          <p class="tile__hook">${esc(headline)}</p>` : ''
+  const search = [name, headline, d.param, models, meta.description].join(' ').toLowerCase()
+  return `      <a class="tile" href="/demos/${esc(d.id)}/" data-product="${esc(d.platform)}" data-search="${esc(search)}">
+        <img src="/demos/${esc(d.id)}/og.png" alt="" width="1200" height="630" loading="lazy" />
+        <div class="tile__body">
+          <span class="tile__kicker">${esc(d.platform)}</span>
+          <h2>${esc(name)}</h2>${hook}
+          <p class="tile__desc">${esc(meta.description)}</p>
+          <div class="tile__meta">
+            <code>${esc(d.param)}</code>
+            <span class="tile__models" title="${esc(modelsTitle)}">${esc(models)}</span>
+          </div>
+        </div>
+      </a>`
+}
+
 export interface RenderOptions {
   // Demos this build serves. An entry outside it gets no tile.
   built: string[]
@@ -109,27 +131,7 @@ export function renderIndex(html: string, opts: RenderOptions): string {
   }
   const demos = all.filter((d) => built.has(d.id))
 
-  const tiles = demos.map((d) => {
-    const meta = opts.readMeta(d.id)
-    const name = meta.title.replace(/ \| Deepgram$/, '')
-    let [models, modelsTitle] = FLUX[d.flux]
-    if (d.flux_note) models = models.replace('Flux partly', `Flux ${d.flux_note}`)
-    const headline = d.headline ?? ''
-    const hook = headline ? `\n          <p class="tile__hook">${esc(headline)}</p>` : ''
-    const search = [name, headline, d.param, models, meta.description].join(' ').toLowerCase()
-    return `      <a class="tile" href="/demos/${esc(d.id)}/" data-product="${esc(d.platform)}" data-search="${esc(search)}">
-        <img src="/demos/${esc(d.id)}/og.png" alt="" width="1200" height="630" loading="lazy" />
-        <div class="tile__body">
-          <span class="tile__kicker">${esc(d.platform)}</span>
-          <h2>${esc(name)}</h2>${hook}
-          <p class="tile__desc">${esc(meta.description)}</p>
-          <div class="tile__meta">
-            <code>${esc(d.param)}</code>
-            <span class="tile__models" title="${esc(modelsTitle)}">${esc(models)}</span>
-          </div>
-        </div>
-      </a>`
-  })
+  const tiles = demos.map((d) => tileHtml(d, opts.readMeta(d.id)))
 
   // Backlog tiles: anything not marked built and not already live.
   const live = new Set(demos.map((d) => d.id))
@@ -174,4 +176,42 @@ export function renderIndex(html: string, opts: RenderOptions): string {
     .replace('<!-- SOON -->', soonTiles.join('\n'))
     .replaceAll('%SOON%', String(soon.length))
     .replaceAll('%COUNT%', String(demos.length))
+}
+
+// A hand-picked page of demos, such as /flux-tts/: index/collections/<id>.json lists the sections and
+// their demos in order, and <id>/index.html is the page they fill. Every id must be in demos.json.
+export interface Collection {
+  sections: { heading: string; intro?: string; ids: string[] }[]
+}
+
+export const collectionFile = (id: string) => path.join(ROOT, 'index', 'collections', `${id}.json`)
+export const readCollection = (id: string): Collection => JSON.parse(readFileSync(collectionFile(id), 'utf8'))
+
+export function renderCollection(
+  html: string,
+  collection: Collection,
+  opts: { built: string[]; readMeta: (id: string) => DemoMeta; demos?: DemoEntry[] },
+): string {
+  const byId = new Map((opts.demos ?? readDemoEntries()).map((d) => [d.id, d]))
+  const built = new Set(opts.built)
+  let count = 0
+  const sections = collection.sections.map((sec) => {
+    const tiles = sec.ids.map((id) => {
+      const d = byId.get(id)
+      if (!d) throw new Error(`collection: ${id} is not in index/demos.json`)
+      return built.has(id) ? tileHtml(d, opts.readMeta(id)) : ''
+    }).filter(Boolean)
+    count += tiles.length
+    if (!tiles.length) return ''
+    const intro = sec.intro ? `\n          <p>${esc(sec.intro)}</p>` : ''
+    return `      <section class="collection">
+        <div class="collection__head">
+          <h2>${esc(sec.heading)}</h2>${intro}
+        </div>
+        <div class="grid">
+${tiles.join('\n')}
+        </div>
+      </section>`
+  }).filter(Boolean)
+  return html.replace('<!-- SECTIONS -->', sections.join('\n')).replaceAll('%COUNT%', String(count))
 }
