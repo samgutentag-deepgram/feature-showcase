@@ -17,6 +17,11 @@
 //   Also accepted: temperature on anthropic claude-haiku-4-5, groq openai/gpt-oss-20b and google
 //   gemini-2.5-flash; reasoning_mode low on groq openai/gpt-oss-20b.
 // Docs mismatch: reasoning_mode also takes "minimal" (the docs list low, medium, high).
+// Verified live 2026-11-16: ONLY=agent-think-controls pnpm verify:live passed. All seven Settings
+// variants (gpt-4o-mini at temperature 0, 1, 1.5; gpt-5-mini at reasoning_mode minimal, low, medium,
+// high) came back SettingsApplied on Flux and Nova-3, the InjectUserMessage button came back
+// ConversationText on each, and the docs link resolved. Replies and first-token times above come from
+// separate probes the same day (temperature 1 gave "Lavender Honey Bliss." then "Mango Chili Tango.").
 import { useEffect, useRef, useState } from 'react'
 import type { Json } from '../../shared/common/feature'
 import { defineAgentFeature, type AgentPanelProps } from '../../shared/agent/feature'

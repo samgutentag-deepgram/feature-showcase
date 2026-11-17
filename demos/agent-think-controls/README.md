@@ -64,4 +64,31 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 
 ## Verified live
 
-TODO: what you checked against the API, the date, and what came back (also at the top of index.tsx).
+From the top of `index.tsx`:
+
+```text
+Think controls: the generation settings on agent.think.provider, temperature and reasoning_mode.
+Probed live 2026-11-16 on the Agent API, one fresh session per ask, the question sent with
+InjectUserMessage after the greeting:
+  open_ai gpt-4o-mini, "Name a new ice cream flavor": temperature 0 said "Lavender Honey Bliss."
+  three sessions out of three. Temperature 1.5 said "Coastal Caramel Swirl.", "Tropical Sunrise
+  Sorbet." and "Coconut Lime Swirl.". LLM first token about 0.6 s either way.
+  open_ai gpt-5-mini, the bat and ball question: reasoning_mode minimal first token 0.63 to 0.84 s,
+  low 1.2 to 1.4 s, medium 1.9 to 2.0 s, high 3.1 to 3.8 s. Every level answered five cents
+  in these runs (minimal once said ten cents in an earlier probe with a different prompt).
+  Rejected: temperature on gpt-5-mini (OpenAI 400 "Only the default (1) value is supported", three
+  THINK_REQUEST_FAILED warnings, then Error FAILED_TO_THINK). reasoning_mode on gpt-4o-mini (OpenAI
+  400 "Unrecognized request argument supplied: reasoning_effort", same pattern). temperature 3 on
+  gpt-4o-mini and 1.5 on anthropic claude-haiku-4-5 (provider range errors, same pattern).
+  max_tokens, max_completion_tokens, top_p, frequency_penalty, presence_penalty, seed and stop on
+  open_ai, and max_tokens on anthropic: Error UNPARSABLE_CLIENT_MESSAGE at Settings. A reasoning_mode
+  outside minimal, low, medium, high: UNPARSABLE_CLIENT_MESSAGE.
+  Also accepted: temperature on anthropic claude-haiku-4-5, groq openai/gpt-oss-20b and google
+  gemini-2.5-flash; reasoning_mode low on groq openai/gpt-oss-20b.
+Docs mismatch: reasoning_mode also takes "minimal" (the docs list low, medium, high).
+Verified live 2026-11-16: ONLY=agent-think-controls pnpm verify:live passed. All seven Settings
+variants (gpt-4o-mini at temperature 0, 1, 1.5; gpt-5-mini at reasoning_mode minimal, low, medium,
+high) came back SettingsApplied on Flux and Nova-3, the InjectUserMessage button came back
+ConversationText on each, and the docs link resolved. Replies and first-token times above come from
+separate probes the same day (temperature 1 gave "Lavender Honey Bliss." then "Mango Chili Tango.").
+```
