@@ -1,9 +1,10 @@
 // The languages the picker offers and the line to read in each.
 
 // Every one checked live on Nova-3 streaming (2026-11-16): language=<code> with the line below,
-// read by a macOS voice, came back word for word. Kept to the ten Flux multilingual covers too,
-// so the same list carries over if Flux ever takes language.
-export const LANGUAGES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'ja', 'hi', 'ru'] as const
+// read by a macOS voice, came back word for word. The first ten are the ones Flux multilingual
+// covers too. Catalan (ca, added 2026-11-18) is Nova-3 only: Flux rejects it, so never offer it
+// there. Read by macOS Montse, language=ca came back word for word 2 of 2.
+export const LANGUAGES = ['en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'ja', 'hi', 'ru', 'ca'] as const
 export type Lang = (typeof LANGUAGES)[number]
 
 const names = new Intl.DisplayNames(['en'], { type: 'language' })
@@ -33,4 +34,5 @@ export const PHRASES: Record<Lang, string> = {
   ja: '窓際の二人用のテーブルをお願いします。',
   hi: 'कृपया खिड़की के पास दो लोगों के लिए एक टेबल दीजिए।',
   ru: 'Мне, пожалуйста, столик на двоих у окна.',
+  ca: 'Voldria una taula per a dues persones al costat de la finestra, si us plau.',
 }

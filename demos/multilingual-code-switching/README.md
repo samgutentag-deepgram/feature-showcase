@@ -9,7 +9,7 @@ Deepgram transcribes it as one stream, and Nova-3 tags every word with the langu
 
 ## What to try
 
-- **Nova-3.** Pick **English + Spanish** (or **English + French**), press **Start mic**, and read
+- **Nova-3.** Pick **English + Spanish** (or **English + French**, or **English + Hindi**), press **Start mic**, and read
   the suggested sentence. Each word is underlined in its language's color, and the language code
   shows where the switch happened. The Response card shows the two words on either side of the
   first switch in the latest final result, straight from `words[].language`.

@@ -10,8 +10,8 @@ then set `language` to a different one and read the same line again.
 
 ## What to try
 
-- **The right language.** Pick a language you speak under **I'll read in** (ten on offer: English,
-  Dutch, French, German, Hindi, Italian, Japanese, Portuguese, Russian, Spanish). The suggested line
+- **The right language.** Pick a language you speak under **I'll read in** (eleven on offer: English,
+  Catalan, Dutch, French, German, Hindi, Italian, Japanese, Portuguese, Russian, Spanish). The suggested line
   switches to it. Leave **Send language=** on the same one, press **Start mic**, and read it.
 - **A wrong one.** Set **Send language=** to any other language and read the same line again. The
   two runs sit side by side. In testing, Spanish, French, German, and Japanese speech with
@@ -53,7 +53,7 @@ FEATURE=language-select pnpm dev
 | File | What |
 |---|---|
 | [`index.tsx`](index.tsx) | The demo: model, params, controls, copy. The comment at the top records what was verified live |
-| [`languages.ts`](languages.ts) | The ten languages on offer and the line to read in each |
+| [`languages.ts`](languages.ts) | The eleven languages on offer and the line to read in each |
 | [`styles.css`](styles.css) | The two pickers and the tag on each run |
 | [`meta.json`](meta.json) | Title, description, and public URL for the page and its share card |
 | [`og.png`](og.png) | 1200x630 share card |
@@ -63,5 +63,7 @@ FEATURE=language-select pnpm dev
 ## Verified live
 
 ```text
+Catalan added 2026-11-18: language=ca&smart_format=true with a macOS Montse clip came back word for
+word 2 of 2.
 Verified live 2026-11-16: pnpm verify:live opened all ten language= requests on /v1/listen (nova-3, smart_format=true) and the prompt.md URL with a granted token, and the docs link resolved; all passed.
 ```

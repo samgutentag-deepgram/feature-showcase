@@ -58,7 +58,7 @@ export default defineFeature<State>({
   modes: [{ id: 'mic', label: 'Mic', source: 'mic', compare: true }],
   initialState: { pair: 'en-es' },
   // The pair only changes the suggested phrase and the colors; every variant sends the same request.
-  variants: [{ pair: 'en-es' }, { pair: 'en-fr' }],
+  variants: [{ pair: 'en-es' }, { pair: 'en-fr' }, { pair: 'en-hi' }],
 
   // Nova-3 takes language=multi on the model; Flux is multilingual by model name. Nothing extra.
   params: (): Params => ({}),
