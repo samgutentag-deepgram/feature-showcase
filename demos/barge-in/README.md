@@ -10,7 +10,7 @@
 
 - **Interrupt it.** Press **Start talking**, wait a second or two into the greeting, then say the suggested line. The timeline shows `UserStartedSpeaking` and how many seconds of agent audio were dropped.
 - **Without the stop.** Untick the box and do it again. Same event, but the agent keeps talking for the rest of what it had queued.
-- **What we saw in testing.** `UserStartedSpeaking` arrived about 0.9 s after the interruption, and about 11 s of greeting audio had already been sent ahead of playback. Deepgram detects the interruption; your app has to stop the audio.
+- **What we saw in testing.** `UserStartedSpeaking` arrived about 0.4 s after the interruption. By then about 10 s of the 14 s greeting had already been sent, while only about 3 s had played. Deepgram detects the interruption; your app has to stop the audio.
 
 Headphones help: without them the agent can hear itself through your speakers. Pick Flux or Nova-3
 as the agent's listen model with the toggle; Flux is the default.
@@ -59,10 +59,11 @@ The page around it is shared: [`shared/agent/AgentShell.tsx`](../../shared/agent
 From the top of `index.tsx`:
 
 ```text
-Barge-in: talk over the agent and it stops. Verified live 2026-11-10 on the Agent API with a
-30-second token and synthetic user speech sent 2.5 s into a long greeting:
-  UserStartedSpeaking arrived about 0.9 s after the user started talking, with AgentAudioDone.
-  By then the server had already sent about 11 s of greeting audio, far ahead of playback.
+Barge-in: talk over the agent and it stops. Verified live 2026-11-18 on the Agent API, 8 runs
+(4 Flux, 4 Nova-3 listen), with a Flux TTS caller clip sent 2.5 s after the first greeting byte:
+  UserStartedSpeaking arrived 0.33 to 0.45 s (about 0.4 s) after the caller started talking.
+  By then the server had sent about 10 s of the 14 s greeting, while about 3 s had played: it
+  streams the greeting at about 3.5x real time, far ahead of playback.
 So Deepgram detects the interruption, and the page decides what to do with the audio it is
 holding. With the switch on, it drops that queued audio; off, the agent keeps talking over you.
 ```

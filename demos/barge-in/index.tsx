@@ -1,7 +1,8 @@
-// Barge-in: talk over the agent and it stops. Verified live 2026-11-10 on the Agent API with a
-// 30-second token and synthetic user speech sent 2.5 s into a long greeting:
-//   UserStartedSpeaking arrived about 0.9 s after the user started talking, with AgentAudioDone.
-//   By then the server had already sent about 11 s of greeting audio, far ahead of playback.
+// Barge-in: talk over the agent and it stops. Verified live 2026-11-18 on the Agent API, 8 runs
+// (4 Flux, 4 Nova-3 listen), with a Flux TTS caller clip sent 2.5 s after the first greeting byte:
+//   UserStartedSpeaking arrived 0.33 to 0.45 s (about 0.4 s) after the caller started talking.
+//   By then the server had sent about 10 s of the 14 s greeting, while about 3 s had played: it
+//   streams the greeting at about 3.5x real time, far ahead of playback.
 // So Deepgram detects the interruption, and the page decides what to do with the audio it is
 // holding. With the switch on, it drops that queued audio; off, the agent keeps talking over you.
 import { defineAgentFeature } from '../../shared/agent/feature'
