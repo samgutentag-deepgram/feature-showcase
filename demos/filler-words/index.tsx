@@ -5,6 +5,11 @@
 //   filler_words=true   "So I think we should uh, ship the demo on Thursday. Uh, does that work for you?"
 //                       (both uh kept, all three um dropped)
 //   Flux                keeps all five on its own; filler_words is refused with a 400.
+// Rechecked 2026-11-18 on a stream: punctuate=true replaces smart_format=true here, since a
+// smart_format + filler_words stream dropped every filler 4 of 4 runs in another check that day.
+// With punctuate=true&filler_words=true, Samantha kept both uh 4 of 4 (one run also kept one um);
+// filler_words=false dropped all five. A Flux TTS voice (flux-wes-en) reading the same line lost
+// every filler on Nova-3 in every config, though Flux heard all five, so read it in your own voice.
 import { defineFeature, type Params } from '../../shared/common/feature'
 import { EmptyTranscript } from '../../shared/stt/PlainTranscript'
 import { MarkedWords } from '../../shared/stt/MarkedWords'
@@ -45,7 +50,7 @@ export default defineFeature<State>({
       id: 'nova-3',
       label: 'Nova-3',
       endpoint: 'v1',
-      params: { model: 'nova-3', smart_format: 'true' },
+      params: { model: 'nova-3', punctuate: 'true' },
     },
   ],
   modes: [{ id: 'mic', label: 'Mic', source: 'mic', compare: true }],

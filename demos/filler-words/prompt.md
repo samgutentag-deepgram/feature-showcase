@@ -32,13 +32,13 @@ wss://api.deepgram.com/v2/listen?model=flux-general-en&encoding=linear16&sample_
 The params that matter, as a reader would copy them:
 
 ```
-/v1/listen?model=nova-3&smart_format=true&filler_words=true
+/v1/listen?model=nova-3&punctuate=true&filler_words=true
 ```
 
 The exact URL to open, with the audio format appended:
 
 ```
-wss://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&filler_words=true&interim_results=true&encoding=linear16&sample_rate=16000
+wss://api.deepgram.com/v1/listen?model=nova-3&punctuate=true&filler_words=true&interim_results=true&encoding=linear16&sample_rate=16000
 ```
 
 Send repeated params once per value (`keyterm=a&keyterm=b`), never comma-joined. Build the query with

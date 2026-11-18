@@ -8,8 +8,8 @@ const ctx = (model = nova) => ({ model, mode: feature.modes[0], busy: false })
 
 describe('filler-words', () => {
   it('sends filler_words either way on Nova-3, the forms verified live', () => {
-    expect(describeRequest(nova, feature.params({ on: true }, ctx()))).toBe('/v1/listen?model=nova-3&smart_format=true&filler_words=true')
-    expect(describeRequest(nova, feature.params({ on: false }, ctx()))).toBe('/v1/listen?model=nova-3&smart_format=true&filler_words=false')
+    expect(describeRequest(nova, feature.params({ on: true }, ctx()))).toBe('/v1/listen?model=nova-3&punctuate=true&filler_words=true')
+    expect(describeRequest(nova, feature.params({ on: false }, ctx()))).toBe('/v1/listen?model=nova-3&punctuate=true&filler_words=false')
   })
 
   it('sends nothing for it on Flux, which refuses the param', () => {
