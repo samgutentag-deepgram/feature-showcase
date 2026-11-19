@@ -64,7 +64,7 @@ export default defineTtsFeature<State>({
               }}
             >
               {[false, true].map((ea) => (
-                <optgroup key={String(ea)} label={ea ? 'Early Access' : 'Generally available'}>
+                <optgroup key={String(ea)} label={ea ? 'Early access' : 'Generally available'}>
                   {LANGS.filter((l) => l.earlyAccess === ea).map((l) => (
                     <option key={l.name} value={l.name}>
                       {l.name} ({VOICES.filter((v) => v.lang === l.name).length})
@@ -87,7 +87,7 @@ export default defineTtsFeature<State>({
             </select>
           </label>
         </div>
-        {lang?.earlyAccess && <p className="hint">Early Access: numbers and dates are not expanded yet, so write them out in words.</p>}
+        {lang?.earlyAccess && <p className="hint">Early access: numbers and dates are not expanded yet, so write them out in words.</p>}
         {on && (
           <div className="tts-voicecard is-on tts-voicecard--static">
             <span className="tts-voicecard__name">

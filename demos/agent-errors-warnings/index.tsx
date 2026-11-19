@@ -175,7 +175,7 @@ export default defineAgentFeature<State>({
     return (
       <div className="aew" aria-live="polite">
         <div className="aew__head">
-          <span className="aew__title">Errors and Warnings this run</span>
+          <span className="aew__title">Errors and warnings this run</span>
           {cur.run && (
             <button className="btn btn--primary" disabled={!live || armed !== null} onClick={trigger}>
               {armed !== null ? 'Waiting for the story…' : cur.run}
